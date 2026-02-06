@@ -1,0 +1,58 @@
+CWD: /tmp/bcc-exp-h2-router-r2-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh router
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h2-router-r2-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-abx depends on bcc-exp-h2-router-r2-1286456-i6w (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-xke depends on bcc-exp-h2-router-r2-1286456-i6w (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-82v depends on bcc-exp-h2-router-r2-1286456-7cd (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-vi4 depends on bcc-exp-h2-router-r2-1286456-7cd (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-9xv depends on bcc-exp-h2-router-r2-1286456-0ai (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-wkq depends on bcc-exp-h2-router-r2-1286456-0ai (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-7mo depends on bcc-exp-h2-router-r2-1286456-i6w (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-rgt depends on bcc-exp-h2-router-r2-1286456-i6w (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-ymp depends on bcc-exp-h2-router-r2-1286456-i6w (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-hve depends on bcc-exp-h2-router-r2-1286456-7cd (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-1y0 depends on bcc-exp-h2-router-r2-1286456-7cd (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-aux depends on bcc-exp-h2-router-r2-1286456-i6w (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-hy2 depends on bcc-exp-h2-router-r2-1286456-djk (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-00a depends on bcc-exp-h2-router-r2-1286456-7cd (parent)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-609 depends on bcc-exp-h2-router-r2-1286456-djk (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-82v depends on bcc-exp-h2-router-r2-1286456-9xv (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-82v depends on bcc-exp-h2-router-r2-1286456-7mo (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-82v depends on bcc-exp-h2-router-r2-1286456-hve (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-9xv depends on bcc-exp-h2-router-r2-1286456-7mo (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-djk depends on bcc-exp-h2-router-r2-1286456-7mo (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-djk depends on bcc-exp-h2-router-r2-1286456-9xv (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-xke depends on bcc-exp-h2-router-r2-1286456-abx (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-7mo depends on bcc-exp-h2-router-r2-1286456-xke (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-rgt depends on bcc-exp-h2-router-r2-1286456-7mo (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-ymp depends on bcc-exp-h2-router-r2-1286456-rgt (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-vi4 depends on bcc-exp-h2-router-r2-1286456-82v (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-1y0 depends on bcc-exp-h2-router-r2-1286456-hve (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-00a depends on bcc-exp-h2-router-r2-1286456-1y0 (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-wkq depends on bcc-exp-h2-router-r2-1286456-9xv (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-609 depends on bcc-exp-h2-router-r2-1286456-hy2 (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-h2-router-r2-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting router boundary bridges...
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-82v depends on bcc-exp-h2-router-r2-1286456-8pd (blocks)
+✓ Added dependency: bcc-exp-h2-router-r2-1286456-8pd depends on bcc-exp-h2-router-r2-1286456-9xv (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (3 changed since last sync)
+✓ /tmp/bcc-exp-h2-router-r2-1286456/.beads/issues.jsonl updated
+Warning: Skipping dependency due to error: bcc-exp-h2-router-r2-1286456-wkq → bcc-exp-h2-router-r2-1286456-0ai (parent) (issue bcc-exp-h2-router-r2-1286456-wkq not found)
+Warning: Skipping dependency due to error: bcc-exp-h2-router-r2-1286456-wkq → bcc-exp-h2-router-r2-1286456-9xv (blocks) (issue bcc-exp-h2-router-r2-1286456-wkq not found)
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h2-router-r2-1286456/.beads/issues.jsonl updated

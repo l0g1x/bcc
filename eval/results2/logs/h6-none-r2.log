@@ -1,0 +1,64 @@
+CWD: /tmp/bcc-exp-h6-none-r2-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh workspace ; bash /home/krystian/bcc/eval/strategies/h6_future_work.sh none
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h6-none-r2-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-0wi depends on bcc-exp-h6-none-r2-1286456-1z9 (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-0ym depends on bcc-exp-h6-none-r2-1286456-1z9 (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-qw8 depends on bcc-exp-h6-none-r2-1286456-eml (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-yw3 depends on bcc-exp-h6-none-r2-1286456-eml (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-jji depends on bcc-exp-h6-none-r2-1286456-kf2 (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-knk depends on bcc-exp-h6-none-r2-1286456-kf2 (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-vrp depends on bcc-exp-h6-none-r2-1286456-1z9 (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-n5d depends on bcc-exp-h6-none-r2-1286456-1z9 (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-dam depends on bcc-exp-h6-none-r2-1286456-1z9 (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-c7m depends on bcc-exp-h6-none-r2-1286456-eml (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-csu depends on bcc-exp-h6-none-r2-1286456-eml (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-100 depends on bcc-exp-h6-none-r2-1286456-1z9 (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-2p7 depends on bcc-exp-h6-none-r2-1286456-mt1 (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-8ey depends on bcc-exp-h6-none-r2-1286456-eml (parent)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-d8r depends on bcc-exp-h6-none-r2-1286456-mt1 (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-qw8 depends on bcc-exp-h6-none-r2-1286456-jji (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-qw8 depends on bcc-exp-h6-none-r2-1286456-vrp (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-qw8 depends on bcc-exp-h6-none-r2-1286456-c7m (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-jji depends on bcc-exp-h6-none-r2-1286456-vrp (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-mt1 depends on bcc-exp-h6-none-r2-1286456-vrp (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-mt1 depends on bcc-exp-h6-none-r2-1286456-jji (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-0ym depends on bcc-exp-h6-none-r2-1286456-0wi (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-vrp depends on bcc-exp-h6-none-r2-1286456-0ym (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-n5d depends on bcc-exp-h6-none-r2-1286456-vrp (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-dam depends on bcc-exp-h6-none-r2-1286456-n5d (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-yw3 depends on bcc-exp-h6-none-r2-1286456-qw8 (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-csu depends on bcc-exp-h6-none-r2-1286456-c7m (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-8ey depends on bcc-exp-h6-none-r2-1286456-csu (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-knk depends on bcc-exp-h6-none-r2-1286456-jji (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-d8r depends on bcc-exp-h6-none-r2-1286456-2p7 (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-h6-none-r2-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting workspace boundary bridges...
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-eml depends on bcc-exp-h6-none-r2-1286456-fcj (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-1z9 depends on bcc-exp-h6-none-r2-1286456-fcj (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-kf2 depends on bcc-exp-h6-none-r2-1286456-fcj (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-mt1 depends on bcc-exp-h6-none-r2-1286456-fcj (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-qz1 depends on bcc-exp-h6-none-r2-1286456-fcj (blocks)
+✓ Added dependency: bcc-exp-h6-none-r2-1286456-qw8 depends on bcc-exp-h6-none-r2-1286456-8n2 (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (8 changed since last sync)
+✓ /tmp/bcc-exp-h6-none-r2-1286456/.beads/issues.jsonl updated
+No future work (control)
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h6-none-r2-1286456/.beads/issues.jsonl updated
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h6-none-r2-1286456/.beads/issues.jsonl updated

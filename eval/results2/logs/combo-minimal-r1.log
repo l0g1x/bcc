@@ -1,0 +1,52 @@
+CWD: /tmp/bcc-exp-combo-minimal-r1-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-combo-minimal-r1-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-1mx depends on bcc-exp-combo-minimal-r1-1286456-brg (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-vpu depends on bcc-exp-combo-minimal-r1-1286456-brg (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-s1s depends on bcc-exp-combo-minimal-r1-1286456-3yw (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-93f depends on bcc-exp-combo-minimal-r1-1286456-3yw (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-kqo depends on bcc-exp-combo-minimal-r1-1286456-6hn (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-cyo depends on bcc-exp-combo-minimal-r1-1286456-6hn (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-yck depends on bcc-exp-combo-minimal-r1-1286456-brg (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-up4 depends on bcc-exp-combo-minimal-r1-1286456-brg (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-thz depends on bcc-exp-combo-minimal-r1-1286456-brg (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-9vu depends on bcc-exp-combo-minimal-r1-1286456-3yw (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-4ay depends on bcc-exp-combo-minimal-r1-1286456-3yw (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-3eu depends on bcc-exp-combo-minimal-r1-1286456-brg (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-6ad depends on bcc-exp-combo-minimal-r1-1286456-0a2 (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-lbz depends on bcc-exp-combo-minimal-r1-1286456-3yw (parent)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-snz depends on bcc-exp-combo-minimal-r1-1286456-0a2 (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-s1s depends on bcc-exp-combo-minimal-r1-1286456-kqo (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-s1s depends on bcc-exp-combo-minimal-r1-1286456-yck (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-s1s depends on bcc-exp-combo-minimal-r1-1286456-9vu (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-kqo depends on bcc-exp-combo-minimal-r1-1286456-yck (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-0a2 depends on bcc-exp-combo-minimal-r1-1286456-yck (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-0a2 depends on bcc-exp-combo-minimal-r1-1286456-kqo (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-vpu depends on bcc-exp-combo-minimal-r1-1286456-1mx (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-yck depends on bcc-exp-combo-minimal-r1-1286456-vpu (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-up4 depends on bcc-exp-combo-minimal-r1-1286456-yck (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-thz depends on bcc-exp-combo-minimal-r1-1286456-up4 (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-93f depends on bcc-exp-combo-minimal-r1-1286456-s1s (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-4ay depends on bcc-exp-combo-minimal-r1-1286456-9vu (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-lbz depends on bcc-exp-combo-minimal-r1-1286456-4ay (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-cyo depends on bcc-exp-combo-minimal-r1-1286456-kqo (blocks)
+✓ Added dependency: bcc-exp-combo-minimal-r1-1286456-snz depends on bcc-exp-combo-minimal-r1-1286456-6ad (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-combo-minimal-r1-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Warning: Skipping dependency due to error: bcc-exp-combo-minimal-r1-1286456-thz → bcc-exp-combo-minimal-r1-1286456-brg (parent) (issue bcc-exp-combo-minimal-r1-1286456-thz not found)
+Warning: Skipping dependency due to error: bcc-exp-combo-minimal-r1-1286456-thz → bcc-exp-combo-minimal-r1-1286456-up4 (blocks) (issue bcc-exp-combo-minimal-r1-1286456-thz not found)
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-combo-minimal-r1-1286456/.beads/issues.jsonl updated

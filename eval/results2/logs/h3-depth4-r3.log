@@ -1,0 +1,115 @@
+CWD: /tmp/bcc-exp-h3-depth4-r3-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh workspace ; bash /home/krystian/bcc/eval/strategies/h4_related_deps.sh imports ; bash /home/krystian/bcc/eval/strategies/h4_related_deps.sh naming ; bash /home/krystian/bcc/eval/strategies/h4_related_deps.sh cochange
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h3-depth4-r3-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 21 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-ecr depends on bcc-exp-h3-depth4-r3-1286456-7fm (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-kfu depends on bcc-exp-h3-depth4-r3-1286456-7fm (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-7q7 depends on bcc-exp-h3-depth4-r3-1286456-v6z (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-v6z (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jn1 depends on bcc-exp-h3-depth4-r3-1286456-spo (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-nae depends on bcc-exp-h3-depth4-r3-1286456-spo (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-uwr depends on bcc-exp-h3-depth4-r3-1286456-7fm (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-9a5 depends on bcc-exp-h3-depth4-r3-1286456-7fm (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-oaf depends on bcc-exp-h3-depth4-r3-1286456-7fm (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-awe depends on bcc-exp-h3-depth4-r3-1286456-v6z (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-41h depends on bcc-exp-h3-depth4-r3-1286456-v6z (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-scf depends on bcc-exp-h3-depth4-r3-1286456-v6z (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-o80 depends on bcc-exp-h3-depth4-r3-1286456-7fm (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-t2c depends on bcc-exp-h3-depth4-r3-1286456-8vt (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-iuk depends on bcc-exp-h3-depth4-r3-1286456-v6z (parent)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-oyk depends on bcc-exp-h3-depth4-r3-1286456-8vt (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-7q7 depends on bcc-exp-h3-depth4-r3-1286456-jn1 (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-7q7 depends on bcc-exp-h3-depth4-r3-1286456-uwr (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-7q7 depends on bcc-exp-h3-depth4-r3-1286456-awe (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jn1 depends on bcc-exp-h3-depth4-r3-1286456-uwr (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-8vt depends on bcc-exp-h3-depth4-r3-1286456-uwr (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-8vt depends on bcc-exp-h3-depth4-r3-1286456-jn1 (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-kfu depends on bcc-exp-h3-depth4-r3-1286456-ecr (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-uwr depends on bcc-exp-h3-depth4-r3-1286456-kfu (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-9a5 depends on bcc-exp-h3-depth4-r3-1286456-uwr (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-oaf depends on bcc-exp-h3-depth4-r3-1286456-9a5 (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-7q7 (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-41h depends on bcc-exp-h3-depth4-r3-1286456-awe (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-scf depends on bcc-exp-h3-depth4-r3-1286456-41h (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-nae depends on bcc-exp-h3-depth4-r3-1286456-jn1 (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-oyk depends on bcc-exp-h3-depth4-r3-1286456-t2c (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (20 changed since last sync)
+✓ /tmp/bcc-exp-h3-depth4-r3-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting workspace boundary bridges...
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-v6z depends on bcc-exp-h3-depth4-r3-1286456-1h8 (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-7fm depends on bcc-exp-h3-depth4-r3-1286456-1h8 (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-spo depends on bcc-exp-h3-depth4-r3-1286456-1h8 (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-8vt depends on bcc-exp-h3-depth4-r3-1286456-1h8 (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-g1u depends on bcc-exp-h3-depth4-r3-1286456-1h8 (blocks)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-7q7 depends on bcc-exp-h3-depth4-r3-1286456-70j (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (8 changed since last sync)
+✓ /tmp/bcc-exp-h3-depth4-r3-1286456/.beads/issues.jsonl updated
+Injecting import co-occurrence related deps...
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-uwr depends on bcc-exp-h3-depth4-r3-1286456-7fm (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-9a5 depends on bcc-exp-h3-depth4-r3-1286456-7fm (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-9a5 depends on bcc-exp-h3-depth4-r3-1286456-o80 (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-oaf depends on bcc-exp-h3-depth4-r3-1286456-7fm (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-oaf depends on bcc-exp-h3-depth4-r3-1286456-o80 (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-7q7 depends on bcc-exp-h3-depth4-r3-1286456-awe (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-7q7 depends on bcc-exp-h3-depth4-r3-1286456-41h (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-awe (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-41h (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-v6z (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-awe depends on bcc-exp-h3-depth4-r3-1286456-v6z (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-awe depends on bcc-exp-h3-depth4-r3-1286456-g1u (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-41h depends on bcc-exp-h3-depth4-r3-1286456-v6z (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-41h depends on bcc-exp-h3-depth4-r3-1286456-g1u (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-v6z depends on bcc-exp-h3-depth4-r3-1286456-g1u (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-scf depends on bcc-exp-h3-depth4-r3-1286456-iuk (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jn1 depends on bcc-exp-h3-depth4-r3-1286456-spo (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-nae depends on bcc-exp-h3-depth4-r3-1286456-spo (related)
+Exporting beads to JSONL...
+✓ Exported 0 issues (16 changed since last sync)
+✓ /tmp/bcc-exp-h3-depth4-r3-1286456/.beads/issues.jsonl updated
+Injecting naming convention related deps...
+Added 2 naming-related deps
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h3-depth4-r3-1286456/.beads/issues.jsonl updated
+Injecting git co-change related deps...
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-uwr (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-9a5 (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-8vt (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-ecr (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-7q7 (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-o80 (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-spo (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-7fm (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-g1u (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-scf (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-jn1 (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-kfu (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-oyk (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-jhy depends on bcc-exp-h3-depth4-r3-1286456-iuk (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-uwr depends on bcc-exp-h3-depth4-r3-1286456-ecr (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-uwr depends on bcc-exp-h3-depth4-r3-1286456-v6z (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-uwr depends on bcc-exp-h3-depth4-r3-1286456-o80 (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-uwr depends on bcc-exp-h3-depth4-r3-1286456-spo (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-uwr depends on bcc-exp-h3-depth4-r3-1286456-awe (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-uwr depends on bcc-exp-h3-depth4-r3-1286456-g1u (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-uwr depends on bcc-exp-h3-depth4-r3-1286456-scf (related)
+✓ Added dependency: bcc-exp-h3-depth4-r3-1286456-uwr depends on bcc-exp-h3-depth4-r3-1286456-kfu (related)
+Added 30 co-change related deps
+Exporting beads to JSONL...
+✓ Exported 0 issues (17 changed since last sync)
+✓ /tmp/bcc-exp-h3-depth4-r3-1286456/.beads/issues.jsonl updated
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h3-depth4-r3-1286456/.beads/issues.jsonl updated

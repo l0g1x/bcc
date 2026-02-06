@@ -1,0 +1,52 @@
+CWD: /tmp/bcc-exp-h1-module-r1-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h1-module-r1-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-0xk depends on bcc-exp-h1-module-r1-1286456-jq7 (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-2uz depends on bcc-exp-h1-module-r1-1286456-jq7 (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-s9z depends on bcc-exp-h1-module-r1-1286456-0df (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-2uj depends on bcc-exp-h1-module-r1-1286456-0df (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-f80 depends on bcc-exp-h1-module-r1-1286456-f6o (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-sjb depends on bcc-exp-h1-module-r1-1286456-f6o (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-482 depends on bcc-exp-h1-module-r1-1286456-jq7 (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-1ua depends on bcc-exp-h1-module-r1-1286456-jq7 (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-62y depends on bcc-exp-h1-module-r1-1286456-jq7 (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-6xt depends on bcc-exp-h1-module-r1-1286456-0df (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-lhs depends on bcc-exp-h1-module-r1-1286456-0df (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-3in depends on bcc-exp-h1-module-r1-1286456-jq7 (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-ohw depends on bcc-exp-h1-module-r1-1286456-a1v (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-uy5 depends on bcc-exp-h1-module-r1-1286456-0df (parent)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-wg0 depends on bcc-exp-h1-module-r1-1286456-a1v (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-s9z depends on bcc-exp-h1-module-r1-1286456-f80 (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-s9z depends on bcc-exp-h1-module-r1-1286456-482 (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-s9z depends on bcc-exp-h1-module-r1-1286456-6xt (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-f80 depends on bcc-exp-h1-module-r1-1286456-482 (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-a1v depends on bcc-exp-h1-module-r1-1286456-482 (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-a1v depends on bcc-exp-h1-module-r1-1286456-f80 (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-2uz depends on bcc-exp-h1-module-r1-1286456-0xk (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-482 depends on bcc-exp-h1-module-r1-1286456-2uz (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-1ua depends on bcc-exp-h1-module-r1-1286456-482 (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-62y depends on bcc-exp-h1-module-r1-1286456-1ua (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-2uj depends on bcc-exp-h1-module-r1-1286456-s9z (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-lhs depends on bcc-exp-h1-module-r1-1286456-6xt (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-uy5 depends on bcc-exp-h1-module-r1-1286456-lhs (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-sjb depends on bcc-exp-h1-module-r1-1286456-f80 (blocks)
+✓ Added dependency: bcc-exp-h1-module-r1-1286456-wg0 depends on bcc-exp-h1-module-r1-1286456-ohw (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-h1-module-r1-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Warning: Skipping dependency due to error: bcc-exp-h1-module-r1-1286456-62y → bcc-exp-h1-module-r1-1286456-jq7 (parent) (issue bcc-exp-h1-module-r1-1286456-62y not found)
+Warning: Skipping dependency due to error: bcc-exp-h1-module-r1-1286456-62y → bcc-exp-h1-module-r1-1286456-1ua (blocks) (issue bcc-exp-h1-module-r1-1286456-62y not found)
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h1-module-r1-1286456/.beads/issues.jsonl updated

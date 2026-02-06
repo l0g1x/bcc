@@ -1,0 +1,75 @@
+{
+  "experiment_id": "h6-features10-r1",
+  "hypothesis": "H6",
+  "description": "Future work: features10 (run 1)",
+  "score": 100.0,
+  "tier": "A",
+  "breakdown": {
+    "density": {
+      "points": 15,
+      "max": 15,
+      "reason": "density=0.0353 IN [0.03,0.12]"
+    },
+    "pagerank_stddev": {
+      "points": 15,
+      "max": 15,
+      "reason": "pr_stddev=0.0331 > 0.03"
+    },
+    "betweenness_max": {
+      "points": 15,
+      "max": 15,
+      "reason": "bw_max=25.5 nonzero=7"
+    },
+    "critical_path": {
+      "points": 15,
+      "max": 15,
+      "reason": "cp_len=6 IN [3,15]"
+    },
+    "cycles": {
+      "points": 15,
+      "max": 15,
+      "reason": "cycles=0"
+    },
+    "hits": {
+      "points": 10,
+      "max": 10,
+      "reason": "hubs=21 auths=8"
+    },
+    "eigenvector_stddev": {
+      "points": 10,
+      "max": 10,
+      "reason": "ev_stddev=0.1740 > 0.02"
+    },
+    "topo_valid": {
+      "points": 5,
+      "max": 5,
+      "reason": "topo_sort=valid"
+    }
+  },
+  "metrics": {
+    "density": 0.03528225806451613,
+    "pagerank_stddev": 0.03306115101190267,
+    "pagerank_max": 0.1542556150773783,
+    "betweenness_max": 25.5,
+    "betweenness_nonzero": 7,
+    "betweenness_stddev": 9.405274247647933,
+    "eigenvector_stddev": 0.17399263633843817,
+    "hub_count": 21,
+    "auth_count": 8,
+    "critical_path_max": 6,
+    "cycle_count": 0,
+    "topo_valid": true,
+    "topo_len": 32,
+    "node_count": 32,
+    "edge_count": 35,
+    "edge_per_node": 1.09375,
+    "articulation_count": 10,
+    "zero_slack_count": 10,
+    "zero_slack_ratio": 0.3125
+  },
+  "bead_count": 32,
+  "edge_count": 35,
+  "wall_seconds": 11,
+  "bd_version": "bd version 0.49.3 (62c9f9bc: main@62c9f9bccb45)",
+  "timestamp": "2026-02-06T07:52:03Z"
+}

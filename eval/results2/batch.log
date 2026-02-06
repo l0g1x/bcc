@@ -1,0 +1,229 @@
+[0;34m[bcc-runner][0m Registered 96 experiments
+[0;34m[bcc-runner][0m Results dir: /home/krystian/bcc/eval/results2
+[0;34m[bcc-runner][0m Repo: git@github.com:ShipperCRM/shipperCRM.git
+[0;34m[bcc-runner][0m 
+[1;33m[0/96][0m START h1-file-r1: Granularity: file (run 1)
+[0;32m[PASS][0m h1-file-r1: score=70.0 tier=B
+[1;33m[1/96][0m START h1-file-r2: Granularity: file (run 2)
+[0;32m[PASS][0m h1-file-r2: score=70.0 tier=B
+[1;33m[2/96][0m START h1-file-r3: Granularity: file (run 3)
+[0;32m[PASS][0m h1-file-r3: score=70.0 tier=B
+[1;33m[3/96][0m START h1-small-cluster-r1: Granularity: small-cluster (run 1)
+[0;32m[PASS][0m h1-small-cluster-r1: score=100.0 tier=A
+[1;33m[4/96][0m START h1-small-cluster-r2: Granularity: small-cluster (run 2)
+[0;32m[PASS][0m h1-small-cluster-r2: score=100.0 tier=A
+[1;33m[5/96][0m START h1-small-cluster-r3: Granularity: small-cluster (run 3)
+[0;32m[PASS][0m h1-small-cluster-r3: score=100.0 tier=A
+[1;33m[6/96][0m START h1-module-r1: Granularity: module (run 1)
+[0;32m[PASS][0m h1-module-r1: score=100.0 tier=A
+[1;33m[7/96][0m START h1-module-r2: Granularity: module (run 2)
+[0;32m[PASS][0m h1-module-r2: score=100.0 tier=A
+[1;33m[8/96][0m START h1-module-r3: Granularity: module (run 3)
+[0;32m[PASS][0m h1-module-r3: score=100.0 tier=A
+[1;33m[9/96][0m START h1-workspace-r1: Granularity: workspace (run 1)
+[0;32m[PASS][0m h1-workspace-r1: score=70.0 tier=B
+[1;33m[10/96][0m START h1-workspace-r2: Granularity: workspace (run 2)
+[0;32m[PASS][0m h1-workspace-r2: score=70.0 tier=B
+[1;33m[11/96][0m START h1-workspace-r3: Granularity: workspace (run 3)
+[0;32m[PASS][0m h1-workspace-r3: score=70.0 tier=B
+[1;33m[12/96][0m START h1-directory-r1: Granularity: directory (run 1)
+[0;32m[PASS][0m h1-directory-r1: score=23.0 tier=F
+[1;33m[13/96][0m START h1-directory-r2: Granularity: directory (run 2)
+[0;32m[PASS][0m h1-directory-r2: score=23.0 tier=F
+[1;33m[14/96][0m START h1-directory-r3: Granularity: directory (run 3)
+[0;32m[PASS][0m h1-directory-r3: score=23.0 tier=F
+[1;33m[15/96][0m START h2-none-r1: Bridges: none (run 1)
+[0;32m[PASS][0m h2-none-r1: score=100.0 tier=A
+[1;33m[16/96][0m START h2-none-r2: Bridges: none (run 2)
+[0;32m[PASS][0m h2-none-r2: score=100.0 tier=A
+[1;33m[17/96][0m START h2-none-r3: Bridges: none (run 3)
+[0;32m[PASS][0m h2-none-r3: score=100.0 tier=A
+[1;33m[18/96][0m START h2-router-r1: Bridges: router (run 1)
+[0;32m[PASS][0m h2-router-r1: score=100.0 tier=A
+[1;33m[19/96][0m START h2-router-r2: Bridges: router (run 2)
+[0;32m[PASS][0m h2-router-r2: score=100.0 tier=A
+[1;33m[20/96][0m START h2-router-r3: Bridges: router (run 3)
+[0;32m[PASS][0m h2-router-r3: score=100.0 tier=A
+[1;33m[21/96][0m START h2-workspace-r1: Bridges: workspace (run 1)
+[0;32m[PASS][0m h2-workspace-r1: score=100.0 tier=A
+[1;33m[22/96][0m START h2-workspace-r2: Bridges: workspace (run 2)
+[0;32m[PASS][0m h2-workspace-r2: score=100.0 tier=A
+[1;33m[23/96][0m START h2-workspace-r3: Bridges: workspace (run 3)
+[0;32m[PASS][0m h2-workspace-r3: score=100.0 tier=A
+[1;33m[24/96][0m START h2-both-r1: Bridges: both (run 1)
+[0;32m[PASS][0m h2-both-r1: score=100.0 tier=A
+[1;33m[25/96][0m START h2-both-r2: Bridges: both (run 2)
+[0;32m[PASS][0m h2-both-r2: score=100.0 tier=A
+[1;33m[26/96][0m START h2-both-r3: Bridges: both (run 3)
+[0;32m[PASS][0m h2-both-r3: score=100.0 tier=A
+[1;33m[27/96][0m START h2-full-r1: Bridges: full (run 1)
+[0;32m[PASS][0m h2-full-r1: score=100.0 tier=A
+[1;33m[28/96][0m START h2-full-r2: Bridges: full (run 2)
+[0;32m[PASS][0m h2-full-r2: score=100.0 tier=A
+[1;33m[29/96][0m START h2-full-r3: Bridges: full (run 3)
+[0;32m[PASS][0m h2-full-r3: score=100.0 tier=A
+[1;33m[30/96][0m START h3-depth0-r1: Depth: 0 layers (run 1)
+[0;32m[PASS][0m h3-depth0-r1: score=100.0 tier=A
+[1;33m[31/96][0m START h3-depth0-r2: Depth: 0 layers (run 2)
+[0;32m[PASS][0m h3-depth0-r2: score=100.0 tier=A
+[1;33m[32/96][0m START h3-depth0-r3: Depth: 0 layers (run 3)
+[0;32m[PASS][0m h3-depth0-r3: score=100.0 tier=A
+[1;33m[33/96][0m START h3-depth1-r1: Depth: 1 layers (run 1)
+[0;32m[PASS][0m h3-depth1-r1: score=100.0 tier=A
+[1;33m[34/96][0m START h3-depth1-r2: Depth: 1 layers (run 2)
+[0;32m[PASS][0m h3-depth1-r2: score=100.0 tier=A
+[1;33m[35/96][0m START h3-depth1-r3: Depth: 1 layers (run 3)
+[0;32m[PASS][0m h3-depth1-r3: score=100.0 tier=A
+[1;33m[36/96][0m START h3-depth2-r1: Depth: 2 layers (run 1)
+[0;32m[PASS][0m h3-depth2-r1: score=100.0 tier=A
+[1;33m[37/96][0m START h3-depth2-r2: Depth: 2 layers (run 2)
+[0;32m[PASS][0m h3-depth2-r2: score=100.0 tier=A
+[1;33m[38/96][0m START h3-depth2-r3: Depth: 2 layers (run 3)
+[0;32m[PASS][0m h3-depth2-r3: score=100.0 tier=A
+[1;33m[39/96][0m START h3-depth3-r1: Depth: 3 layers (run 1)
+[0;32m[PASS][0m h3-depth3-r1: score=100.0 tier=A
+[1;33m[40/96][0m START h3-depth3-r2: Depth: 3 layers (run 2)
+[0;32m[PASS][0m h3-depth3-r2: score=100.0 tier=A
+[1;33m[41/96][0m START h3-depth3-r3: Depth: 3 layers (run 3)
+[0;32m[PASS][0m h3-depth3-r3: score=100.0 tier=A
+[1;33m[42/96][0m START h3-depth4-r1: Depth: 4 layers (run 1)
+[0;32m[PASS][0m h3-depth4-r1: score=100.0 tier=A
+[1;33m[43/96][0m START h3-depth4-r2: Depth: 4 layers (run 2)
+[0;32m[PASS][0m h3-depth4-r2: score=100.0 tier=A
+[1;33m[44/96][0m START h3-depth4-r3: Depth: 4 layers (run 3)
+[0;32m[PASS][0m h3-depth4-r3: score=100.0 tier=A
+[1;33m[45/96][0m START h4-none-r1: Related deps: none (run 1)
+[0;32m[PASS][0m h4-none-r1: score=100.0 tier=A
+[1;33m[46/96][0m START h4-none-r2: Related deps: none (run 2)
+[0;32m[PASS][0m h4-none-r2: score=100.0 tier=A
+[1;33m[47/96][0m START h4-none-r3: Related deps: none (run 3)
+[0;32m[PASS][0m h4-none-r3: score=100.0 tier=A
+[1;33m[48/96][0m START h4-imports-r1: Related deps: imports (run 1)
+[0;32m[PASS][0m h4-imports-r1: score=100.0 tier=A
+[1;33m[49/96][0m START h4-imports-r2: Related deps: imports (run 2)
+[0;32m[PASS][0m h4-imports-r2: score=100.0 tier=A
+[1;33m[50/96][0m START h4-imports-r3: Related deps: imports (run 3)
+[0;32m[PASS][0m h4-imports-r3: score=100.0 tier=A
+[1;33m[51/96][0m START h4-cochange-r1: Related deps: cochange (run 1)
+[0;32m[PASS][0m h4-cochange-r1: score=100.0 tier=A
+[1;33m[52/96][0m START h4-cochange-r2: Related deps: cochange (run 2)
+[0;32m[PASS][0m h4-cochange-r2: score=100.0 tier=A
+[1;33m[53/96][0m START h4-cochange-r3: Related deps: cochange (run 3)
+[0;32m[PASS][0m h4-cochange-r3: score=100.0 tier=A
+[1;33m[54/96][0m START h4-naming-r1: Related deps: naming (run 1)
+[0;32m[PASS][0m h4-naming-r1: score=100.0 tier=A
+[1;33m[55/96][0m START h4-naming-r2: Related deps: naming (run 2)
+[0;32m[PASS][0m h4-naming-r2: score=100.0 tier=A
+[1;33m[56/96][0m START h4-naming-r3: Related deps: naming (run 3)
+[0;32m[PASS][0m h4-naming-r3: score=100.0 tier=A
+[1;33m[57/96][0m START h4-all-r1: Related deps: all (run 1)
+[0;32m[PASS][0m h4-all-r1: score=100.0 tier=A
+[1;33m[58/96][0m START h4-all-r2: Related deps: all (run 2)
+[0;32m[PASS][0m h4-all-r2: score=100.0 tier=A
+[1;33m[59/96][0m START h4-all-r3: Related deps: all (run 3)
+[0;32m[PASS][0m h4-all-r3: score=100.0 tier=A
+[1;33m[60/96][0m START h5-none-r1: Labels: none (run 1)
+[0;32m[PASS][0m h5-none-r1: score=70.2 tier=B
+[1;33m[61/96][0m START h5-none-r2: Labels: none (run 2)
+[0;32m[PASS][0m h5-none-r2: score=74.9 tier=B
+[1;33m[62/96][0m START h5-none-r3: Labels: none (run 3)
+[0;32m[PASS][0m h5-none-r3: score=74.9 tier=B
+[1;33m[63/96][0m START h5-free-r1: Labels: free (run 1)
+rm: cannot remove '/tmp/bcc-exp-h5-free-r1-1286456': Directory not empty
+[0;32m[PASS][0m h5-free-r1: score=97.0 tier=A
+[1;33m[64/96][0m START h5-free-r2: Labels: free (run 2)
+[0;32m[PASS][0m h5-free-r2: score=100.0 tier=A
+[1;33m[65/96][0m START h5-free-r3: Labels: free (run 3)
+rm: cannot remove '/tmp/bcc-exp-h5-free-r3-1286456': Directory not empty
+[0;32m[PASS][0m h5-free-r3: score=100.0 tier=A
+[1;33m[66/96][0m START h5-strict-r1: Labels: strict (run 1)
+[0;32m[PASS][0m h5-strict-r1: score=100.0 tier=A
+[1;33m[67/96][0m START h5-strict-r2: Labels: strict (run 2)
+[0;32m[PASS][0m h5-strict-r2: score=100.0 tier=A
+[1;33m[68/96][0m START h5-strict-r3: Labels: strict (run 3)
+[0;32m[PASS][0m h5-strict-r3: score=100.0 tier=A
+[1;33m[69/96][0m START h5-coarse-r1: Labels: coarse-6 (run 1)
+[0;32m[PASS][0m h5-coarse-r1: score=70.0 tier=B
+[1;33m[70/96][0m START h5-coarse-r2: Labels: coarse-6 (run 2)
+[0;32m[PASS][0m h5-coarse-r2: score=70.0 tier=B
+[1;33m[71/96][0m START h5-coarse-r3: Labels: coarse-6 (run 3)
+[0;32m[PASS][0m h5-coarse-r3: score=70.0 tier=B
+[1;33m[72/96][0m START h6-none-r1: Future work: none (run 1)
+[0;32m[PASS][0m h6-none-r1: score=100.0 tier=A
+[1;33m[73/96][0m START h6-none-r2: Future work: none (run 2)
+[0;32m[PASS][0m h6-none-r2: score=100.0 tier=A
+[1;33m[74/96][0m START h6-none-r3: Future work: none (run 3)
+[0;32m[PASS][0m h6-none-r3: score=100.0 tier=A
+[1;33m[75/96][0m START h6-features5-r1: Future work: features5 (run 1)
+[0;32m[PASS][0m h6-features5-r1: score=100.0 tier=A
+[1;33m[76/96][0m START h6-features5-r2: Future work: features5 (run 2)
+[0;32m[PASS][0m h6-features5-r2: score=100.0 tier=A
+[1;33m[77/96][0m START h6-features5-r3: Future work: features5 (run 3)
+[0;32m[PASS][0m h6-features5-r3: score=100.0 tier=A
+[1;33m[78/96][0m START h6-features10-r1: Future work: features10 (run 1)
+[0;32m[PASS][0m h6-features10-r1: score=100.0 tier=A
+[1;33m[79/96][0m START h6-features10-r2: Future work: features10 (run 2)
+[0;32m[PASS][0m h6-features10-r2: score=100.0 tier=A
+[1;33m[80/96][0m START h6-features10-r3: Future work: features10 (run 3)
+[0;32m[PASS][0m h6-features10-r3: score=100.0 tier=A
+[1;33m[81/96][0m START h6-features5_debt5-r1: Future work: features5_debt5 (run 1)
+[0;32m[PASS][0m h6-features5_debt5-r1: score=94.5 tier=A
+[1;33m[82/96][0m START h6-features5_debt5-r2: Future work: features5_debt5 (run 2)
+[0;32m[PASS][0m h6-features5_debt5-r2: score=94.5 tier=A
+[1;33m[83/96][0m START h6-features5_debt5-r3: Future work: features5_debt5 (run 3)
+[0;32m[PASS][0m h6-features5_debt5-r3: score=94.3 tier=A
+[1;33m[84/96][0m START combo-minimal-r1: Best granularity only (run 1)
+[0;32m[PASS][0m combo-minimal-r1: score=100.0 tier=A
+[1;33m[85/96][0m START combo-bridges-r1: Granularity + bridges + labels (run 1)
+[0;32m[PASS][0m combo-bridges-r1: score=100.0 tier=A
+[1;33m[86/96][0m START combo-full-r1: All strategies combined (run 1)
+[0;32m[PASS][0m combo-full-r1: score=100.0 tier=A
+[1;33m[87/96][0m START combo-kitchen-sink-r1: Everything maxed (run 1)
+[0;32m[PASS][0m combo-kitchen-sink-r1: score=100.0 tier=A
+[1;33m[88/96][0m START combo-minimal-r2: Best granularity only (run 2)
+[0;32m[PASS][0m combo-minimal-r2: score=100.0 tier=A
+[1;33m[89/96][0m START combo-bridges-r2: Granularity + bridges + labels (run 2)
+[0;32m[PASS][0m combo-bridges-r2: score=100.0 tier=A
+[1;33m[90/96][0m START combo-full-r2: All strategies combined (run 2)
+[0;32m[PASS][0m combo-full-r2: score=100.0 tier=A
+[1;33m[91/96][0m START combo-kitchen-sink-r2: Everything maxed (run 2)
+[0;32m[PASS][0m combo-kitchen-sink-r2: score=100.0 tier=A
+[1;33m[92/96][0m START combo-minimal-r3: Best granularity only (run 3)
+[0;32m[PASS][0m combo-minimal-r3: score=100.0 tier=A
+[1;33m[93/96][0m START combo-bridges-r3: Granularity + bridges + labels (run 3)
+[0;32m[PASS][0m combo-bridges-r3: score=100.0 tier=A
+[1;33m[94/96][0m START combo-full-r3: All strategies combined (run 3)
+[0;32m[PASS][0m combo-full-r3: score=100.0 tier=A
+[1;33m[95/96][0m START combo-kitchen-sink-r3: Everything maxed (run 3)
+[0;32m[PASS][0m combo-kitchen-sink-r3: score=100.0 tier=A
+[0;34m[bcc-runner][0m 
+[0;34m[bcc-runner][0m ════════════════════════════════════════════════════
+[0;34m[bcc-runner][0m BATCH COMPLETE
+[0;34m[bcc-runner][0m   Total experiments: 96
+[0;34m[bcc-runner][0m   Completed: 96
+[0;34m[bcc-runner][0m   Failed: 0
+[0;34m[bcc-runner][0m   Wall time: 951s (15m 51s)
+[0;34m[bcc-runner][0m 
+[0;34m[bcc-runner][0m TOP 10 EXPERIMENTS BY SCORE:
+[0;34m[bcc-runner][0m   "100.0/100 [A] h1-small-cluster-r1: Granularity: small-cluster (run 1)"
+[0;34m[bcc-runner][0m   "100.0/100 [A] h1-small-cluster-r2: Granularity: small-cluster (run 2)"
+[0;34m[bcc-runner][0m   "100.0/100 [A] h1-small-cluster-r3: Granularity: small-cluster (run 3)"
+[0;34m[bcc-runner][0m   "100.0/100 [A] h1-module-r1: Granularity: module (run 1)"
+[0;34m[bcc-runner][0m   "100.0/100 [A] h1-module-r2: Granularity: module (run 2)"
+[0;34m[bcc-runner][0m   "100.0/100 [A] h1-module-r3: Granularity: module (run 3)"
+[0;34m[bcc-runner][0m   "100.0/100 [A] h2-none-r1: Bridges: none (run 1)"
+[0;34m[bcc-runner][0m   "100.0/100 [A] h2-none-r2: Bridges: none (run 2)"
+[0;34m[bcc-runner][0m   "100.0/100 [A] h2-none-r3: Bridges: none (run 3)"
+[0;34m[bcc-runner][0m   "100.0/100 [A] h2-router-r1: Bridges: router (run 1)"
+[0;34m[bcc-runner][0m 
+[0;34m[bcc-runner][0m PER-HYPOTHESIS AVERAGES:
+[0;34m[bcc-runner][0m   "COMBO: avg=100 min=100.0 max=100.0 (n=12)"
+[0;34m[bcc-runner][0m   "H1: avg=72.6 min=23.0 max=100.0 (n=15)"
+[0;34m[bcc-runner][0m   "H2: avg=100 min=100.0 max=100.0 (n=15)"
+[0;34m[bcc-runner][0m   "H3: avg=100 min=100.0 max=100.0 (n=15)"
+[0;34m[bcc-runner][0m   "H4: avg=100 min=100.0 max=100.0 (n=15)"
+[0;34m[bcc-runner][0m   "H5: avg=85.6 min=70.0 max=100.0 (n=12)"
+[0;34m[bcc-runner][0m   "H6: avg=98.6 min=94.3 max=100.0 (n=12)"
+[0;34m[bcc-runner][0m 
+[0;34m[bcc-runner][0m Full results: /home/krystian/bcc/eval/results2
+[0;34m[bcc-runner][0m Summary: /home/krystian/bcc/eval/results2/summary_20260206_073946.jsonl

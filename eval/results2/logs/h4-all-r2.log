@@ -1,0 +1,109 @@
+CWD: /tmp/bcc-exp-h4-all-r2-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh workspace ; bash /home/krystian/bcc/eval/strategies/h4_related_deps.sh all
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h4-all-r2-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 21 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-bwn depends on bcc-exp-h4-all-r2-1286456-cb0 (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cij depends on bcc-exp-h4-all-r2-1286456-cb0 (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-xkm depends on bcc-exp-h4-all-r2-1286456-ogo (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-ogo (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-b1b depends on bcc-exp-h4-all-r2-1286456-52v (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-b70 depends on bcc-exp-h4-all-r2-1286456-52v (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-emx depends on bcc-exp-h4-all-r2-1286456-cb0 (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-0ow depends on bcc-exp-h4-all-r2-1286456-cb0 (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-oqk depends on bcc-exp-h4-all-r2-1286456-cb0 (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-tsi depends on bcc-exp-h4-all-r2-1286456-ogo (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-089 depends on bcc-exp-h4-all-r2-1286456-ogo (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-pyt depends on bcc-exp-h4-all-r2-1286456-ogo (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-l26 depends on bcc-exp-h4-all-r2-1286456-cb0 (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-apj depends on bcc-exp-h4-all-r2-1286456-5ee (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-r8l depends on bcc-exp-h4-all-r2-1286456-ogo (parent)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-0fg depends on bcc-exp-h4-all-r2-1286456-5ee (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-xkm depends on bcc-exp-h4-all-r2-1286456-b1b (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-xkm depends on bcc-exp-h4-all-r2-1286456-emx (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-xkm depends on bcc-exp-h4-all-r2-1286456-tsi (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-b1b depends on bcc-exp-h4-all-r2-1286456-emx (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-5ee depends on bcc-exp-h4-all-r2-1286456-emx (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-5ee depends on bcc-exp-h4-all-r2-1286456-b1b (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cij depends on bcc-exp-h4-all-r2-1286456-bwn (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-emx depends on bcc-exp-h4-all-r2-1286456-cij (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-0ow depends on bcc-exp-h4-all-r2-1286456-emx (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-oqk depends on bcc-exp-h4-all-r2-1286456-0ow (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-xkm (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-089 depends on bcc-exp-h4-all-r2-1286456-tsi (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-pyt depends on bcc-exp-h4-all-r2-1286456-089 (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-b70 depends on bcc-exp-h4-all-r2-1286456-b1b (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-0fg depends on bcc-exp-h4-all-r2-1286456-apj (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (20 changed since last sync)
+✓ /tmp/bcc-exp-h4-all-r2-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting workspace boundary bridges...
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-ogo depends on bcc-exp-h4-all-r2-1286456-mqg (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cb0 depends on bcc-exp-h4-all-r2-1286456-mqg (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-52v depends on bcc-exp-h4-all-r2-1286456-mqg (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-5ee depends on bcc-exp-h4-all-r2-1286456-mqg (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-y46 depends on bcc-exp-h4-all-r2-1286456-mqg (blocks)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-xkm depends on bcc-exp-h4-all-r2-1286456-vsj (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (8 changed since last sync)
+✓ /tmp/bcc-exp-h4-all-r2-1286456/.beads/issues.jsonl updated
+Injecting import co-occurrence related deps...
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-emx depends on bcc-exp-h4-all-r2-1286456-cb0 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-0ow depends on bcc-exp-h4-all-r2-1286456-cb0 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-0ow depends on bcc-exp-h4-all-r2-1286456-l26 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-oqk depends on bcc-exp-h4-all-r2-1286456-cb0 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-oqk depends on bcc-exp-h4-all-r2-1286456-l26 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-xkm depends on bcc-exp-h4-all-r2-1286456-tsi (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-xkm depends on bcc-exp-h4-all-r2-1286456-089 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-tsi (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-089 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-ogo (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-tsi depends on bcc-exp-h4-all-r2-1286456-ogo (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-tsi depends on bcc-exp-h4-all-r2-1286456-y46 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-089 depends on bcc-exp-h4-all-r2-1286456-ogo (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-089 depends on bcc-exp-h4-all-r2-1286456-y46 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-ogo depends on bcc-exp-h4-all-r2-1286456-y46 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-pyt depends on bcc-exp-h4-all-r2-1286456-r8l (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-b1b depends on bcc-exp-h4-all-r2-1286456-52v (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-b70 depends on bcc-exp-h4-all-r2-1286456-52v (related)
+Injecting git co-change related deps...
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-emx (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-0ow (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-5ee (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-bwn (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-xkm (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-l26 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-52v (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-cb0 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-y46 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-pyt (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-b1b (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-cij (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-0fg (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-cy4 depends on bcc-exp-h4-all-r2-1286456-r8l (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-emx depends on bcc-exp-h4-all-r2-1286456-bwn (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-emx depends on bcc-exp-h4-all-r2-1286456-ogo (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-emx depends on bcc-exp-h4-all-r2-1286456-l26 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-emx depends on bcc-exp-h4-all-r2-1286456-52v (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-emx depends on bcc-exp-h4-all-r2-1286456-tsi (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-emx depends on bcc-exp-h4-all-r2-1286456-y46 (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-emx depends on bcc-exp-h4-all-r2-1286456-pyt (related)
+✓ Added dependency: bcc-exp-h4-all-r2-1286456-emx depends on bcc-exp-h4-all-r2-1286456-cij (related)
+Added 30 co-change related deps
+Injecting naming convention related deps...
+Added 2 naming-related deps
+Exporting beads to JSONL...
+✓ Exported 0 issues (20 changed since last sync)
+✓ /tmp/bcc-exp-h4-all-r2-1286456/.beads/issues.jsonl updated
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h4-all-r2-1286456/.beads/issues.jsonl updated

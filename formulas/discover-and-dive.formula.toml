@@ -1,0 +1,77 @@
+formula = "discover-and-dive"
+type = "workflow"
+phase = "vapor"
+version = 1
+
+[vars]
+discovery = { description = "What was discovered (brief description)", required = true }
+source_bead = { description = "Bead ID where discovery originated", required = true }
+significance = { description = "Impact level: low|medium|high|critical", default = "medium" }
+
+[[steps]]
+id = "assess-significance"
+title = "Assess: {{discovery}}"
+description = """Evaluate significance of this discovery:
+1. Scope: Does it affect 1 module (low), 2-3 modules (medium), or many (high/critical)?
+2. Graph position: Check PageRank/betweenness of {{source_bead}} - high-centrality discoveries are more significant
+3. Type: Is it a pattern (informational), a dependency (structural), or a problem (actionable)?
+4. Novelty: Does the graph already capture this, or is it new information?
+
+Run: bv --robot-insights | jq '.stats.pageRank["{{source_bead}}"], .stats.betweenness["{{source_bead}}"]'
+
+Decision matrix:
+- If scope >= 2 modules AND NOT already in graph -> significance = high
+- If it's a circular dependency -> significance = critical
+- If it's a design pattern note -> significance = low
+- If it's a cross-cutting concern (logging, auth, error handling) -> significance = medium"""
+priority = 0
+
+[[steps]]
+id = "create-discovery-bead"
+title = "Record: {{discovery}}"
+description = """Create a new bead for this discovery:
+
+If significance == low:
+  bd create "Note: {{discovery}}" -t task -p 3 --label discovery --json
+  bd dep add <new-id> {{source_bead}} --type related
+
+If significance == medium:
+  bd create "Discovery: {{discovery}}" -t task -p 2 --label discovery --json
+  bd dep add <new-id> {{source_bead}} --type related
+
+If significance == high:
+  bd create "Discovery: {{discovery}}" -t feature -p 1 --label discovery --label cross-cutting --json
+  bd dep add <new-id> {{source_bead}}
+
+If significance == critical:
+  bd create "CRITICAL: {{discovery}}" -t bug -p 0 --label discovery --label critical --json
+  bd dep add <new-id> {{source_bead}}
+
+After creation, run bd sync."""
+needs = ["assess-significance"]
+priority = 0
+
+[[steps]]
+id = "decide-recursion"
+title = "Decide recursion for: {{discovery}}"
+description = """Determine if deeper exploration is warranted:
+
+IF significance >= medium AND discovery represents a module or system:
+  -> Instantiate explore-module formula on the new bead
+  -> Set depth = "shallow" if significance == medium
+  -> Set depth = "medium" if significance == high
+  -> Set depth = "deep" if significance == critical
+
+IF significance >= high AND discovery crosses module boundaries:
+  -> Instantiate analyze-api-boundary formula
+  -> Identify provider and consumer beads from the existing graph
+
+IF significance == low:
+  -> No recursion. Just the bead is enough.
+
+GUARD: Before recursing, check total bead count:
+  bv --robot-triage | jq '.project_health.total'
+  If > 400 beads: do NOT recurse further (diminishing returns)
+  If > 200 beads: only recurse for critical discoveries"""
+needs = ["create-discovery-bead"]
+priority = 1

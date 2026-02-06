@@ -1,0 +1,63 @@
+CWD: /tmp/bcc-exp-combo-bridges-r2-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh both
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-combo-bridges-r2-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-aeu depends on bcc-exp-combo-bridges-r2-1286456-5wg (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-5wa depends on bcc-exp-combo-bridges-r2-1286456-5wg (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-3uh depends on bcc-exp-combo-bridges-r2-1286456-kv8 (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-ku1 depends on bcc-exp-combo-bridges-r2-1286456-kv8 (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-3q3 depends on bcc-exp-combo-bridges-r2-1286456-crf (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-3c3 depends on bcc-exp-combo-bridges-r2-1286456-crf (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-wne depends on bcc-exp-combo-bridges-r2-1286456-5wg (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-aiv depends on bcc-exp-combo-bridges-r2-1286456-5wg (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-ir1 depends on bcc-exp-combo-bridges-r2-1286456-5wg (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-wf7 depends on bcc-exp-combo-bridges-r2-1286456-kv8 (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-536 depends on bcc-exp-combo-bridges-r2-1286456-kv8 (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-1vq depends on bcc-exp-combo-bridges-r2-1286456-5wg (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-5ah depends on bcc-exp-combo-bridges-r2-1286456-0lk (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-80b depends on bcc-exp-combo-bridges-r2-1286456-kv8 (parent)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-383 depends on bcc-exp-combo-bridges-r2-1286456-0lk (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-3uh depends on bcc-exp-combo-bridges-r2-1286456-3q3 (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-3uh depends on bcc-exp-combo-bridges-r2-1286456-wne (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-3uh depends on bcc-exp-combo-bridges-r2-1286456-wf7 (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-3q3 depends on bcc-exp-combo-bridges-r2-1286456-wne (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-0lk depends on bcc-exp-combo-bridges-r2-1286456-wne (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-0lk depends on bcc-exp-combo-bridges-r2-1286456-3q3 (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-5wa depends on bcc-exp-combo-bridges-r2-1286456-aeu (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-wne depends on bcc-exp-combo-bridges-r2-1286456-5wa (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-aiv depends on bcc-exp-combo-bridges-r2-1286456-wne (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-ir1 depends on bcc-exp-combo-bridges-r2-1286456-aiv (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-ku1 depends on bcc-exp-combo-bridges-r2-1286456-3uh (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-536 depends on bcc-exp-combo-bridges-r2-1286456-wf7 (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-80b depends on bcc-exp-combo-bridges-r2-1286456-536 (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-3c3 depends on bcc-exp-combo-bridges-r2-1286456-3q3 (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-383 depends on bcc-exp-combo-bridges-r2-1286456-5ah (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-combo-bridges-r2-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting router boundary bridges...
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-3uh depends on bcc-exp-combo-bridges-r2-1286456-ayx (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-ayx depends on bcc-exp-combo-bridges-r2-1286456-3q3 (blocks)
+Injecting workspace boundary bridges...
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-kv8 depends on bcc-exp-combo-bridges-r2-1286456-9p4 (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-5wg depends on bcc-exp-combo-bridges-r2-1286456-9p4 (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-crf depends on bcc-exp-combo-bridges-r2-1286456-9p4 (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-0lk depends on bcc-exp-combo-bridges-r2-1286456-9p4 (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-rfh depends on bcc-exp-combo-bridges-r2-1286456-9p4 (blocks)
+✓ Added dependency: bcc-exp-combo-bridges-r2-1286456-3uh depends on bcc-exp-combo-bridges-r2-1286456-9ev (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (10 changed since last sync)
+✓ /tmp/bcc-exp-combo-bridges-r2-1286456/.beads/issues.jsonl updated
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-combo-bridges-r2-1286456/.beads/issues.jsonl updated

@@ -1,0 +1,71 @@
+CWD: /tmp/bcc-exp-h2-full-r1-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh full
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h2-full-r1-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-jz2 depends on bcc-exp-h2-full-r1-1286456-2xk (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-dmj depends on bcc-exp-h2-full-r1-1286456-2xk (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-0mm depends on bcc-exp-h2-full-r1-1286456-uze (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-l0v depends on bcc-exp-h2-full-r1-1286456-uze (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-bkl depends on bcc-exp-h2-full-r1-1286456-5s1 (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-4gx depends on bcc-exp-h2-full-r1-1286456-5s1 (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-4mu depends on bcc-exp-h2-full-r1-1286456-2xk (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-p1v depends on bcc-exp-h2-full-r1-1286456-2xk (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-i4z depends on bcc-exp-h2-full-r1-1286456-2xk (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-4j8 depends on bcc-exp-h2-full-r1-1286456-uze (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-djm depends on bcc-exp-h2-full-r1-1286456-uze (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-bw3 depends on bcc-exp-h2-full-r1-1286456-2xk (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-g9x depends on bcc-exp-h2-full-r1-1286456-78r (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-axn depends on bcc-exp-h2-full-r1-1286456-uze (parent)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-gio depends on bcc-exp-h2-full-r1-1286456-78r (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-0mm depends on bcc-exp-h2-full-r1-1286456-bkl (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-0mm depends on bcc-exp-h2-full-r1-1286456-4mu (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-0mm depends on bcc-exp-h2-full-r1-1286456-4j8 (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-bkl depends on bcc-exp-h2-full-r1-1286456-4mu (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-78r depends on bcc-exp-h2-full-r1-1286456-4mu (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-78r depends on bcc-exp-h2-full-r1-1286456-bkl (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-dmj depends on bcc-exp-h2-full-r1-1286456-jz2 (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-4mu depends on bcc-exp-h2-full-r1-1286456-dmj (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-p1v depends on bcc-exp-h2-full-r1-1286456-4mu (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-i4z depends on bcc-exp-h2-full-r1-1286456-p1v (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-l0v depends on bcc-exp-h2-full-r1-1286456-0mm (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-djm depends on bcc-exp-h2-full-r1-1286456-4j8 (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-axn depends on bcc-exp-h2-full-r1-1286456-djm (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-4gx depends on bcc-exp-h2-full-r1-1286456-bkl (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-gio depends on bcc-exp-h2-full-r1-1286456-g9x (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-h2-full-r1-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting router boundary bridges...
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-0mm depends on bcc-exp-h2-full-r1-1286456-399 (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-399 depends on bcc-exp-h2-full-r1-1286456-bkl (blocks)
+Injecting workspace boundary bridges...
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-uze depends on bcc-exp-h2-full-r1-1286456-7y1 (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-2xk depends on bcc-exp-h2-full-r1-1286456-7y1 (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-5s1 depends on bcc-exp-h2-full-r1-1286456-7y1 (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-78r depends on bcc-exp-h2-full-r1-1286456-7y1 (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-462 depends on bcc-exp-h2-full-r1-1286456-7y1 (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-0mm depends on bcc-exp-h2-full-r1-1286456-2qb (blocks)
+Injecting Prisma schema bridge...
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-jz2 depends on bcc-exp-h2-full-r1-1286456-m4l (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-dmj depends on bcc-exp-h2-full-r1-1286456-m4l (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-4mu depends on bcc-exp-h2-full-r1-1286456-m4l (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-p1v depends on bcc-exp-h2-full-r1-1286456-m4l (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-bkl depends on bcc-exp-h2-full-r1-1286456-m4l (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-4gx depends on bcc-exp-h2-full-r1-1286456-m4l (blocks)
+✓ Added dependency: bcc-exp-h2-full-r1-1286456-5s1 depends on bcc-exp-h2-full-r1-1286456-m4l (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (16 changed since last sync)
+✓ /tmp/bcc-exp-h2-full-r1-1286456/.beads/issues.jsonl updated
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h2-full-r1-1286456/.beads/issues.jsonl updated

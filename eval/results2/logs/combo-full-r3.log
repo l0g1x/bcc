@@ -1,0 +1,133 @@
+CWD: /tmp/bcc-exp-combo-full-r3-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh full ; bash /home/krystian/bcc/eval/strategies/h4_related_deps.sh all ; bash /home/krystian/bcc/eval/strategies/h6_future_work.sh features5_debt5
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-combo-full-r3-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-5wp depends on bcc-exp-combo-full-r3-1286456-dvz (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-a7g depends on bcc-exp-combo-full-r3-1286456-dvz (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-9fk depends on bcc-exp-combo-full-r3-1286456-rwi (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-rwi (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-0cu depends on bcc-exp-combo-full-r3-1286456-2sa (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-5pj depends on bcc-exp-combo-full-r3-1286456-2sa (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dl2 depends on bcc-exp-combo-full-r3-1286456-dvz (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-lwf depends on bcc-exp-combo-full-r3-1286456-dvz (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-4s5 depends on bcc-exp-combo-full-r3-1286456-dvz (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-34h depends on bcc-exp-combo-full-r3-1286456-rwi (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-asp depends on bcc-exp-combo-full-r3-1286456-rwi (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-9va depends on bcc-exp-combo-full-r3-1286456-dvz (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-5ef depends on bcc-exp-combo-full-r3-1286456-o77 (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-jwd depends on bcc-exp-combo-full-r3-1286456-rwi (parent)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-2aj depends on bcc-exp-combo-full-r3-1286456-o77 (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-9fk depends on bcc-exp-combo-full-r3-1286456-0cu (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-9fk depends on bcc-exp-combo-full-r3-1286456-dl2 (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-9fk depends on bcc-exp-combo-full-r3-1286456-34h (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-0cu depends on bcc-exp-combo-full-r3-1286456-dl2 (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-o77 depends on bcc-exp-combo-full-r3-1286456-dl2 (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-o77 depends on bcc-exp-combo-full-r3-1286456-0cu (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-a7g depends on bcc-exp-combo-full-r3-1286456-5wp (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dl2 depends on bcc-exp-combo-full-r3-1286456-a7g (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-lwf depends on bcc-exp-combo-full-r3-1286456-dl2 (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-4s5 depends on bcc-exp-combo-full-r3-1286456-lwf (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-9fk (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-asp depends on bcc-exp-combo-full-r3-1286456-34h (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-jwd depends on bcc-exp-combo-full-r3-1286456-asp (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-5pj depends on bcc-exp-combo-full-r3-1286456-0cu (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-2aj depends on bcc-exp-combo-full-r3-1286456-5ef (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-combo-full-r3-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting router boundary bridges...
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-9fk depends on bcc-exp-combo-full-r3-1286456-4ke (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-4ke depends on bcc-exp-combo-full-r3-1286456-0cu (blocks)
+Injecting workspace boundary bridges...
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-rwi depends on bcc-exp-combo-full-r3-1286456-jye (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dvz depends on bcc-exp-combo-full-r3-1286456-jye (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-2sa depends on bcc-exp-combo-full-r3-1286456-jye (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-o77 depends on bcc-exp-combo-full-r3-1286456-jye (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-rre depends on bcc-exp-combo-full-r3-1286456-jye (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-9fk depends on bcc-exp-combo-full-r3-1286456-ri3 (blocks)
+Injecting Prisma schema bridge...
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-5wp depends on bcc-exp-combo-full-r3-1286456-9rd (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-a7g depends on bcc-exp-combo-full-r3-1286456-9rd (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dl2 depends on bcc-exp-combo-full-r3-1286456-9rd (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-lwf depends on bcc-exp-combo-full-r3-1286456-9rd (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-0cu depends on bcc-exp-combo-full-r3-1286456-9rd (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-5pj depends on bcc-exp-combo-full-r3-1286456-9rd (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-2sa depends on bcc-exp-combo-full-r3-1286456-9rd (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (16 changed since last sync)
+✓ /tmp/bcc-exp-combo-full-r3-1286456/.beads/issues.jsonl updated
+Injecting import co-occurrence related deps...
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dl2 depends on bcc-exp-combo-full-r3-1286456-dvz (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-lwf depends on bcc-exp-combo-full-r3-1286456-dvz (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-lwf depends on bcc-exp-combo-full-r3-1286456-9va (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-4s5 depends on bcc-exp-combo-full-r3-1286456-dvz (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-4s5 depends on bcc-exp-combo-full-r3-1286456-9va (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-9fk depends on bcc-exp-combo-full-r3-1286456-34h (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-9fk depends on bcc-exp-combo-full-r3-1286456-rwi (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-34h (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-rwi (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-rre (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-34h depends on bcc-exp-combo-full-r3-1286456-rwi (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-34h depends on bcc-exp-combo-full-r3-1286456-rre (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-rwi depends on bcc-exp-combo-full-r3-1286456-rre (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-0cu depends on bcc-exp-combo-full-r3-1286456-2sa (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-5pj depends on bcc-exp-combo-full-r3-1286456-2sa (related)
+Injecting git co-change related deps...
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-dl2 (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-lwf (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-o77 (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-5wp (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-9fk (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-9va (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-2sa (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-dvz (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-asp (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-0cu (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-a7g (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-2aj (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-nsu depends on bcc-exp-combo-full-r3-1286456-jwd (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dl2 depends on bcc-exp-combo-full-r3-1286456-5wp (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dl2 depends on bcc-exp-combo-full-r3-1286456-rwi (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dl2 depends on bcc-exp-combo-full-r3-1286456-9va (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dl2 depends on bcc-exp-combo-full-r3-1286456-2sa (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dl2 depends on bcc-exp-combo-full-r3-1286456-34h (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dl2 depends on bcc-exp-combo-full-r3-1286456-rre (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dl2 depends on bcc-exp-combo-full-r3-1286456-asp (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-dl2 depends on bcc-exp-combo-full-r3-1286456-a7g (related)
+Added 30 co-change related deps
+Injecting naming convention related deps...
+Added 3 naming-related deps
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-combo-full-r3-1286456/.beads/issues.jsonl updated
+Injecting 5 planned feature beads...
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-1co depends on bcc-exp-combo-full-r3-1286456-9rd (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-ae5 depends on bcc-exp-combo-full-r3-1286456-0cu (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-ae5 depends on bcc-exp-combo-full-r3-1286456-4ke (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-tuw depends on bcc-exp-combo-full-r3-1286456-9rd (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-tuw depends on bcc-exp-combo-full-r3-1286456-0cu (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-9pg depends on bcc-exp-combo-full-r3-1286456-9fk (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-fr1 depends on bcc-exp-combo-full-r3-1286456-4ke (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-ae5 depends on bcc-exp-combo-full-r3-1286456-tuw (related)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-9pg depends on bcc-exp-combo-full-r3-1286456-1co (related)
+Injecting 5 tech debt beads...
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-hz5 depends on bcc-exp-combo-full-r3-1286456-0cu (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-tcq depends on bcc-exp-combo-full-r3-1286456-9rd (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-c9q depends on bcc-exp-combo-full-r3-1286456-9fk (blocks)
+✓ Added dependency: bcc-exp-combo-full-r3-1286456-hej depends on bcc-exp-combo-full-r3-1286456-hz5 (related)
+Exporting beads to JSONL...
+✓ Exported 0 issues (14 changed since last sync)
+✓ /tmp/bcc-exp-combo-full-r3-1286456/.beads/issues.jsonl updated
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-combo-full-r3-1286456/.beads/issues.jsonl updated

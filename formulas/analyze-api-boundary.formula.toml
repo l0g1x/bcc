@@ -1,0 +1,94 @@
+formula = "analyze-api-boundary"
+type = "workflow"
+phase = "liquid"
+version = 1
+
+[vars]
+api_name = { description = "Name of the API boundary (e.g., 'REST API', 'GraphQL Schema', 'Shared Types')", required = true }
+provider_bead = { description = "Bead ID of the module that provides/implements the API", required = true }
+consumer_beads = { description = "Comma-separated bead IDs of modules that consume this API", required = true }
+
+[[steps]]
+id = "catalog-endpoints"
+title = "Catalog {{api_name}} surface"
+description = """Enumerate the full API surface:
+- REST: list all routes (GET/POST/PUT/DELETE /path)
+- GraphQL: list all queries, mutations, subscriptions
+- Function API: list all exported function signatures
+- Event API: list all event names and payload shapes
+- Shared Types: list all type definitions used across boundaries
+
+Output format:
+  METHOD /path -> handler (file:line)
+  OR
+  export function name(params): return_type (file:line)"""
+priority = 0
+
+[[steps]]
+id = "map-consumers"
+title = "Map {{api_name}} consumer usage"
+description = """For each consumer bead in [{{consumer_beads}}]:
+1. Find all call sites / import sites that reference the API
+2. Count usage frequency (how many calls per consumer)
+3. Identify which specific endpoints/functions each consumer uses
+4. Note any consumers that use internal/private APIs (coupling smell)
+
+Output: consumer -> [endpoints used] -> frequency matrix"""
+needs = ["catalog-endpoints"]
+priority = 0
+
+[[steps]]
+id = "assess-coupling"
+title = "Assess {{api_name}} coupling"
+description = """Rate the coupling strength:
+
+LOOSE (good):
+- Consumers only use documented public endpoints
+- No shared mutable state
+- Communication via well-defined types/interfaces
+
+MEDIUM (acceptable):
+- Some consumers import internal types
+- Shared database tables read by multiple consumers
+- Implicit contracts (naming conventions, magic strings)
+
+TIGHT (problematic):
+- Consumers depend on implementation details
+- Shared mutable state (global vars, shared files)
+- Circular calls between provider and consumer
+
+Update labels on the provider bead:
+  bd update {{provider_bead}} --label coupling-loose  (or medium/tight)
+
+If coupling is TIGHT, create a tech-debt bead:
+  bd create "Debt: Decouple {{api_name}} from consumers" -t bug -p 1 --label tech-debt"""
+needs = ["map-consumers"]
+priority = 1
+
+[[steps]]
+id = "create-contract-bead"
+title = "Create contract bead for {{api_name}}"
+description = """Create a dedicated bead representing the API contract itself:
+
+bd create "Contract: {{api_name}}" -t task -p 1 --label api-contract --label bridge --json
+
+This bead should become a HIGH BETWEENNESS node by design:
+1. Wire it as blocking dep for ALL consumer beads:
+   for each consumer_id in [{{consumer_beads}}]:
+     bd dep add <consumer_id> <contract-bead-id>
+
+2. Wire the provider as blocking dep for the contract:
+   bd dep add <contract-bead-id> {{provider_bead}}
+
+3. Update the contract bead with full API documentation:
+   bd update <contract-bead-id> --description "API contract for {{api_name}}.
+   Provider: {{provider_bead}}
+   Consumers: {{consumer_beads}}
+   Endpoint count: <N>
+   Coupling level: <loose|medium|tight>"
+
+After wiring, verify betweenness increased:
+  bv --robot-insights | jq '.stats.betweenness["<contract-bead-id>"]'
+  Expected: this should be among the top betweenness nodes."""
+needs = ["assess-coupling"]
+priority = 1

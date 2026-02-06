@@ -1,0 +1,76 @@
+CWD: /tmp/bcc-exp-h6-features5_debt5-r1-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh workspace ; bash /home/krystian/bcc/eval/strategies/h6_future_work.sh features5_debt5
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h6-features5_debt5-r1-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-2qq depends on bcc-exp-h6-features5_debt5-r1-1286456-bd9 (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-j3w depends on bcc-exp-h6-features5_debt5-r1-1286456-bd9 (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-bbw depends on bcc-exp-h6-features5_debt5-r1-1286456-wm0 (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-e26 depends on bcc-exp-h6-features5_debt5-r1-1286456-wm0 (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-a03 depends on bcc-exp-h6-features5_debt5-r1-1286456-53h (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-pbr depends on bcc-exp-h6-features5_debt5-r1-1286456-53h (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-8yq depends on bcc-exp-h6-features5_debt5-r1-1286456-bd9 (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-op9 depends on bcc-exp-h6-features5_debt5-r1-1286456-bd9 (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-6cp depends on bcc-exp-h6-features5_debt5-r1-1286456-bd9 (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-y6t depends on bcc-exp-h6-features5_debt5-r1-1286456-wm0 (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-qm3 depends on bcc-exp-h6-features5_debt5-r1-1286456-wm0 (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-1oy depends on bcc-exp-h6-features5_debt5-r1-1286456-bd9 (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-bhh depends on bcc-exp-h6-features5_debt5-r1-1286456-bnx (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-e1j depends on bcc-exp-h6-features5_debt5-r1-1286456-wm0 (parent)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-pcv depends on bcc-exp-h6-features5_debt5-r1-1286456-bnx (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-bbw depends on bcc-exp-h6-features5_debt5-r1-1286456-a03 (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-bbw depends on bcc-exp-h6-features5_debt5-r1-1286456-8yq (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-bbw depends on bcc-exp-h6-features5_debt5-r1-1286456-y6t (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-a03 depends on bcc-exp-h6-features5_debt5-r1-1286456-8yq (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-bnx depends on bcc-exp-h6-features5_debt5-r1-1286456-8yq (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-bnx depends on bcc-exp-h6-features5_debt5-r1-1286456-a03 (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-j3w depends on bcc-exp-h6-features5_debt5-r1-1286456-2qq (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-8yq depends on bcc-exp-h6-features5_debt5-r1-1286456-j3w (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-op9 depends on bcc-exp-h6-features5_debt5-r1-1286456-8yq (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-6cp depends on bcc-exp-h6-features5_debt5-r1-1286456-op9 (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-e26 depends on bcc-exp-h6-features5_debt5-r1-1286456-bbw (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-qm3 depends on bcc-exp-h6-features5_debt5-r1-1286456-y6t (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-e1j depends on bcc-exp-h6-features5_debt5-r1-1286456-qm3 (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-pbr depends on bcc-exp-h6-features5_debt5-r1-1286456-a03 (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-pcv depends on bcc-exp-h6-features5_debt5-r1-1286456-bhh (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-h6-features5_debt5-r1-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting workspace boundary bridges...
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-wm0 depends on bcc-exp-h6-features5_debt5-r1-1286456-w95 (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-bd9 depends on bcc-exp-h6-features5_debt5-r1-1286456-w95 (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-53h depends on bcc-exp-h6-features5_debt5-r1-1286456-w95 (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-bnx depends on bcc-exp-h6-features5_debt5-r1-1286456-w95 (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-cm8 depends on bcc-exp-h6-features5_debt5-r1-1286456-w95 (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-bbw depends on bcc-exp-h6-features5_debt5-r1-1286456-e5s (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (8 changed since last sync)
+✓ /tmp/bcc-exp-h6-features5_debt5-r1-1286456/.beads/issues.jsonl updated
+Injecting 5 planned feature beads...
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-zsq depends on bcc-exp-h6-features5_debt5-r1-1286456-2qq (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-9v6 depends on bcc-exp-h6-features5_debt5-r1-1286456-a03 (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-0mz depends on bcc-exp-h6-features5_debt5-r1-1286456-2qq (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-0mz depends on bcc-exp-h6-features5_debt5-r1-1286456-a03 (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-cfp depends on bcc-exp-h6-features5_debt5-r1-1286456-bbw (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-9v6 depends on bcc-exp-h6-features5_debt5-r1-1286456-0mz (related)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-cfp depends on bcc-exp-h6-features5_debt5-r1-1286456-zsq (related)
+Injecting 5 tech debt beads...
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-mcg depends on bcc-exp-h6-features5_debt5-r1-1286456-a03 (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-sgt depends on bcc-exp-h6-features5_debt5-r1-1286456-2qq (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-q6s depends on bcc-exp-h6-features5_debt5-r1-1286456-bbw (blocks)
+✓ Added dependency: bcc-exp-h6-features5_debt5-r1-1286456-is9 depends on bcc-exp-h6-features5_debt5-r1-1286456-mcg (related)
+Exporting beads to JSONL...
+✓ Exported 0 issues (13 changed since last sync)
+✓ /tmp/bcc-exp-h6-features5_debt5-r1-1286456/.beads/issues.jsonl updated
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h6-features5_debt5-r1-1286456/.beads/issues.jsonl updated

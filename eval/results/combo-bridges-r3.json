@@ -1,0 +1,75 @@
+{
+  "experiment_id": "combo-bridges-r3",
+  "hypothesis": "COMBO",
+  "description": "Granularity + bridges + labels (run 3)",
+  "score": 23.0,
+  "tier": "F",
+  "breakdown": {
+    "density": {
+      "points": 0,
+      "max": 15,
+      "reason": "density=0.0000 OUT OF RANGE"
+    },
+    "pagerank_stddev": {
+      "points": 0,
+      "max": 15,
+      "reason": "pr_stddev=0.0000 < 0.01"
+    },
+    "betweenness_max": {
+      "points": 0,
+      "max": 15,
+      "reason": "bw_max=0 NO betweenness"
+    },
+    "critical_path": {
+      "points": 3.0,
+      "max": 15,
+      "reason": "cp_len=1 OUTSIDE [3,25]"
+    },
+    "cycles": {
+      "points": 15,
+      "max": 15,
+      "reason": "cycles=0"
+    },
+    "hits": {
+      "points": 0,
+      "max": 10,
+      "reason": "NO hubs or authorities"
+    },
+    "eigenvector_stddev": {
+      "points": 0,
+      "max": 10,
+      "reason": "ev_stddev=0.0000 FLAT"
+    },
+    "topo_valid": {
+      "points": 5,
+      "max": 5,
+      "reason": "topo_sort=valid"
+    }
+  },
+  "metrics": {
+    "density": 0,
+    "pagerank_stddev": 0.0,
+    "pagerank_max": 0.11111111111111113,
+    "betweenness_max": 0,
+    "betweenness_nonzero": 0,
+    "betweenness_stddev": 0.0,
+    "eigenvector_stddev": 0.0,
+    "hub_count": 0,
+    "auth_count": 0,
+    "critical_path_max": 1,
+    "cycle_count": 0,
+    "topo_valid": true,
+    "topo_len": 9,
+    "node_count": 9,
+    "edge_count": 0,
+    "edge_per_node": 0.0,
+    "articulation_count": 0,
+    "zero_slack_count": 9,
+    "zero_slack_ratio": 1.0
+  },
+  "bead_count": 9,
+  "edge_count": 0,
+  "wall_seconds": 3,
+  "bd_version": "bd version 0.49.3 (62c9f9bc: main@62c9f9bccb45)",
+  "timestamp": "2026-02-06T07:35:22Z"
+}

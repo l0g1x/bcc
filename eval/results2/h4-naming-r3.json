@@ -1,0 +1,75 @@
+{
+  "experiment_id": "h4-naming-r3",
+  "hypothesis": "H4",
+  "description": "Related deps: naming (run 3)",
+  "score": 100.0,
+  "tier": "A",
+  "breakdown": {
+    "density": {
+      "points": 15,
+      "max": 15,
+      "reason": "density=0.0500 IN [0.03,0.12]"
+    },
+    "pagerank_stddev": {
+      "points": 15,
+      "max": 15,
+      "reason": "pr_stddev=0.0338 > 0.03"
+    },
+    "betweenness_max": {
+      "points": 15,
+      "max": 15,
+      "reason": "bw_max=10.0 nonzero=4"
+    },
+    "critical_path": {
+      "points": 15,
+      "max": 15,
+      "reason": "cp_len=6 IN [3,15]"
+    },
+    "cycles": {
+      "points": 15,
+      "max": 15,
+      "reason": "cycles=0"
+    },
+    "hits": {
+      "points": 10,
+      "max": 10,
+      "reason": "hubs=9 auths=5"
+    },
+    "eigenvector_stddev": {
+      "points": 10,
+      "max": 10,
+      "reason": "ev_stddev=0.2179 > 0.02"
+    },
+    "topo_valid": {
+      "points": 5,
+      "max": 5,
+      "reason": "topo_sort=valid"
+    }
+  },
+  "metrics": {
+    "density": 0.05,
+    "pagerank_stddev": 0.033836150790879774,
+    "pagerank_max": 0.1197678273763733,
+    "betweenness_max": 10,
+    "betweenness_nonzero": 4,
+    "betweenness_stddev": 3.191786333700926,
+    "eigenvector_stddev": 0.21794494717703367,
+    "hub_count": 9,
+    "auth_count": 5,
+    "critical_path_max": 6,
+    "cycle_count": 0,
+    "topo_valid": true,
+    "topo_len": 20,
+    "node_count": 20,
+    "edge_count": 19,
+    "edge_per_node": 0.95,
+    "articulation_count": 7,
+    "zero_slack_count": 6,
+    "zero_slack_ratio": 0.3
+  },
+  "bead_count": 20,
+  "edge_count": 19,
+  "wall_seconds": 9,
+  "bd_version": "bd version 0.49.3 (62c9f9bc: main@62c9f9bccb45)",
+  "timestamp": "2026-02-06T07:48:55Z"
+}

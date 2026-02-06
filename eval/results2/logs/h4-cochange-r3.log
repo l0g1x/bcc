@@ -1,0 +1,90 @@
+CWD: /tmp/bcc-exp-h4-cochange-r3-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh workspace ; bash /home/krystian/bcc/eval/strategies/h4_related_deps.sh cochange
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h4-cochange-r3-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-wha depends on bcc-exp-h4-cochange-r3-1286456-3ac (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-jpg depends on bcc-exp-h4-cochange-r3-1286456-3ac (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-2je depends on bcc-exp-h4-cochange-r3-1286456-3ox (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-3ox (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-8wn depends on bcc-exp-h4-cochange-r3-1286456-57l (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-1x3 depends on bcc-exp-h4-cochange-r3-1286456-57l (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-s6a depends on bcc-exp-h4-cochange-r3-1286456-3ac (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-4y6 depends on bcc-exp-h4-cochange-r3-1286456-3ac (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-nvi depends on bcc-exp-h4-cochange-r3-1286456-3ac (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-a22 depends on bcc-exp-h4-cochange-r3-1286456-3ox (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-e0p depends on bcc-exp-h4-cochange-r3-1286456-3ox (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-31p depends on bcc-exp-h4-cochange-r3-1286456-3ac (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-2yx depends on bcc-exp-h4-cochange-r3-1286456-3az (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-bhq depends on bcc-exp-h4-cochange-r3-1286456-3ox (parent)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-n9v depends on bcc-exp-h4-cochange-r3-1286456-3az (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-2je depends on bcc-exp-h4-cochange-r3-1286456-8wn (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-2je depends on bcc-exp-h4-cochange-r3-1286456-s6a (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-2je depends on bcc-exp-h4-cochange-r3-1286456-a22 (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-8wn depends on bcc-exp-h4-cochange-r3-1286456-s6a (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-3az depends on bcc-exp-h4-cochange-r3-1286456-s6a (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-3az depends on bcc-exp-h4-cochange-r3-1286456-8wn (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-jpg depends on bcc-exp-h4-cochange-r3-1286456-wha (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-s6a depends on bcc-exp-h4-cochange-r3-1286456-jpg (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-4y6 depends on bcc-exp-h4-cochange-r3-1286456-s6a (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-nvi depends on bcc-exp-h4-cochange-r3-1286456-4y6 (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-2je (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-e0p depends on bcc-exp-h4-cochange-r3-1286456-a22 (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-bhq depends on bcc-exp-h4-cochange-r3-1286456-e0p (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-1x3 depends on bcc-exp-h4-cochange-r3-1286456-8wn (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-n9v depends on bcc-exp-h4-cochange-r3-1286456-2yx (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-h4-cochange-r3-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting workspace boundary bridges...
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-3ox depends on bcc-exp-h4-cochange-r3-1286456-1op (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-3ac depends on bcc-exp-h4-cochange-r3-1286456-1op (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-57l depends on bcc-exp-h4-cochange-r3-1286456-1op (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-3az depends on bcc-exp-h4-cochange-r3-1286456-1op (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-yxk depends on bcc-exp-h4-cochange-r3-1286456-1op (blocks)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-2je depends on bcc-exp-h4-cochange-r3-1286456-d4j (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (8 changed since last sync)
+✓ /tmp/bcc-exp-h4-cochange-r3-1286456/.beads/issues.jsonl updated
+Injecting git co-change related deps...
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-s6a (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-4y6 (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-3az (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-wha (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-3ox (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-2je (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-31p (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-57l (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-a22 (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-3ac (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-yxk (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-e0p (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-8wn (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-jpg (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-n9v (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-djk depends on bcc-exp-h4-cochange-r3-1286456-bhq (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-s6a depends on bcc-exp-h4-cochange-r3-1286456-wha (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-s6a depends on bcc-exp-h4-cochange-r3-1286456-3ox (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-s6a depends on bcc-exp-h4-cochange-r3-1286456-31p (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-s6a depends on bcc-exp-h4-cochange-r3-1286456-57l (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-s6a depends on bcc-exp-h4-cochange-r3-1286456-a22 (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-s6a depends on bcc-exp-h4-cochange-r3-1286456-3ac (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-s6a depends on bcc-exp-h4-cochange-r3-1286456-yxk (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-s6a depends on bcc-exp-h4-cochange-r3-1286456-e0p (related)
+✓ Added dependency: bcc-exp-h4-cochange-r3-1286456-s6a depends on bcc-exp-h4-cochange-r3-1286456-jpg (related)
+Added 30 co-change related deps
+Exporting beads to JSONL...
+✓ Exported 0 issues (17 changed since last sync)
+✓ /tmp/bcc-exp-h4-cochange-r3-1286456/.beads/issues.jsonl updated
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h4-cochange-r3-1286456/.beads/issues.jsonl updated

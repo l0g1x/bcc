@@ -1,0 +1,66 @@
+CWD: /tmp/bcc-exp-h4-naming-r1-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh workspace ; bash /home/krystian/bcc/eval/strategies/h4_related_deps.sh naming
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h4-naming-r1-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-8h1 depends on bcc-exp-h4-naming-r1-1286456-b41 (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-8un depends on bcc-exp-h4-naming-r1-1286456-b41 (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-n5y depends on bcc-exp-h4-naming-r1-1286456-jga (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-78i depends on bcc-exp-h4-naming-r1-1286456-jga (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-zdp depends on bcc-exp-h4-naming-r1-1286456-jft (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-cx2 depends on bcc-exp-h4-naming-r1-1286456-jft (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-gqv depends on bcc-exp-h4-naming-r1-1286456-b41 (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-6sw depends on bcc-exp-h4-naming-r1-1286456-b41 (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-0xw depends on bcc-exp-h4-naming-r1-1286456-b41 (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-lsr depends on bcc-exp-h4-naming-r1-1286456-jga (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-sal depends on bcc-exp-h4-naming-r1-1286456-jga (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-5cn depends on bcc-exp-h4-naming-r1-1286456-b41 (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-j55 depends on bcc-exp-h4-naming-r1-1286456-3fq (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-dqy depends on bcc-exp-h4-naming-r1-1286456-jga (parent)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-ga2 depends on bcc-exp-h4-naming-r1-1286456-3fq (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-n5y depends on bcc-exp-h4-naming-r1-1286456-zdp (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-n5y depends on bcc-exp-h4-naming-r1-1286456-gqv (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-n5y depends on bcc-exp-h4-naming-r1-1286456-lsr (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-zdp depends on bcc-exp-h4-naming-r1-1286456-gqv (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-3fq depends on bcc-exp-h4-naming-r1-1286456-gqv (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-3fq depends on bcc-exp-h4-naming-r1-1286456-zdp (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-8un depends on bcc-exp-h4-naming-r1-1286456-8h1 (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-gqv depends on bcc-exp-h4-naming-r1-1286456-8un (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-6sw depends on bcc-exp-h4-naming-r1-1286456-gqv (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-0xw depends on bcc-exp-h4-naming-r1-1286456-6sw (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-78i depends on bcc-exp-h4-naming-r1-1286456-n5y (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-sal depends on bcc-exp-h4-naming-r1-1286456-lsr (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-dqy depends on bcc-exp-h4-naming-r1-1286456-sal (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-cx2 depends on bcc-exp-h4-naming-r1-1286456-zdp (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-ga2 depends on bcc-exp-h4-naming-r1-1286456-j55 (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-h4-naming-r1-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting workspace boundary bridges...
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-jga depends on bcc-exp-h4-naming-r1-1286456-61a (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-b41 depends on bcc-exp-h4-naming-r1-1286456-61a (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-jft depends on bcc-exp-h4-naming-r1-1286456-61a (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-3fq depends on bcc-exp-h4-naming-r1-1286456-61a (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-4jz depends on bcc-exp-h4-naming-r1-1286456-61a (blocks)
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-n5y depends on bcc-exp-h4-naming-r1-1286456-1it (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (8 changed since last sync)
+✓ /tmp/bcc-exp-h4-naming-r1-1286456/.beads/issues.jsonl updated
+Injecting naming convention related deps...
+✓ Added dependency: bcc-exp-h4-naming-r1-1286456-zdp depends on bcc-exp-h4-naming-r1-1286456-jft (related)
+Added 2 naming-related deps
+Exporting beads to JSONL...
+✓ Exported 0 issues (2 changed since last sync)
+✓ /tmp/bcc-exp-h4-naming-r1-1286456/.beads/issues.jsonl updated
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h4-naming-r1-1286456/.beads/issues.jsonl updated

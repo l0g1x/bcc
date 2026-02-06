@@ -1,0 +1,125 @@
+formula = "future-work-scaffold"
+type = "workflow"
+phase = "liquid"
+version = 1
+
+[vars]
+feature_name = { description = "Name of the planned feature or work item", required = true }
+affected_modules = { description = "Comma-separated module bead IDs that will be touched", required = true }
+priority_level = { description = "Priority: 0 (critical) to 3 (backlog)", default = "1" }
+
+[[steps]]
+id = "impact-analysis"
+title = "Impact analysis: {{feature_name}}"
+description = """Before creating any beads, analyze the blast radius:
+
+1. For each module in [{{affected_modules}}], query its graph position:
+   bv --robot-insights | jq '{
+     pagerank: .stats.pageRank,
+     betweenness: .stats.betweenness,
+     critical_path: .stats.criticalPathScore
+   }'
+
+2. Identify risk level:
+   - If ANY affected module has PageRank > 0.10: HIGH RISK (foundational change)
+   - If ANY affected module has betweenness > 0.20: HIGH RISK (bottleneck disruption)
+   - If ANY affected module is on critical path: HIGH RISK (zero-slack change)
+   - Otherwise: NORMAL RISK
+
+3. Check current density:
+   bv --robot-insights | jq '.clusterDensity'
+   If density > 0.10: adding more edges may push into unhealthy territory.
+   Plan to use related (not blocking) deps where possible.
+
+Output: risk assessment with specific affected nodes and their metric values."""
+priority = 0
+
+[[steps]]
+id = "create-feature-epic"
+title = "Create epic: {{feature_name}}"
+description = """Create the top-level feature epic:
+
+bd create "Feature: {{feature_name}}" -t epic -p {{priority_level}} --label planned --json
+
+Store the returned bead ID for subsequent steps.
+
+Add design notes based on impact analysis:
+bd update <epic-id> --design "Risk level: <from step 1>
+Affected modules: {{affected_modules}}
+Key dependencies: <list high PageRank/betweenness nodes that will be touched>"
+
+bd sync"""
+needs = ["impact-analysis"]
+priority = 0
+
+[[steps]]
+id = "decompose-tasks"
+title = "Decompose {{feature_name}} into tasks"
+description = """For each affected module in [{{affected_modules}}]:
+1. Create a task bead as child of the feature epic:
+   bd create "{{feature_name}}: Changes to <module>" -t task -p {{priority_level}} --label planned --json
+
+2. Wire parent-child dep to the epic
+
+3. Determine task ordering based on the EXISTING dependency graph:
+   - If Module A depends on Module B in the code graph,
+     then the task for Module B must be done FIRST
+   - Query existing deps: bv --robot-graph --graph-root=<module-bead-id> --graph-depth=1
+
+4. Wire blocking deps between tasks to match the code dependency order:
+   bd dep add <task-for-consumer> <task-for-provider>
+
+This ensures the work plan respects the actual code architecture."""
+needs = ["create-feature-epic"]
+priority = 1
+
+[[steps]]
+id = "wire-to-existing"
+title = "Wire {{feature_name}} to existing graph"
+description = """Connect the new feature beads to the existing code graph:
+
+1. For each task bead, add a blocking dep to its corresponding module bead:
+   bd dep add <task-bead> <existing-module-bead>
+   This means: "this task depends on the existing module being understood/stable"
+
+2. For cross-cutting changes, add related deps:
+   bd dep add <task-bead> <related-module-bead> --type related
+
+3. If the feature introduces NEW module boundaries:
+   - Create contract beads (use analyze-api-boundary formula)
+   - Wire them into both old and new code
+
+bd sync"""
+needs = ["decompose-tasks"]
+priority = 1
+
+[[steps]]
+id = "validate-graph"
+title = "Validate graph after {{feature_name}}"
+description = """Run comprehensive validation:
+
+1. Check for cycles:
+   bv --robot-insights | jq '.cycles'
+   If cycles exist: identify the new edges that caused them and remove/restructure
+
+2. Check density:
+   bv --robot-insights | jq '.clusterDensity'
+   If density increased by >0.03: consider converting some blocking deps to related
+
+3. Check critical path:
+   bv --robot-insights | jq '.keystones[:5]'
+   Verify the new feature didn't artificially inflate the critical path
+
+4. Run triage to verify recommendations make sense:
+   bv --robot-triage | jq '.recommendations[:3]'
+   The triage should now recommend clearing blockers that the new feature depends on
+
+5. Report findings:
+   - New bead count (delta)
+   - New edge count (delta)  
+   - Density change
+   - Critical path change
+   - Any cycles introduced
+   - Top triage recommendation (should relate to enabling the new feature)"""
+needs = ["wire-to-existing"]
+priority = 2

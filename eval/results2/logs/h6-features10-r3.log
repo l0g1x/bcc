@@ -1,0 +1,80 @@
+CWD: /tmp/bcc-exp-h6-features10-r3-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh workspace ; bash /home/krystian/bcc/eval/strategies/h6_future_work.sh features10
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h6-features10-r3-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-kbb depends on bcc-exp-h6-features10-r3-1286456-8iy (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-c53 depends on bcc-exp-h6-features10-r3-1286456-8iy (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-3ed depends on bcc-exp-h6-features10-r3-1286456-d89 (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-lba depends on bcc-exp-h6-features10-r3-1286456-d89 (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-jtg depends on bcc-exp-h6-features10-r3-1286456-2n1 (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-490 depends on bcc-exp-h6-features10-r3-1286456-2n1 (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-9p0 depends on bcc-exp-h6-features10-r3-1286456-8iy (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-1md depends on bcc-exp-h6-features10-r3-1286456-8iy (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-bls depends on bcc-exp-h6-features10-r3-1286456-8iy (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-f6m depends on bcc-exp-h6-features10-r3-1286456-d89 (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-zyr depends on bcc-exp-h6-features10-r3-1286456-d89 (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-omi depends on bcc-exp-h6-features10-r3-1286456-8iy (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-8cy depends on bcc-exp-h6-features10-r3-1286456-6vt (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-cm4 depends on bcc-exp-h6-features10-r3-1286456-d89 (parent)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-awg depends on bcc-exp-h6-features10-r3-1286456-6vt (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-3ed depends on bcc-exp-h6-features10-r3-1286456-jtg (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-3ed depends on bcc-exp-h6-features10-r3-1286456-9p0 (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-3ed depends on bcc-exp-h6-features10-r3-1286456-f6m (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-jtg depends on bcc-exp-h6-features10-r3-1286456-9p0 (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-6vt depends on bcc-exp-h6-features10-r3-1286456-9p0 (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-6vt depends on bcc-exp-h6-features10-r3-1286456-jtg (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-c53 depends on bcc-exp-h6-features10-r3-1286456-kbb (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-9p0 depends on bcc-exp-h6-features10-r3-1286456-c53 (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-1md depends on bcc-exp-h6-features10-r3-1286456-9p0 (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-bls depends on bcc-exp-h6-features10-r3-1286456-1md (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-lba depends on bcc-exp-h6-features10-r3-1286456-3ed (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-zyr depends on bcc-exp-h6-features10-r3-1286456-f6m (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-cm4 depends on bcc-exp-h6-features10-r3-1286456-zyr (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-490 depends on bcc-exp-h6-features10-r3-1286456-jtg (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-awg depends on bcc-exp-h6-features10-r3-1286456-8cy (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-h6-features10-r3-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting workspace boundary bridges...
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-d89 depends on bcc-exp-h6-features10-r3-1286456-drg (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-8iy depends on bcc-exp-h6-features10-r3-1286456-drg (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-2n1 depends on bcc-exp-h6-features10-r3-1286456-drg (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-6vt depends on bcc-exp-h6-features10-r3-1286456-drg (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-l76 depends on bcc-exp-h6-features10-r3-1286456-drg (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-3ed depends on bcc-exp-h6-features10-r3-1286456-2a0 (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (8 changed since last sync)
+✓ /tmp/bcc-exp-h6-features10-r3-1286456/.beads/issues.jsonl updated
+Injecting 10 planned feature beads...
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-2yj depends on bcc-exp-h6-features10-r3-1286456-kbb (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-31g depends on bcc-exp-h6-features10-r3-1286456-jtg (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-lys depends on bcc-exp-h6-features10-r3-1286456-kbb (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-lys depends on bcc-exp-h6-features10-r3-1286456-jtg (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-9x5 depends on bcc-exp-h6-features10-r3-1286456-3ed (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-31g depends on bcc-exp-h6-features10-r3-1286456-lys (related)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-9x5 depends on bcc-exp-h6-features10-r3-1286456-2yj (related)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-5af depends on bcc-exp-h6-features10-r3-1286456-3ed (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-5af depends on bcc-exp-h6-features10-r3-1286456-jtg (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-89n depends on bcc-exp-h6-features10-r3-1286456-kbb (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-89n depends on bcc-exp-h6-features10-r3-1286456-3ed (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-xb6 depends on bcc-exp-h6-features10-r3-1286456-kbb (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-c22 depends on bcc-exp-h6-features10-r3-1286456-2yj (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-eb9 depends on bcc-exp-h6-features10-r3-1286456-kbb (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-eb9 depends on bcc-exp-h6-features10-r3-1286456-3ed (blocks)
+✓ Added dependency: bcc-exp-h6-features10-r3-1286456-eb9 depends on bcc-exp-h6-features10-r3-1286456-2yj (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (13 changed since last sync)
+✓ /tmp/bcc-exp-h6-features10-r3-1286456/.beads/issues.jsonl updated
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h6-features10-r3-1286456/.beads/issues.jsonl updated

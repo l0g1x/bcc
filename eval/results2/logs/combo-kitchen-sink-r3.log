@@ -1,0 +1,136 @@
+CWD: /tmp/bcc-exp-combo-kitchen-sink-r3-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh full ; bash /home/krystian/bcc/eval/strategies/h4_related_deps.sh all ; bash /home/krystian/bcc/eval/strategies/h6_future_work.sh features10
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-combo-kitchen-sink-r3-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-cuk depends on bcc-exp-combo-kitchen-sink-r3-1286456-awr (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-d4k depends on bcc-exp-combo-kitchen-sink-r3-1286456-awr (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-cy6 depends on bcc-exp-combo-kitchen-sink-r3-1286456-xzm (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-xzm (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-eft depends on bcc-exp-combo-kitchen-sink-r3-1286456-uq3 (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-mvx depends on bcc-exp-combo-kitchen-sink-r3-1286456-uq3 (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-386 depends on bcc-exp-combo-kitchen-sink-r3-1286456-awr (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-dyg depends on bcc-exp-combo-kitchen-sink-r3-1286456-awr (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-pch depends on bcc-exp-combo-kitchen-sink-r3-1286456-awr (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-caq depends on bcc-exp-combo-kitchen-sink-r3-1286456-xzm (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-6ve depends on bcc-exp-combo-kitchen-sink-r3-1286456-xzm (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-0x2 depends on bcc-exp-combo-kitchen-sink-r3-1286456-awr (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3fc depends on bcc-exp-combo-kitchen-sink-r3-1286456-ci5 (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-mxf depends on bcc-exp-combo-kitchen-sink-r3-1286456-xzm (parent)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-6ig depends on bcc-exp-combo-kitchen-sink-r3-1286456-ci5 (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-cy6 depends on bcc-exp-combo-kitchen-sink-r3-1286456-eft (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-cy6 depends on bcc-exp-combo-kitchen-sink-r3-1286456-386 (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-cy6 depends on bcc-exp-combo-kitchen-sink-r3-1286456-caq (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-eft depends on bcc-exp-combo-kitchen-sink-r3-1286456-386 (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-ci5 depends on bcc-exp-combo-kitchen-sink-r3-1286456-386 (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-ci5 depends on bcc-exp-combo-kitchen-sink-r3-1286456-eft (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-d4k depends on bcc-exp-combo-kitchen-sink-r3-1286456-cuk (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-386 depends on bcc-exp-combo-kitchen-sink-r3-1286456-d4k (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-dyg depends on bcc-exp-combo-kitchen-sink-r3-1286456-386 (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-pch depends on bcc-exp-combo-kitchen-sink-r3-1286456-dyg (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-cy6 (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-6ve depends on bcc-exp-combo-kitchen-sink-r3-1286456-caq (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-mxf depends on bcc-exp-combo-kitchen-sink-r3-1286456-6ve (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-mvx depends on bcc-exp-combo-kitchen-sink-r3-1286456-eft (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-6ig depends on bcc-exp-combo-kitchen-sink-r3-1286456-3fc (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-combo-kitchen-sink-r3-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting router boundary bridges...
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-cy6 depends on bcc-exp-combo-kitchen-sink-r3-1286456-qvy (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-qvy depends on bcc-exp-combo-kitchen-sink-r3-1286456-eft (blocks)
+Injecting workspace boundary bridges...
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-xzm depends on bcc-exp-combo-kitchen-sink-r3-1286456-4tw (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-awr depends on bcc-exp-combo-kitchen-sink-r3-1286456-4tw (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-uq3 depends on bcc-exp-combo-kitchen-sink-r3-1286456-4tw (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-ci5 depends on bcc-exp-combo-kitchen-sink-r3-1286456-4tw (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-agw depends on bcc-exp-combo-kitchen-sink-r3-1286456-4tw (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-cy6 depends on bcc-exp-combo-kitchen-sink-r3-1286456-lau (blocks)
+Injecting Prisma schema bridge...
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-cuk depends on bcc-exp-combo-kitchen-sink-r3-1286456-7cf (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-d4k depends on bcc-exp-combo-kitchen-sink-r3-1286456-7cf (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-386 depends on bcc-exp-combo-kitchen-sink-r3-1286456-7cf (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-dyg depends on bcc-exp-combo-kitchen-sink-r3-1286456-7cf (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-eft depends on bcc-exp-combo-kitchen-sink-r3-1286456-7cf (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-mvx depends on bcc-exp-combo-kitchen-sink-r3-1286456-7cf (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-uq3 depends on bcc-exp-combo-kitchen-sink-r3-1286456-7cf (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (16 changed since last sync)
+✓ /tmp/bcc-exp-combo-kitchen-sink-r3-1286456/.beads/issues.jsonl updated
+Injecting import co-occurrence related deps...
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-d4k depends on bcc-exp-combo-kitchen-sink-r3-1286456-awr (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-386 depends on bcc-exp-combo-kitchen-sink-r3-1286456-awr (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-386 depends on bcc-exp-combo-kitchen-sink-r3-1286456-0x2 (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-dyg depends on bcc-exp-combo-kitchen-sink-r3-1286456-awr (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-dyg depends on bcc-exp-combo-kitchen-sink-r3-1286456-0x2 (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-cy6 depends on bcc-exp-combo-kitchen-sink-r3-1286456-caq (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-cy6 depends on bcc-exp-combo-kitchen-sink-r3-1286456-xzm (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-caq (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-xzm (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-agw (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-caq depends on bcc-exp-combo-kitchen-sink-r3-1286456-xzm (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-caq depends on bcc-exp-combo-kitchen-sink-r3-1286456-agw (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-xzm depends on bcc-exp-combo-kitchen-sink-r3-1286456-agw (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-eft depends on bcc-exp-combo-kitchen-sink-r3-1286456-uq3 (related)
+Injecting git co-change related deps...
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-386 (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-dyg (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-ci5 (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-cuk (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-cy6 (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-0x2 (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-uq3 (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-awr (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-6ve (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-eft (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-d4k (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-6ig (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-3rk depends on bcc-exp-combo-kitchen-sink-r3-1286456-mxf (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-386 depends on bcc-exp-combo-kitchen-sink-r3-1286456-cuk (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-386 depends on bcc-exp-combo-kitchen-sink-r3-1286456-xzm (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-386 depends on bcc-exp-combo-kitchen-sink-r3-1286456-uq3 (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-386 depends on bcc-exp-combo-kitchen-sink-r3-1286456-caq (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-386 depends on bcc-exp-combo-kitchen-sink-r3-1286456-agw (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-386 depends on bcc-exp-combo-kitchen-sink-r3-1286456-6ve (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-386 depends on bcc-exp-combo-kitchen-sink-r3-1286456-d4k (related)
+Added 30 co-change related deps
+Injecting naming convention related deps...
+Added 3 naming-related deps
+Exporting beads to JSONL...
+✓ Exported 0 issues (17 changed since last sync)
+✓ /tmp/bcc-exp-combo-kitchen-sink-r3-1286456/.beads/issues.jsonl updated
+Injecting 10 planned feature beads...
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-ejc depends on bcc-exp-combo-kitchen-sink-r3-1286456-7cf (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-c7g depends on bcc-exp-combo-kitchen-sink-r3-1286456-eft (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-c7g depends on bcc-exp-combo-kitchen-sink-r3-1286456-qvy (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-swn depends on bcc-exp-combo-kitchen-sink-r3-1286456-7cf (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-swn depends on bcc-exp-combo-kitchen-sink-r3-1286456-eft (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-t43 depends on bcc-exp-combo-kitchen-sink-r3-1286456-cy6 (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-fj9 depends on bcc-exp-combo-kitchen-sink-r3-1286456-qvy (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-c7g depends on bcc-exp-combo-kitchen-sink-r3-1286456-swn (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-t43 depends on bcc-exp-combo-kitchen-sink-r3-1286456-ejc (related)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-v4i depends on bcc-exp-combo-kitchen-sink-r3-1286456-cy6 (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-v4i depends on bcc-exp-combo-kitchen-sink-r3-1286456-eft (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-tg9 depends on bcc-exp-combo-kitchen-sink-r3-1286456-7cf (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-tg9 depends on bcc-exp-combo-kitchen-sink-r3-1286456-cy6 (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-wio depends on bcc-exp-combo-kitchen-sink-r3-1286456-7cf (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-75v depends on bcc-exp-combo-kitchen-sink-r3-1286456-qvy (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-75v depends on bcc-exp-combo-kitchen-sink-r3-1286456-ejc (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-csg depends on bcc-exp-combo-kitchen-sink-r3-1286456-7cf (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-csg depends on bcc-exp-combo-kitchen-sink-r3-1286456-cy6 (blocks)
+✓ Added dependency: bcc-exp-combo-kitchen-sink-r3-1286456-csg depends on bcc-exp-combo-kitchen-sink-r3-1286456-ejc (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (14 changed since last sync)
+✓ /tmp/bcc-exp-combo-kitchen-sink-r3-1286456/.beads/issues.jsonl updated
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-combo-kitchen-sink-r3-1286456/.beads/issues.jsonl updated

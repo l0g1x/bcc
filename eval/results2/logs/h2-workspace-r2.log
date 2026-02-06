@@ -1,0 +1,61 @@
+CWD: /tmp/bcc-exp-h2-workspace-r2-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh ; bash /home/krystian/bcc/eval/strategies/h2_bridges.sh workspace
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h2-workspace-r2-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 21 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-xui depends on bcc-exp-h2-workspace-r2-1286456-75u (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-rv6 depends on bcc-exp-h2-workspace-r2-1286456-75u (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-1xe depends on bcc-exp-h2-workspace-r2-1286456-uuo (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-jda depends on bcc-exp-h2-workspace-r2-1286456-uuo (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-x6m depends on bcc-exp-h2-workspace-r2-1286456-af5 (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-ci6 depends on bcc-exp-h2-workspace-r2-1286456-af5 (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-si5 depends on bcc-exp-h2-workspace-r2-1286456-75u (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-7qt depends on bcc-exp-h2-workspace-r2-1286456-75u (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-mri depends on bcc-exp-h2-workspace-r2-1286456-75u (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-zrv depends on bcc-exp-h2-workspace-r2-1286456-uuo (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-9mq depends on bcc-exp-h2-workspace-r2-1286456-uuo (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-pgk depends on bcc-exp-h2-workspace-r2-1286456-uuo (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-c2c depends on bcc-exp-h2-workspace-r2-1286456-75u (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-27e depends on bcc-exp-h2-workspace-r2-1286456-zqj (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-o4f depends on bcc-exp-h2-workspace-r2-1286456-uuo (parent)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-xwn depends on bcc-exp-h2-workspace-r2-1286456-zqj (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-1xe depends on bcc-exp-h2-workspace-r2-1286456-x6m (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-1xe depends on bcc-exp-h2-workspace-r2-1286456-si5 (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-1xe depends on bcc-exp-h2-workspace-r2-1286456-zrv (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-x6m depends on bcc-exp-h2-workspace-r2-1286456-si5 (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-zqj depends on bcc-exp-h2-workspace-r2-1286456-si5 (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-zqj depends on bcc-exp-h2-workspace-r2-1286456-x6m (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-rv6 depends on bcc-exp-h2-workspace-r2-1286456-xui (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-si5 depends on bcc-exp-h2-workspace-r2-1286456-rv6 (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-7qt depends on bcc-exp-h2-workspace-r2-1286456-si5 (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-mri depends on bcc-exp-h2-workspace-r2-1286456-7qt (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-jda depends on bcc-exp-h2-workspace-r2-1286456-1xe (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-9mq depends on bcc-exp-h2-workspace-r2-1286456-zrv (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-pgk depends on bcc-exp-h2-workspace-r2-1286456-9mq (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-ci6 depends on bcc-exp-h2-workspace-r2-1286456-x6m (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-xwn depends on bcc-exp-h2-workspace-r2-1286456-27e (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (20 changed since last sync)
+✓ /tmp/bcc-exp-h2-workspace-r2-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Injecting workspace boundary bridges...
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-uuo depends on bcc-exp-h2-workspace-r2-1286456-334 (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-75u depends on bcc-exp-h2-workspace-r2-1286456-334 (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-af5 depends on bcc-exp-h2-workspace-r2-1286456-334 (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-zqj depends on bcc-exp-h2-workspace-r2-1286456-334 (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-cae depends on bcc-exp-h2-workspace-r2-1286456-334 (blocks)
+✓ Added dependency: bcc-exp-h2-workspace-r2-1286456-1xe depends on bcc-exp-h2-workspace-r2-1286456-s4h (blocks)
+Exporting beads to JSONL...
+✓ Exported 0 issues (8 changed since last sync)
+✓ /tmp/bcc-exp-h2-workspace-r2-1286456/.beads/issues.jsonl updated
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h2-workspace-r2-1286456/.beads/issues.jsonl updated

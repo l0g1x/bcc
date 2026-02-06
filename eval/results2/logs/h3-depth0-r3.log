@@ -1,0 +1,52 @@
+CWD: /tmp/bcc-exp-h3-depth0-r3-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h3-depth0-r3-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 20 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-qkf depends on bcc-exp-h3-depth0-r3-1286456-uiv (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-30r depends on bcc-exp-h3-depth0-r3-1286456-uiv (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-9uv depends on bcc-exp-h3-depth0-r3-1286456-eig (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-02y depends on bcc-exp-h3-depth0-r3-1286456-eig (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-ex8 depends on bcc-exp-h3-depth0-r3-1286456-wdp (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-z02 depends on bcc-exp-h3-depth0-r3-1286456-wdp (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-1yw depends on bcc-exp-h3-depth0-r3-1286456-uiv (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-64m depends on bcc-exp-h3-depth0-r3-1286456-uiv (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-nmo depends on bcc-exp-h3-depth0-r3-1286456-uiv (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-do5 depends on bcc-exp-h3-depth0-r3-1286456-eig (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-nzk depends on bcc-exp-h3-depth0-r3-1286456-eig (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-jh7 depends on bcc-exp-h3-depth0-r3-1286456-uiv (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-xj1 depends on bcc-exp-h3-depth0-r3-1286456-1m8 (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-aia depends on bcc-exp-h3-depth0-r3-1286456-eig (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-drf depends on bcc-exp-h3-depth0-r3-1286456-1m8 (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-9uv depends on bcc-exp-h3-depth0-r3-1286456-ex8 (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-9uv depends on bcc-exp-h3-depth0-r3-1286456-1yw (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-9uv depends on bcc-exp-h3-depth0-r3-1286456-do5 (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-ex8 depends on bcc-exp-h3-depth0-r3-1286456-1yw (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-1m8 depends on bcc-exp-h3-depth0-r3-1286456-1yw (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-1m8 depends on bcc-exp-h3-depth0-r3-1286456-ex8 (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-30r depends on bcc-exp-h3-depth0-r3-1286456-qkf (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-1yw depends on bcc-exp-h3-depth0-r3-1286456-30r (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-64m depends on bcc-exp-h3-depth0-r3-1286456-1yw (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-nmo depends on bcc-exp-h3-depth0-r3-1286456-64m (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-02y depends on bcc-exp-h3-depth0-r3-1286456-9uv (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-nzk depends on bcc-exp-h3-depth0-r3-1286456-do5 (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-aia depends on bcc-exp-h3-depth0-r3-1286456-nzk (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-z02 depends on bcc-exp-h3-depth0-r3-1286456-ex8 (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r3-1286456-drf depends on bcc-exp-h3-depth0-r3-1286456-xj1 (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (19 changed since last sync)
+✓ /tmp/bcc-exp-h3-depth0-r3-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Warning: Skipping dependency due to error: bcc-exp-h3-depth0-r3-1286456-nmo → bcc-exp-h3-depth0-r3-1286456-uiv (parent) (issue bcc-exp-h3-depth0-r3-1286456-nmo not found)
+Warning: Skipping dependency due to error: bcc-exp-h3-depth0-r3-1286456-nmo → bcc-exp-h3-depth0-r3-1286456-64m (blocks) (issue bcc-exp-h3-depth0-r3-1286456-nmo not found)
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h3-depth0-r3-1286456/.beads/issues.jsonl updated

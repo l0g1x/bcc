@@ -1,0 +1,51 @@
+CWD: /tmp/bcc-exp-h3-depth0-r1-1286456
+CMD: bash /home/krystian/bcc/eval/strategies/h1_granularity.sh module strict ; bash /home/krystian/bcc/eval/strategies/wire_deps.sh
+Strategy: module-level (5-15 files per bead)
+Exporting beads to JSONL...
+✓ Exported 0 issues (21 changed since last sync)
+✓ /tmp/bcc-exp-h3-depth0-r1-1286456/.beads/issues.jsonl updated
+Created 0 beads at granularity=module
+Wiring dependencies...
+Found 21 beads to wire
+  Step 1: Parent-child wiring...
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-yoo depends on bcc-exp-h3-depth0-r1-1286456-1lk (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-u8p depends on bcc-exp-h3-depth0-r1-1286456-1lk (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-dix depends on bcc-exp-h3-depth0-r1-1286456-79d (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-wt5 depends on bcc-exp-h3-depth0-r1-1286456-79d (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-ddf depends on bcc-exp-h3-depth0-r1-1286456-y30 (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-w3i depends on bcc-exp-h3-depth0-r1-1286456-y30 (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-jkw depends on bcc-exp-h3-depth0-r1-1286456-1lk (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-09b depends on bcc-exp-h3-depth0-r1-1286456-1lk (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-xk6 depends on bcc-exp-h3-depth0-r1-1286456-1lk (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-3xt depends on bcc-exp-h3-depth0-r1-1286456-79d (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-oqi depends on bcc-exp-h3-depth0-r1-1286456-79d (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-4mj depends on bcc-exp-h3-depth0-r1-1286456-79d (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-63t depends on bcc-exp-h3-depth0-r1-1286456-1lk (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-szd depends on bcc-exp-h3-depth0-r1-1286456-vp2 (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-qw6 depends on bcc-exp-h3-depth0-r1-1286456-79d (parent)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-d8t depends on bcc-exp-h3-depth0-r1-1286456-vp2 (parent)
+  Step 2: Blocking deps from workspace structure...
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-dix depends on bcc-exp-h3-depth0-r1-1286456-ddf (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-dix depends on bcc-exp-h3-depth0-r1-1286456-jkw (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-dix depends on bcc-exp-h3-depth0-r1-1286456-3xt (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-ddf depends on bcc-exp-h3-depth0-r1-1286456-jkw (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-vp2 depends on bcc-exp-h3-depth0-r1-1286456-jkw (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-vp2 depends on bcc-exp-h3-depth0-r1-1286456-ddf (blocks)
+  Step 3: Intra-workspace module deps...
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-u8p depends on bcc-exp-h3-depth0-r1-1286456-yoo (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-jkw depends on bcc-exp-h3-depth0-r1-1286456-u8p (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-09b depends on bcc-exp-h3-depth0-r1-1286456-jkw (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-xk6 depends on bcc-exp-h3-depth0-r1-1286456-09b (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-wt5 depends on bcc-exp-h3-depth0-r1-1286456-dix (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-oqi depends on bcc-exp-h3-depth0-r1-1286456-3xt (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-4mj depends on bcc-exp-h3-depth0-r1-1286456-oqi (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-w3i depends on bcc-exp-h3-depth0-r1-1286456-ddf (blocks)
+✓ Added dependency: bcc-exp-h3-depth0-r1-1286456-d8t depends on bcc-exp-h3-depth0-r1-1286456-szd (blocks)
+  Step 4: Cross-label structural deps...
+Exporting beads to JSONL...
+✓ Exported 0 issues (20 changed since last sync)
+✓ /tmp/bcc-exp-h3-depth0-r1-1286456/.beads/issues.jsonl updated
+Dependency wiring complete
+Exporting beads to JSONL...
+✓ Exported 0 issues
+✓ /tmp/bcc-exp-h3-depth0-r1-1286456/.beads/issues.jsonl updated
