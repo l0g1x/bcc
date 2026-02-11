@@ -1,1 +1,1 @@
-# BCC - Bead Codebase Compiler
+# BCC - Beads Compiler Collection
