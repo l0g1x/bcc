@@ -1,7 +1,8 @@
 # beads-ide - Implementation Plan
 
 **Created:** 2026-02-21
-**Status:** Draft
+**Reviewed:** 2026-02-21
+**Status:** Reviewed
 **Source Spec:** plans/beads-ide/02-spec/spec.md
 
 ---
@@ -35,6 +36,8 @@ This approach was chosen because: (a) the spec mandates a browser SPA, (b) the `
 | Linter/formatter | Biome | openedi reference; replaces ESLint + Prettier |
 | Testing | Vitest (unit) + Playwright (E2E) | openedi reference |
 | Visual formula builder | Read-only in MVP (TOML → visual) | Bidirectional sync too risky for MVP; add write-back post-MVP |
+| Rich text rendering | Markdown renderer (not TipTap) | Bead detail is read-only — TipTap's block editor capabilities not needed; simple markdown rendering suffices |
+| NL prompt for variables | Deferred post-MVP | Requires LLM integration; form + inline editing covers core variable workflow; NL mode is additive UX enhancement |
 
 ---
 
@@ -108,10 +111,12 @@ These are built in Phase 1 and consumed by all subsequent phases.
   - Create: `beads-ide/apps/backend/src/cli.ts` — `execFile` wrapper with allowlist validation
   - Create: `beads-ide/apps/backend/tests/cli.test.ts` — unit tests
 - **Key details:** Use Node.js `child_process.execFile` (NOT `exec`). Validate: formula names against `^[a-zA-Z0-9_.-]+$`, variable keys against `^[a-zA-Z0-9_]+$`, variable values against `^[^\x00-\x1f]+$` (no control chars). Set `cwd` to project root where `.beads/redirect` resolves. Timeout: 30s default, 60s for cook. Return `{ stdout, stderr, exitCode }`.
+- **Implementation note:** Verify early that `bd cook` accepts `--json` flag and that `bv --export-graph --output-format json` produces structured JSON (not HTML). If either flag doesn't exist, implement stdout/file parsing as fallback. This verification should happen before Task 2A.1 and 2A.3 depend on these flags.
 - **Acceptance criteria:**
   - [ ] Rejects formula names with shell metacharacters (`;`, `|`, `&`, `` ` ``, `$`)
   - [ ] Uses `execFile` not `exec` (no shell)
   - [ ] Tests cover: valid invocation, rejected input, timeout, non-zero exit
+  - [ ] CLI flag verification: confirm `bd cook --json` and `bv --export-graph --output-format json` produce expected output
 - **Dependencies:** 1.1
 
 **1.4 Implement wave computation**
@@ -155,10 +160,11 @@ These are built in Phase 1 and consumed by all subsequent phases.
   - Create: `beads-ide/apps/backend/src/config.ts` — load formula search paths, CLI binary locations, project root detection
   - Create: `beads-ide/apps/backend/src/routes/health.ts` — `GET /api/health` verifies `bd` CLI available
   - Create: `beads-ide/apps/backend/tsconfig.json` — extends base
-- **Key details:** Bind to `127.0.0.1` only (spec security requirement). Use `@hono/node-server` for Node.js runtime. Config resolves formula search paths: `formulas/`, `.beads/formulas/`, `~/.beads/formulas/`, `$GT_ROOT/.beads/formulas/`. Skip missing directories gracefully.
+- **Key details:** Bind to `127.0.0.1` only (spec security requirement). Use `@hono/node-server` for Node.js runtime. Config resolves formula search paths: `formulas/`, `.beads/formulas/`, `~/.beads/formulas/`, `$GT_ROOT/.beads/formulas/`. Skip missing directories gracefully. Expose `GET /api/config` endpoint returning current config (formula paths, project root, CLI binary locations).
 - **Acceptance criteria:**
   - [ ] `npm run dev` starts backend on localhost:3001
   - [ ] `GET /api/health` returns `{ ok: true, bd_version: "..." }`
+  - [ ] `GET /api/config` returns `{ formula_paths: [...], project_root: "...", ... }`
   - [ ] Server does NOT bind to 0.0.0.0 (verify with `netstat`)
   - [ ] Config correctly resolves formula search paths
 - **Dependencies:** 1.1, 1.3
@@ -249,12 +255,13 @@ These are built in Phase 1 and consumed by all subsequent phases.
 - **Files:**
   - Create: `beads-ide/apps/frontend/src/components/layout/formula-tree.tsx` — tree view of formulas
   - Create: `beads-ide/apps/frontend/src/hooks/use-formulas.ts` — fetch formula list from API
-- **Key details:** Group by search path directory. Show formula name, directory source. Click to navigate to formula editor route. Icons from Lucide (FileCode for formulas, Folder for directories). Handle empty/missing directories gracefully.
+- **Key details:** Group by search path directory. Show formula name, directory source. Click to navigate to formula editor route. Icons from Lucide (FileCode for formulas, Folder for directories). Handle empty/missing directories gracefully. Empty state: when no formulas found in any search path, show "Create your first formula" guided flow with instructions for placing a `.formula.toml` file in one of the search paths.
 - **Acceptance criteria:**
   - [ ] Shows formulas from all available search paths
   - [ ] Click navigates to `/formula/:name`
   - [ ] Empty directories not shown
   - [ ] Loading state while fetching
+  - [ ] Empty state: "Create your first formula" guidance when no formulas exist
 - **Dependencies:** 1.5, 2A.1
 
 **2B.3 Command palette**
@@ -449,34 +456,52 @@ These are built in Phase 1 and consumed by all subsequent phases.
 - **Files:**
   - Update: `beads-ide/apps/frontend/src/components/results/graph-view.tsx` — add clustering, focus mode
   - Update: `beads-ide/apps/frontend/src/components/results/graph-controls.tsx` — add simplification toggles
-- **Key details:** Auto-cluster by epic (collapse epic's children into single node). Focus mode: click node to show N-hop neighborhood (default N=2). Semantic zoom: show less detail when zoomed out (hide labels, simplify edges). Density indicator in health panel: warn >0.10, red >0.12.
+- **Key details:** Auto-cluster by epic (collapse epic's children into single node). Focus mode: click node to show N-hop neighborhood (default N=2). Semantic zoom: show less detail when zoomed out (hide labels, simplify edges). Fisheye distortion: magnify area around cursor while compressing periphery. Density indicator in health panel: warn >0.10, red >0.12.
 - **Acceptance criteria:**
   - [ ] Epic clustering reduces visible nodes
   - [ ] Focus mode shows neighborhood of selected node
+  - [ ] Fisheye distortion available as simplification option
   - [ ] Density indicator shows correct value
   - [ ] Density warnings at thresholds
 - **Dependencies:** 4B.1
 
-#### Track C: Sling Integration
+#### Track C: Execution Workflows
 
-**4C.1 Sling workflow**
+**4C.1 Pour workflow (local execution)**
+- **What:** Trigger `bd mol pour` from IDE with transactional rollback
+- **Files:**
+  - Create: `beads-ide/apps/frontend/src/components/formulas/pour-dialog.tsx` — confirmation dialog with rollback option
+  - Create: `beads-ide/apps/backend/src/routes/pour.ts` — pour endpoint
+  - Update: `beads-ide/apps/frontend/src/routes/formula.$name.tsx` — add Pour button
+- **Key details:** From cook preview (proto beads visible), "Pour" button instantiates real beads locally via `bd mol pour`. Confirmation dialog shows what will be created. On success, navigate to results view showing new beads. On failure, toast with error. Rollback button available post-pour (invokes `bd mol rollback` or equivalent). This is the local execution path — complements sling (agent dispatch).
+- **Acceptance criteria:**
+  - [ ] Pour button visible from cook preview when proto beads exist
+  - [ ] Confirmation dialog shows bead count and types
+  - [ ] Invokes `bd mol pour` via backend
+  - [ ] Success navigates to results view
+  - [ ] Failure shows error toast
+  - [ ] Rollback option available after pour
+- **Dependencies:** 2A.1, 3B.1
+
+**4C.2 Sling workflow**
 - **What:** Trigger `gt sling` from IDE with target selection
 - **Files:**
   - Create: `beads-ide/apps/frontend/src/components/formulas/sling-dialog.tsx` — target selection modal
   - Update: `beads-ide/apps/frontend/src/routes/formula.$name.tsx` — add Sling button
-- **Key details:** From previewed formula, "Sling" button (or Cmd+K → "sling") opens dialog. User selects target (agent/crew) — populate from context or free text. Submit invokes `POST /api/formulas/:name/sling`. Status indicator while running. On completion, navigate to results view. On failure, toast with error.
+- **Key details:** From previewed formula, "Sling" button (or Cmd+K → "sling") opens dialog. User selects target (agent/crew) — populate from context or free text. Submit invokes `POST /api/formulas/:name/sling`. Status indicator while running. On completion, navigate to results view. On failure, toast with error and retry button.
 - **Acceptance criteria:**
   - [ ] Sling button visible from formula editor
   - [ ] Dialog allows target selection
   - [ ] Invokes `gt sling` via backend
   - [ ] Status indicator during execution
   - [ ] Success navigates to results
-  - [ ] Failure shows error toast
+  - [ ] Failure shows error toast with retry button
 - **Dependencies:** 2A.1, 3A.1
 
 #### Phase 4 Exit Criteria
 - [ ] Wave view correctly groups beads by dependency frontier
 - [ ] Graph renders 200 beads <1s with metrics overlay
+- [ ] Pour instantiates beads locally with rollback option
 - [ ] Sling triggers `gt sling` and shows results on completion
 - [ ] All three result views (list/wave/graph) switchable
 
@@ -528,6 +553,8 @@ These are built in Phase 1 and consumed by all subsequent phases.
   - [ ] Graph has list/tree alternative view
   - [ ] No color-only encoding (shapes + icons always present)
   - [ ] Command palette traps focus correctly
+  - [ ] Skeleton loading used for all data-dependent panels (no full-screen spinners)
+  - [ ] Terminology enforcement verified: "Cook" not "Compile", "Wave" not "Level", etc.
 - **Dependencies:** All Phase 3 + 4 tasks
 
 **5.4 Performance benchmarks**
@@ -565,6 +592,19 @@ These are built in Phase 1 and consumed by all subsequent phases.
 ---
 
 ## Cross-Cutting Concerns
+
+### Terminology Enforcement
+All user-facing UI must follow the spec's Terminology Simplifications:
+- Use "Cook" not "Compile" or "Build"
+- Use "Wave" not "Level" or "Tier"
+- Use "dependency" not "bond"
+- Show only top-4 dependency types in UI (blocks, related, parent-child, duplicate)
+- Hide BCC compilation phases (SCAN/ANALYZE/CONNECT/ENRICH) — "Phase" refers only to bead lifecycle
+- Show "Here's what will be created" not "Proto beads" in cook preview
+- Verify during Phase 5.2 (error handling) and 5.3 (accessibility) passes
+
+### Loading States
+Use skeleton loading throughout (progressive, no full-screen spinner). Follow openedi's skeleton pattern. Each panel should show skeleton placeholders while data loads. This is a cross-cutting pattern enforced during component implementation — verify during Task 5.3 (accessibility pass).
 
 ### Error Handling
 Use try/catch with `finally` for loading state reset (openedi pattern). User-facing errors via `toast.error()` (Sonner). Backend returns `ApiResponse<T>` envelope with `{ data, error }` — never raw exceptions. Connection errors detected by `api.ts` fetch wrapper and surface as error page or degraded mode. See Phase 5.2 for full failure mode matrix.
@@ -606,11 +646,12 @@ No migration needed. The IDE is a greenfield project that reads existing data vi
 | What This Is / Is NOT | Architecture Decisions (scope boundaries) | — |
 | Core Decisions: Identity & Scope | Architecture Decisions table | — |
 | Core Decisions: MVP Scope | Phase 3 (three tracks = three pillars) | 3 |
-| Core Decisions: Execution Model | 2A.1 (cook route), 4C.1 (sling) | 2, 4 |
-| Core Decisions: Branching | Deferred (data branches via `bd`; no IDE UI for branch management in MVP) | — |
+| Core Decisions: Execution Model | 2A.1 (cook route), 4C.1 (pour), 4C.2 (sling) | 2, 4 |
+| Core Decisions: Branching | Deferred — both branch management AND branch status visibility (ahead/behind indicators) are out of MVP scope. Rationale: branches are created by formulas via CLI, not by the user; status indicators require `bd` branch introspection APIs not yet confirmed. | — |
 | What's In Scope: Formula editing | 3A.1-3A.3 (text editor, vars, auto-save) | 3 |
 | What's In Scope: Cook preview | 3B.1 (cook preview panel) | 3 |
-| What's In Scope: Sling integration | 4C.1 (sling workflow) | 4 |
+| What's In Scope: Pour (local execution) | 4C.1 (pour workflow) | 4 |
+| What's In Scope: Sling integration | 4C.2 (sling workflow) | 4 |
 | What's In Scope: Results analysis | 3C.1-3C.2 (list, detail) | 3 |
 | What's In Scope: Wave view | 4A.1 (wave view) | 4 |
 | What's In Scope: Graph with metrics | 4B.1-4B.2 (graph view, dense handling) | 4 |
@@ -621,7 +662,7 @@ No migration needed. The IDE is a greenfield project that reads existing data vi
 | Architecture: Tech Stack | 1.1 (scaffolding), Architecture Decisions | 1 |
 | Architecture: Backend Layer | 1.6, 2A.1-2A.3 (backend routes) | 1, 2 |
 | Architecture: Data Layer | 1.3 (CLI wrapper), 2A.1-2A.3 (routes) | 1, 2 |
-| Architecture: Branching Model | Out of MVP UI scope (branches created by formulas via CLI) | — |
+| Architecture: Branching Model | Deferred — branch management and status visibility both out of MVP scope (see Core Decisions: Branching) | — |
 | Architecture: IDE Replaces bv | 4B.1 (graph view with 9 metrics) | 4 |
 | UI: Reference Patterns | 2B.1 (app shell), component patterns throughout | 2-4 |
 | UI: Layout | 2B.1 (multi-panel layout) | 2 |
@@ -632,10 +673,11 @@ No migration needed. The IDE is a greenfield project that reads existing data vi
 | UI: Graph View | 4B.1-4B.2 | 4 |
 | Workflows: Formula Editing | 3A.1-3A.3 | 3 |
 | Workflows: Cook Preview | 3B.1 | 3 |
-| Workflows: Sling | 4C.1 | 4 |
+| Workflows: Pour | 4C.1 | 4 |
+| Workflows: Sling | 4C.2 | 4 |
 | Workflows: Results Analysis | 3C.1, 4A.1, 4B.1 | 3, 4 |
 | First-Run Experience | 1.6 (health check), 2B.2 (formula gallery) | 1, 2 |
-| Auto-Filled Answers: Editing & UX | 3A.1 (undo/redo), 3A.3 (auto-save) | 3 |
+| Auto-Filled Answers: Editing & UX | 3A.1 (undo/redo), 3A.3 (auto-save), 4C.1 (pour with rollback) | 3, 4 |
 | Auto-Filled Answers: Graph Interaction | 4B.1 (drag, context menu, keyboard) | 4 |
 | Auto-Filled Answers: Accessibility | 5.3 (WCAG 2.1 AA pass) | 5 |
 | Auto-Filled Answers: Visual Encoding | 4B.1 (shape + icon for types, line-style for edges) | 4 |
@@ -679,6 +721,8 @@ No migration needed. The IDE is a greenfield project that reads existing data vi
 | `beads-ide/apps/frontend/src/components/layout/command-palette.tsx` | 2 | Cmd+K palette |
 | `beads-ide/apps/frontend/src/components/formulas/text-editor.tsx` | 3 | TOML editor |
 | `beads-ide/apps/frontend/src/components/formulas/vars-panel.tsx` | 3 | Variable form |
+| `beads-ide/apps/frontend/src/components/formulas/pour-dialog.tsx` | 4 | Pour confirmation + rollback |
+| `beads-ide/apps/backend/src/routes/pour.ts` | 4 | Pour endpoint |
 | `beads-ide/apps/frontend/src/components/formulas/sling-dialog.tsx` | 4 | Sling target selection |
 | `beads-ide/apps/frontend/src/components/formulas/visual-builder.tsx` | 5 | Step DAG (read-only) |
 | `beads-ide/apps/frontend/src/components/preview/cook-preview.tsx` | 3 | Split view preview |
