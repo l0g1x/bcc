@@ -1,0 +1,153 @@
+formula = "prd-to-beads"
+description = "Scaffold an epic from a PRD spec: setup, story parent, and QA pass with full agent context"
+version = 1
+type = "workflow"
+phase = "liquid"
+
+# --- Variables ---
+
+[vars.epic_name]
+description = "Short name for the epic (used in titles and branch names, e.g. 'dark-mode')"
+required = true
+
+[vars.epic_description]
+description = "One-line summary of what this epic delivers"
+required = true
+
+[vars.prd_path]
+description = "Path to the PRD markdown file relative to repo root"
+required = true
+
+[vars.install_cmd]
+description = "Command to install dependencies"
+default = "bun install"
+
+[vars.typecheck_cmd]
+description = "Command to run type checking"
+default = "bun run typecheck"
+
+[vars.lint_cmd]
+description = "Command to run linting"
+default = "bun run lint"
+
+[vars.test_cmd]
+description = "Command to run tests"
+default = "bun run test"
+
+[vars.base_branch]
+description = "Branch to create the epic branch from"
+default = "main"
+
+[vars.epic_ref]
+description = "Unique external reference for this epic (used to prevent duplicate pours, e.g. 'prd:dark-mode')"
+required = true
+
+# --- Steps ---
+
+[[steps]]
+id = "setup"
+title = "Setup: {{epic_name}}"
+type = "task"
+priority = 0
+description = """Read the PRD at {{prd_path}} and prepare the workspace.
+
+## Duplicate Guard
+
+BEFORE doing anything else, check if this epic has already been poured:
+
+  bd search "{{epic_ref}}" --status open
+
+If any results are returned, STOP. This epic already exists. Do not proceed.
+
+If no results, tag the ROOT epic bead (the parent of this bead) with the external ref to prevent future duplicates:
+
+  bd update <root-epic-id> --external-ref "{{epic_ref}}"
+
+## Instructions
+
+1. Run `git checkout {{base_branch}} && git pull`
+2. Run `git checkout -b epic/{{epic_name}}`
+3. Run `{{install_cmd}}`
+4. Read the PRD file at `{{prd_path}}` end to end
+5. Verify the project builds: `{{typecheck_cmd}} && {{lint_cmd}}`
+
+## Acceptance Criteria
+
+- [ ] Duplicate guard check passed (no existing epic with ref `{{epic_ref}}`)
+- [ ] External ref `{{epic_ref}}` set on root epic bead
+- [ ] Epic branch `epic/{{epic_name}}` exists and is checked out
+- [ ] Dependencies installed successfully
+- [ ] Project builds cleanly (typecheck + lint pass)
+- [ ] You have read and understood the full PRD"""
+
+[[steps]]
+id = "stories"
+title = "Stories: {{epic_name}}"
+type = "epic"
+priority = 1
+needs = ["setup"]
+description = """Parent for all user stories in {{epic_name}}.
+
+Each story bead should be created as a child of this bead. When creating story beads, include the following context in every story description:
+
+## Agent Setup Instructions (include in every story)
+
+1. `git checkout epic/{{epic_name}} && git pull`
+2. `git checkout -b story/{{epic_name}}-<story-number>`
+3. `{{install_cmd}}`
+
+## Agent Quality Gates (include in every story)
+
+Before considering the story done, ALL must pass:
+- `{{typecheck_cmd}}`
+- `{{lint_cmd}}`
+- `{{test_cmd}}`
+
+## Agent Finish Instructions (include in every story)
+
+1. Commit changes with a descriptive message
+2. `git checkout epic/{{epic_name}} && git merge story/{{epic_name}}-<story-number>`
+3. Verify quality gates still pass after merge
+
+## Story Creation
+
+Read the PRD at `{{prd_path}}` and create one child bead per user story using:
+
+  bd create "<story-title>" -t task --parent <this-bead-id> -d "<story-description-with-setup-and-gates>"
+
+Wire dependencies between stories using:
+
+  bd dep add <story-id> --depends-on <prerequisite-story-id>
+
+The PRD defines the story titles, descriptions, and acceptance criteria. The setup instructions, quality gates, and finish instructions above should be prepended to each story description so that work agents have full context."""
+
+[[steps]]
+id = "qa"
+title = "QA: {{epic_name}} integration check"
+type = "task"
+priority = 1
+needs = ["stories"]
+description = """Final integration check for the {{epic_name}} epic.
+
+## Setup
+
+1. `git checkout epic/{{epic_name}} && git pull`
+2. `{{install_cmd}}`
+
+## Checks
+
+1. Read the full PRD at `{{prd_path}}`
+2. Verify every user story's acceptance criteria is met
+3. Run the full quality gate suite:
+   - [ ] `{{typecheck_cmd}}`
+   - [ ] `{{lint_cmd}}`
+   - [ ] `{{test_cmd}}`
+4. Check for regressions - does existing functionality still work?
+5. Verify no leftover TODOs, debug code, or temporary workarounds
+
+## Acceptance Criteria
+
+- [ ] All user stories from the PRD are implemented
+- [ ] All quality gates pass
+- [ ] No regressions detected
+- [ ] Epic branch is clean and ready for review"""
