@@ -188,7 +188,7 @@ function extractVariables(text: string): string[] {
  * Visual formula builder displaying steps as a DAG.
  * Read-only: changes in TOML propagate to graph, not vice versa.
  */
-export function VisualBuilder({ steps, vars }: VisualBuilderProps) {
+export function VisualBuilder({ steps, vars: _vars }: VisualBuilderProps) {
   // Convert steps to React Flow nodes and edges
   const { initialNodes, initialEdges } = useMemo(() => {
     if (!steps || steps.length === 0) {

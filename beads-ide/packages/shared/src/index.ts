@@ -63,6 +63,7 @@ export type {
   CookRequest,
   // Formula list API types
   Formula,
+  FormulaListItem,
   FormulaListResponse,
   FormulaListError,
   // Sling API types

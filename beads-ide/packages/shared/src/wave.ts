@@ -196,7 +196,7 @@ export function computeWaves(beads: Bead[]): WaveResult {
 function findCycles(
   cycleNodes: string[],
   dependents: Map<string, string[]>,
-  allBeadIds: Set<string>
+  _allBeadIds: Set<string>
 ): string[][] {
   if (cycleNodes.length === 0) return []
 

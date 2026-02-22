@@ -266,6 +266,9 @@ export interface Formula {
   searchPathLabel: string
 }
 
+/** Alias for Formula used in list API responses */
+export type FormulaListItem = Formula
+
 /** Successful formula list response */
 export interface FormulaListResponse {
   ok: true
