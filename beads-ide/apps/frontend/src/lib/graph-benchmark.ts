@@ -122,7 +122,7 @@ export function measureTimeSync<T>(fn: () => T): { result: T; timeMs: number } {
  */
 export async function measureAverage(
   fn: () => Promise<void> | void,
-  iterations: number = 10
+  iterations = 10
 ): Promise<number> {
   const times: number[] = []
   for (let i = 0; i < iterations; i++) {
