@@ -1,3 +1,4 @@
+import type { SlingRequest } from '@beads-ide/shared'
 /**
  * Formula editor route with text/visual view toggle and sling workflow.
  * Displays formula TOML in text mode or as a DAG in visual mode.
@@ -5,9 +6,8 @@
  * Includes Cook preview and Sling dispatch functionality.
  */
 import { createFileRoute } from '@tanstack/react-router'
-import { useState, useCallback, type CSSProperties } from 'react'
-import type { SlingRequest } from '@beads-ide/shared'
-import { VarsPanel, VisualBuilder, SlingDialog } from '../components/formulas'
+import { type CSSProperties, useCallback, useState } from 'react'
+import { SlingDialog, VarsPanel, VisualBuilder } from '../components/formulas'
 import { useCook, useSling } from '../hooks'
 
 // --- Types ---
@@ -236,12 +236,7 @@ function FormulaPage() {
       <div style={headerStyle}>
         <div style={titleStyle}>{name}.toml</div>
         <div style={actionsStyle}>
-          <button
-            type="button"
-            onClick={handleCook}
-            style={cookButtonStyle}
-            disabled={isLoading}
-          >
+          <button type="button" onClick={handleCook} style={cookButtonStyle} disabled={isLoading}>
             {isLoading ? 'Cooking...' : 'Cook Preview'}
           </button>
           <button
@@ -276,15 +271,9 @@ function FormulaPage() {
       {/* Main content area */}
       <div style={contentStyle}>
         <div style={mainPanelStyle}>
-          {isLoading && (
-            <div style={loadingStyle}>Cooking formula...</div>
-          )}
+          {isLoading && <div style={loadingStyle}>Cooking formula...</div>}
 
-          {error && (
-            <div style={errorStyle}>
-              Error: {error.message}
-            </div>
-          )}
+          {error && <div style={errorStyle}>Error: {error.message}</div>}
 
           {!isLoading && !error && viewMode === 'text' && (
             <textarea
@@ -299,10 +288,7 @@ function FormulaPage() {
           {!isLoading && !error && viewMode === 'visual' && (
             <div style={visualContainerStyle}>
               {result?.steps ? (
-                <VisualBuilder
-                  steps={result.steps}
-                  vars={result.vars}
-                />
+                <VisualBuilder steps={result.steps} vars={result.vars} />
               ) : (
                 <div style={loadingStyle}>No steps to visualize</div>
               )}

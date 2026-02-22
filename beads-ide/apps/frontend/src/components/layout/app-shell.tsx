@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef, type ReactNode, type CSSProperties } from 'react'
+import { type CSSProperties, type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Panel, PanelGroup } from 'react-resizable-panels'
 import { PanelResizer } from './panel-resizer'
 import { Sidebar } from './sidebar'
@@ -29,7 +29,8 @@ const shellStyle: CSSProperties = {
   width: '100vw',
   backgroundColor: '#1e1e1e',
   color: '#cccccc',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
   fontSize: '13px',
   overflow: 'hidden',
 }
@@ -125,11 +126,7 @@ export function AppShell({ sidebarContent, mainContent, detailContent }: AppShel
 
   return (
     <div style={shellStyle}>
-      <PanelGroup
-        direction="horizontal"
-        style={panelGroupStyle}
-        onLayout={handleLayout}
-      >
+      <PanelGroup direction="horizontal" style={panelGroupStyle} onLayout={handleLayout}>
         <Panel
           defaultSize={sizes.sidebar}
           minSize={collapsed ? COLLAPSED_SIDEBAR_SIZE : MIN_SIDEBAR_SIZE}

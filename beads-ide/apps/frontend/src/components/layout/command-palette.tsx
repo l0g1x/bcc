@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { useHotkey, formatHotkey } from '../../hooks/use-hotkeys'
+import { formatHotkey, useHotkey } from '../../hooks/use-hotkeys'
 
 export interface CommandAction {
   id: string
@@ -24,7 +24,12 @@ interface CommandPaletteItemProps {
   onMouseEnter: () => void
 }
 
-function CommandPaletteItem({ action, isSelected, onSelect, onMouseEnter }: CommandPaletteItemProps) {
+function CommandPaletteItem({
+  action,
+  isSelected,
+  onSelect,
+  onMouseEnter,
+}: CommandPaletteItemProps) {
   const itemRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -58,7 +63,14 @@ function CommandPaletteItem({ action, isSelected, onSelect, onMouseEnter }: Comm
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
         {action.icon && <span style={{ fontSize: '16px', opacity: 0.7 }}>{action.icon}</span>}
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <div
+            style={{
+              fontWeight: 500,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
             {action.label}
           </div>
           {action.description && (
@@ -96,7 +108,10 @@ function CommandPaletteItem({ action, isSelected, onSelect, onMouseEnter }: Comm
   )
 }
 
-export function CommandPalette({ actions, placeholder = 'Type to search...' }: CommandPaletteProps) {
+export function CommandPalette({
+  actions,
+  placeholder = 'Type to search...',
+}: CommandPaletteProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -297,7 +312,9 @@ export function CommandPalette({ actions, placeholder = 'Type to search...' }: C
           }}
         >
           {filteredActions.length === 0 ? (
-            <div style={{ padding: '24px', textAlign: 'center', color: '#737373' }}>No results found</div>
+            <div style={{ padding: '24px', textAlign: 'center', color: '#737373' }}>
+              No results found
+            </div>
           ) : (
             Object.entries(groupedActions).map(([category, categoryActions]) => {
               let groupStartIndex = 0
@@ -322,9 +339,14 @@ export function CommandPalette({ actions, placeholder = 'Type to search...' }: C
                     {category}
                   </div>
                   {categoryActions.map((action, idx) => (
-                    // biome-ignore lint/a11y/useSemanticElements: custom listbox option, <option> only valid inside <select>
-                    // biome-ignore lint/a11y/useFocusableInteractive: tabIndex below enables keyboard focus per ARIA listbox pattern
-                    <div key={action.id} id={`option-${action.id}`} role="option" tabIndex={-1} aria-selected={selectedIndex === groupStartIndex + idx}>
+                    <div
+                      key={action.id}
+                      id={`option-${action.id}`}
+                      // biome-ignore lint/a11y/useSemanticElements: custom listbox option, <option> only valid inside <select>
+                      role="option"
+                      tabIndex={-1}
+                      aria-selected={selectedIndex === groupStartIndex + idx}
+                    >
                       <CommandPaletteItem
                         action={action}
                         isSelected={selectedIndex === groupStartIndex + idx}
@@ -351,19 +373,42 @@ export function CommandPalette({ actions, placeholder = 'Type to search...' }: C
           }}
         >
           <span>
-            <kbd style={{ padding: '2px 4px', background: '#333', borderRadius: '3px', marginRight: '4px' }}>
+            <kbd
+              style={{
+                padding: '2px 4px',
+                background: '#333',
+                borderRadius: '3px',
+                marginRight: '4px',
+              }}
+            >
               &uarr;&darr;
             </kbd>
             Navigate
           </span>
           <span>
-            <kbd style={{ padding: '2px 4px', background: '#333', borderRadius: '3px', marginRight: '4px' }}>
+            <kbd
+              style={{
+                padding: '2px 4px',
+                background: '#333',
+                borderRadius: '3px',
+                marginRight: '4px',
+              }}
+            >
               &crarr;
             </kbd>
             Select
           </span>
           <span>
-            <kbd style={{ padding: '2px 4px', background: '#333', borderRadius: '3px', marginRight: '4px' }}>Esc</kbd>
+            <kbd
+              style={{
+                padding: '2px 4px',
+                background: '#333',
+                borderRadius: '3px',
+                marginRight: '4px',
+              }}
+            >
+              Esc
+            </kbd>
             Close
           </span>
         </div>

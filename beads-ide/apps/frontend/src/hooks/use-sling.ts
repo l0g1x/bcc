@@ -1,25 +1,25 @@
+import type { SlingRequest, SlingResult } from '@beads-ide/shared'
 /**
  * Hook for slinging formulas to agents/crews.
  * Provides state management for the sling dialog and API calls.
  */
-import { useState, useCallback } from 'react';
-import type { SlingRequest, SlingResult } from '@beads-ide/shared';
+import { useCallback, useState } from 'react'
 
 /** Return value of the sling hook */
 export interface UseSlingReturn {
   /** Current sling result */
-  result: SlingResult | null;
+  result: SlingResult | null
   /** Whether a sling is in progress */
-  isLoading: boolean;
+  isLoading: boolean
   /** Error from the last sling attempt */
-  error: Error | null;
+  error: Error | null
   /** Execute the sling */
-  sling: (request: SlingRequest) => Promise<SlingResult>;
+  sling: (request: SlingRequest) => Promise<SlingResult>
   /** Reset state */
-  reset: () => void;
+  reset: () => void
 }
 
-const API_BASE = 'http://127.0.0.1:3001';
+const API_BASE = 'http://127.0.0.1:3001'
 
 /**
  * Sling a formula via the backend API.
@@ -31,14 +31,14 @@ async function slingFormula(request: SlingRequest): Promise<SlingResult> {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(request),
-  });
+  })
 
   if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Sling request failed: ${response.status} ${text}`);
+    const text = await response.text()
+    throw new Error(`Sling request failed: ${response.status} ${text}`)
   }
 
-  return response.json();
+  return response.json()
 }
 
 /**
@@ -47,42 +47,42 @@ async function slingFormula(request: SlingRequest): Promise<SlingResult> {
  * @returns Sling state and controls
  */
 export function useSling(): UseSlingReturn {
-  const [result, setResult] = useState<SlingResult | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const [result, setResult] = useState<SlingResult | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<Error | null>(null)
 
   const sling = useCallback(async (request: SlingRequest): Promise<SlingResult> => {
-    setIsLoading(true);
-    setError(null);
+    setIsLoading(true)
+    setError(null)
 
     try {
-      const slingResult = await slingFormula(request);
-      setResult(slingResult);
+      const slingResult = await slingFormula(request)
+      setResult(slingResult)
 
       if (!slingResult.ok) {
-        setError(new Error(slingResult.error || 'Sling failed'));
+        setError(new Error(slingResult.error || 'Sling failed'))
       }
 
-      return slingResult;
+      return slingResult
     } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err));
-      setError(error);
+      const error = err instanceof Error ? err : new Error(String(err))
+      setError(error)
       const failedResult: SlingResult = {
         ok: false,
         error: error.message,
-      };
-      setResult(failedResult);
-      return failedResult;
+      }
+      setResult(failedResult)
+      return failedResult
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, []);
+  }, [])
 
   const reset = useCallback(() => {
-    setResult(null);
-    setError(null);
-    setIsLoading(false);
-  }, []);
+    setResult(null)
+    setError(null)
+    setIsLoading(false)
+  }, [])
 
-  return { result, isLoading, error, sling, reset };
+  return { result, isLoading, error, sling, reset }
 }

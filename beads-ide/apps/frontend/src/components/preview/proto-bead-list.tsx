@@ -2,11 +2,11 @@
  * Proto bead cards list component.
  * Displays the beads that will be created when a formula is poured.
  */
-import type { ProtoBead } from '@beads-ide/shared';
+import type { ProtoBead } from '@beads-ide/shared'
 
 /** Props for the proto bead card */
 interface ProtoBeadCardProps {
-  bead: ProtoBead;
+  bead: ProtoBead
 }
 
 /** Type badge colors based on priority */
@@ -14,14 +14,14 @@ const priorityColors: Record<number, string> = {
   0: '#22c55e', // green - highest priority
   1: '#eab308', // yellow - medium priority
   2: '#f97316', // orange - lower priority
-};
+}
 
 /**
  * Card displaying a single proto bead.
  */
 function ProtoBeadCard({ bead }: ProtoBeadCardProps) {
-  const priorityColor = priorityColors[bead.priority] ?? '#6b7280';
-  const dependencyCount = bead.needs?.length ?? 0;
+  const priorityColor = priorityColors[bead.priority] ?? '#6b7280'
+  const dependencyCount = bead.needs?.length ?? 0
 
   return (
     <div
@@ -105,15 +105,15 @@ function ProtoBeadCard({ bead }: ProtoBeadCardProps) {
         )}
       </div>
     </div>
-  );
+  )
 }
 
 /** Props for the proto bead list */
 export interface ProtoBeadListProps {
   /** List of proto beads to display */
-  beads: ProtoBead[];
+  beads: ProtoBead[]
   /** Optional title override */
-  title?: string;
+  title?: string
 }
 
 /**
@@ -135,16 +135,16 @@ export function ProtoBeadList({
       >
         No steps defined in this formula
       </div>
-    );
+    )
   }
 
   // Sort by priority (0 = highest), then by id
   const sortedBeads = [...beads].sort((a, b) => {
     if (a.priority !== b.priority) {
-      return a.priority - b.priority;
+      return a.priority - b.priority
     }
-    return a.id.localeCompare(b.id);
-  });
+    return a.id.localeCompare(b.id)
+  })
 
   return (
     <div>
@@ -164,5 +164,5 @@ export function ProtoBeadList({
         ))}
       </div>
     </div>
-  );
+  )
 }

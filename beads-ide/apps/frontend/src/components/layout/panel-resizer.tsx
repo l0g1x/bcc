@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { PanelResizeHandle } from 'react-resizable-panels'
 import type { CSSProperties } from 'react'
+import { PanelResizeHandle } from 'react-resizable-panels'
 
 interface PanelResizerProps {
   orientation?: 'horizontal' | 'vertical'
@@ -18,9 +18,10 @@ export function PanelResizer({ orientation = 'horizontal', className }: PanelRes
     transition: 'background-color 0.15s ease',
   }
 
-  const style: CSSProperties = orientation === 'horizontal'
-    ? { ...baseStyle, width: '4px', cursor: 'col-resize' }
-    : { ...baseStyle, height: '4px', cursor: 'row-resize' }
+  const style: CSSProperties =
+    orientation === 'horizontal'
+      ? { ...baseStyle, width: '4px', cursor: 'col-resize' }
+      : { ...baseStyle, height: '4px', cursor: 'row-resize' }
 
   return (
     <PanelResizeHandle

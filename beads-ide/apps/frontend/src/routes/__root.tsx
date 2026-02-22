@@ -1,6 +1,6 @@
-import { Component, type ReactNode, type ErrorInfo } from 'react'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { Toaster } from 'sonner'
 import { AppShell, FormulaTree } from '../components/layout'
 import { GenericErrorPage, OfflineBanner } from '../components/ui'
@@ -45,12 +45,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
       if (this.props.fallback) {
         return this.props.fallback
       }
-      return (
-        <GenericErrorPage
-          error={this.state.error}
-          resetErrorBoundary={this.handleReset}
-        />
-      )
+      return <GenericErrorPage error={this.state.error} resetErrorBoundary={this.handleReset} />
     }
 
     return this.props.children
@@ -69,9 +64,7 @@ function RootLayout() {
         sidebarContent={<FormulaTree />}
         mainContent={<Outlet />}
         detailContent={
-          <div style={{ padding: '16px', color: '#858585' }}>
-            Bead detail will appear here
-          </div>
+          <div style={{ padding: '16px', color: '#858585' }}>Bead detail will appear here</div>
         }
       />
       <Toaster

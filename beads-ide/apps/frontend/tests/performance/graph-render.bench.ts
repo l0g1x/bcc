@@ -12,7 +12,7 @@
  * Note: Full rendering benchmarks would require browser automation (Playwright).
  * These benchmarks validate the data preparation layer meets targets.
  */
-import { describe, bench, expect } from 'vitest'
+import { bench, describe, expect } from 'vitest'
 import { generateSyntheticGraph, measureTimeSync } from '../../src/lib/graph-benchmark'
 
 /** Performance threshold for render operations (1000ms = 1s) */

@@ -9,7 +9,7 @@
  * 2. Rapid changes only trigger one cook after 500ms
  * 3. Manual cook() bypasses the debounce
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 /** Default debounce delay from useCook */
 const DEFAULT_DEBOUNCE_MS = 500

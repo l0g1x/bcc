@@ -2,21 +2,21 @@
  * Configuration management for Beads IDE backend.
  * Handles formula search paths, CLI binary locations, and project root detection.
  */
-import { existsSync, readFileSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
-import { homedir } from 'node:os';
+import { existsSync, readFileSync } from 'node:fs'
+import { homedir } from 'node:os'
+import { dirname, resolve } from 'node:path'
 
 export interface BeadsConfig {
   /** Ordered list of formula search paths that exist */
-  formulaPaths: string[];
+  formulaPaths: string[]
   /** Project root directory */
-  projectRoot: string;
+  projectRoot: string
   /** bd CLI binary location (or 'bd' if in PATH) */
-  bdBinary: string;
+  bdBinary: string
   /** gt CLI binary location (or 'gt' if in PATH) */
-  gtBinary: string;
+  gtBinary: string
   /** bv CLI binary location (or 'bv' if in PATH) */
-  bvBinary: string;
+  bvBinary: string
 }
 
 /**
@@ -24,36 +24,36 @@ export interface BeadsConfig {
  * Walks up directory tree looking for .beads directory.
  */
 export function resolveProjectRoot(startDir: string = process.cwd()): string {
-  let dir = resolve(startDir);
-  const maxDepth = 10;
-  let depth = 0;
+  let dir = resolve(startDir)
+  const maxDepth = 10
+  let depth = 0
 
   while (depth < maxDepth) {
-    const beadsDir = resolve(dir, '.beads');
-    const redirectFile = resolve(beadsDir, 'redirect');
+    const beadsDir = resolve(dir, '.beads')
+    const redirectFile = resolve(beadsDir, 'redirect')
 
     if (existsSync(redirectFile)) {
-      const redirectTarget = readFileSync(redirectFile, 'utf-8').trim();
+      const redirectTarget = readFileSync(redirectFile, 'utf-8').trim()
       if (redirectTarget) {
-        dir = resolve(dirname(redirectFile), redirectTarget);
-        depth++;
-        continue;
+        dir = resolve(dirname(redirectFile), redirectTarget)
+        depth++
+        continue
       }
     }
 
     if (existsSync(beadsDir)) {
-      return dir;
+      return dir
     }
 
-    const parent = dirname(dir);
+    const parent = dirname(dir)
     if (parent === dir) {
-      break;
+      break
     }
-    dir = parent;
-    depth++;
+    dir = parent
+    depth++
   }
 
-  return startDir;
+  return startDir
 }
 
 /**
@@ -66,30 +66,30 @@ export function resolveProjectRoot(startDir: string = process.cwd()): string {
  * Skips missing directories gracefully.
  */
 export function getFormulaSearchPaths(projectRoot: string): string[] {
-  const paths: string[] = [];
-  const home = homedir();
-  const gtRoot = process.env.GT_ROOT;
+  const paths: string[] = []
+  const home = homedir()
+  const gtRoot = process.env.GT_ROOT
 
   // Order of search paths per spec
   const candidates = [
     resolve(projectRoot, 'formulas'),
     resolve(projectRoot, '.beads', 'formulas'),
     resolve(home, '.beads', 'formulas'),
-  ];
+  ]
 
   // Add GT_ROOT path if set
   if (gtRoot) {
-    candidates.push(resolve(gtRoot, '.beads', 'formulas'));
+    candidates.push(resolve(gtRoot, '.beads', 'formulas'))
   }
 
   // Only include paths that exist
   for (const candidate of candidates) {
     if (existsSync(candidate)) {
-      paths.push(candidate);
+      paths.push(candidate)
     }
   }
 
-  return paths;
+  return paths
 }
 
 /**
@@ -98,15 +98,15 @@ export function getFormulaSearchPaths(projectRoot: string): string[] {
  */
 function resolveBinary(name: string): string {
   // Could be extended to check specific paths, but for now assume in PATH
-  return name;
+  return name
 }
 
 /**
  * Loads the full configuration.
  */
 export function loadConfig(cwd: string = process.cwd()): BeadsConfig {
-  const projectRoot = resolveProjectRoot(cwd);
-  const formulaPaths = getFormulaSearchPaths(projectRoot);
+  const projectRoot = resolveProjectRoot(cwd)
+  const formulaPaths = getFormulaSearchPaths(projectRoot)
 
   return {
     formulaPaths,
@@ -114,25 +114,25 @@ export function loadConfig(cwd: string = process.cwd()): BeadsConfig {
     bdBinary: resolveBinary('bd'),
     gtBinary: resolveBinary('gt'),
     bvBinary: resolveBinary('bv'),
-  };
+  }
 }
 
 // Cached config instance
-let cachedConfig: BeadsConfig | null = null;
+let cachedConfig: BeadsConfig | null = null
 
 /**
  * Gets the configuration, loading it if not already cached.
  */
 export function getConfig(): BeadsConfig {
   if (!cachedConfig) {
-    cachedConfig = loadConfig();
+    cachedConfig = loadConfig()
   }
-  return cachedConfig;
+  return cachedConfig
 }
 
 /**
  * Clears the cached configuration (useful for testing or when project changes).
  */
 export function clearConfigCache(): void {
-  cachedConfig = null;
+  cachedConfig = null
 }

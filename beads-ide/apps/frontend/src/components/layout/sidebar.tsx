@@ -51,7 +51,11 @@ export function Sidebar({ children, collapsed = false, onToggleCollapse }: Sideb
   return (
     <div style={sidebarStyle}>
       <div style={headerStyle}>
-        {!collapsed && <span style={{ color: '#cccccc', fontSize: '11px', textTransform: 'uppercase' }}>Explorer</span>}
+        {!collapsed && (
+          <span style={{ color: '#cccccc', fontSize: '11px', textTransform: 'uppercase' }}>
+            Explorer
+          </span>
+        )}
         <button
           type="button"
           style={toggleButtonStyle}
@@ -67,9 +71,7 @@ export function Sidebar({ children, collapsed = false, onToggleCollapse }: Sideb
           {collapsed ? '>' : '<'}
         </button>
       </div>
-      <div style={collapsed ? collapsedContentStyle : contentStyle}>
-        {children}
-      </div>
+      <div style={collapsed ? collapsedContentStyle : contentStyle}>{children}</div>
     </div>
   )
 }

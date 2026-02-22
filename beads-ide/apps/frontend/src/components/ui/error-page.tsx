@@ -2,13 +2,13 @@
  * Full-page error component for critical failures.
  * Shown when the backend is not running or unreachable.
  */
-import { useState, useCallback, type CSSProperties } from 'react';
+import { type CSSProperties, useCallback, useState } from 'react'
 
 export interface ErrorPageProps {
-  title?: string;
-  message?: string;
-  details?: string;
-  onRetry?: () => Promise<void>;
+  title?: string
+  message?: string
+  details?: string
+  onRetry?: () => Promise<void>
 }
 
 const containerStyle: CSSProperties = {
@@ -20,24 +20,25 @@ const containerStyle: CSSProperties = {
   width: '100vw',
   backgroundColor: '#1e1e1e',
   color: '#cccccc',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
   padding: '24px',
   textAlign: 'center',
-};
+}
 
 const iconStyle: CSSProperties = {
   width: '64px',
   height: '64px',
   marginBottom: '24px',
   color: '#f87171',
-};
+}
 
 const titleStyle: CSSProperties = {
   fontSize: '24px',
   fontWeight: 600,
   color: '#f87171',
   marginBottom: '12px',
-};
+}
 
 const messageStyle: CSSProperties = {
   fontSize: '16px',
@@ -45,7 +46,7 @@ const messageStyle: CSSProperties = {
   marginBottom: '24px',
   maxWidth: '480px',
   lineHeight: 1.5,
-};
+}
 
 const detailsStyle: CSSProperties = {
   fontSize: '13px',
@@ -59,7 +60,7 @@ const detailsStyle: CSSProperties = {
   textAlign: 'left',
   whiteSpace: 'pre-wrap',
   wordBreak: 'break-word',
-};
+}
 
 const buttonStyle: CSSProperties = {
   padding: '12px 24px',
@@ -71,13 +72,13 @@ const buttonStyle: CSSProperties = {
   borderRadius: '8px',
   cursor: 'pointer',
   transition: 'background-color 0.2s',
-};
+}
 
 const buttonDisabledStyle: CSSProperties = {
   ...buttonStyle,
   backgroundColor: '#6b7280',
   cursor: 'not-allowed',
-};
+}
 
 const helpTextStyle: CSSProperties = {
   marginTop: '32px',
@@ -85,7 +86,7 @@ const helpTextStyle: CSSProperties = {
   color: '#6b7280',
   maxWidth: '400px',
   lineHeight: 1.5,
-};
+}
 
 const codeStyle: CSSProperties = {
   fontFamily: 'monospace',
@@ -93,7 +94,7 @@ const codeStyle: CSSProperties = {
   padding: '2px 6px',
   borderRadius: '4px',
   fontSize: '12px',
-};
+}
 
 /**
  * Disconnected icon (wifi-off style)
@@ -120,7 +121,7 @@ function DisconnectedIcon() {
       <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
       <line x1="12" y1="20" x2="12.01" y2="20" />
     </svg>
-  );
+  )
 }
 
 /**
@@ -132,18 +133,18 @@ export function ErrorPage({
   details,
   onRetry,
 }: ErrorPageProps) {
-  const [isRetrying, setIsRetrying] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false)
 
   const handleRetry = useCallback(async () => {
-    if (!onRetry || isRetrying) return;
+    if (!onRetry || isRetrying) return
 
-    setIsRetrying(true);
+    setIsRetrying(true)
     try {
-      await onRetry();
+      await onRetry()
     } finally {
-      setIsRetrying(false);
+      setIsRetrying(false)
     }
-  }, [onRetry, isRetrying]);
+  }, [onRetry, isRetrying])
 
   return (
     <div style={containerStyle}>
@@ -161,22 +162,22 @@ export function ErrorPage({
           disabled={isRetrying}
           onMouseOver={(e) => {
             if (!isRetrying) {
-              e.currentTarget.style.backgroundColor = '#2563eb';
+              e.currentTarget.style.backgroundColor = '#2563eb'
             }
           }}
           onMouseOut={(e) => {
             if (!isRetrying) {
-              e.currentTarget.style.backgroundColor = '#3b82f6';
+              e.currentTarget.style.backgroundColor = '#3b82f6'
             }
           }}
           onFocus={(e) => {
             if (!isRetrying) {
-              e.currentTarget.style.backgroundColor = '#2563eb';
+              e.currentTarget.style.backgroundColor = '#2563eb'
             }
           }}
           onBlur={(e) => {
             if (!isRetrying) {
-              e.currentTarget.style.backgroundColor = '#3b82f6';
+              e.currentTarget.style.backgroundColor = '#3b82f6'
             }
           }}
         >
@@ -187,19 +188,19 @@ export function ErrorPage({
       <p style={helpTextStyle}>
         Make sure the backend is running:
         <br />
-        <code style={codeStyle}>npm run dev</code> in the{' '}
-        <code style={codeStyle}>beads-ide</code> directory
+        <code style={codeStyle}>npm run dev</code> in the <code style={codeStyle}>beads-ide</code>{' '}
+        directory
       </p>
     </div>
-  );
+  )
 }
 
 /**
  * Generic error page for React Error Boundaries.
  */
 export interface GenericErrorPageProps {
-  error: Error;
-  resetErrorBoundary?: () => void;
+  error: Error
+  resetErrorBoundary?: () => void
 }
 
 export function GenericErrorPage({ error, resetErrorBoundary }: GenericErrorPageProps) {
@@ -210,5 +211,5 @@ export function GenericErrorPage({ error, resetErrorBoundary }: GenericErrorPage
       details={error.message}
       onRetry={resetErrorBoundary ? async () => resetErrorBoundary() : undefined}
     />
-  );
+  )
 }

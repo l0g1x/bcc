@@ -7,7 +7,7 @@
  * These benchmarks measure the time to filter graph data based on
  * various criteria (label text, node properties, edge relationships).
  */
-import { describe, bench, expect } from 'vitest'
+import { bench, describe, expect } from 'vitest'
 import { generateSyntheticGraph, measureTimeSync } from '../../src/lib/graph-benchmark'
 
 /** Performance threshold for filter operations (100ms) */
@@ -33,9 +33,7 @@ describe('Filter Performance', () => {
     bench('search by label substring (200 nodes)', () => {
       const searchTerm = 'Node 1' // Matches Node 1, 10-19, 100-199
       const { timeMs } = measureTimeSync(() => {
-        return nodes.filter((node) =>
-          node.label.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+        return nodes.filter((node) => node.label.toLowerCase().includes(searchTerm.toLowerCase()))
       })
       expect(timeMs).toBeLessThan(FILTER_THRESHOLD_MS)
     })
@@ -100,8 +98,7 @@ describe('Filter Performance', () => {
       const { timeMs } = measureTimeSync(() => {
         return nodes.filter(
           (node) =>
-            node.label.toLowerCase().includes(searchTerm.toLowerCase()) &&
-            node.type === filterType
+            node.label.toLowerCase().includes(searchTerm.toLowerCase()) && node.type === filterType
         )
       })
       expect(timeMs).toBeLessThan(FILTER_THRESHOLD_MS)

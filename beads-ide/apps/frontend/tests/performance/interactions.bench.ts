@@ -12,7 +12,7 @@
  * Note: Full interaction benchmarks require browser automation (Playwright).
  * These benchmarks validate the data transformation layer meets targets.
  */
-import { describe, bench, expect } from 'vitest'
+import { bench, describe, expect } from 'vitest'
 import { generateSyntheticGraph, measureTimeSync } from '../../src/lib/graph-benchmark'
 
 /** Performance threshold for interactions (100ms) */
@@ -103,9 +103,7 @@ describe('Interaction Performance', () => {
      */
     const simulateDrag = (nodeIndex: number, newX: number, newY: number) => {
       return nodes.map((node, index) =>
-        index === nodeIndex
-          ? { ...node, position: { x: newX, y: newY } }
-          : node
+        index === nodeIndex ? { ...node, position: { x: newX, y: newY } } : node
       )
     }
 
@@ -170,9 +168,7 @@ describe('Combined Interaction Stress Test', () => {
 
         // Drag a node
         currentNodes = currentNodes.map((node, index) =>
-          index === i
-            ? { ...node, position: { x: 200, y: 200 } }
-            : node
+          index === i ? { ...node, position: { x: 200, y: 200 } } : node
         )
       }
     })

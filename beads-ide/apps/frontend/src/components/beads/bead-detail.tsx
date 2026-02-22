@@ -1,10 +1,10 @@
+import type { BeadDependent, BeadFull } from '@beads-ide/shared'
 /**
  * Bead detail slide-in panel.
  * Read-only view of full bead details when a bead is clicked in the list.
  * Follows openedi's transaction-detail-modal.tsx slide-in pattern.
  */
-import { useState, useCallback, useEffect, type CSSProperties } from 'react'
-import type { BeadFull, BeadDependent } from '@beads-ide/shared'
+import { type CSSProperties, useCallback, useEffect, useState } from 'react'
 
 // --- Styles ---
 
@@ -236,8 +236,7 @@ function PriorityBadge({ priority }: { priority: number }) {
 
   return (
     <span style={style} aria-label={`Priority ${priority}: ${p.label}`}>
-      <span aria-hidden="true">{p.icon}</span>
-      P{priority}
+      <span aria-hidden="true">{p.icon}</span>P{priority}
     </span>
   )
 }
@@ -314,7 +313,13 @@ function MarkdownContent({ content }: { content: string }) {
           return (
             <h3
               key={key}
-              style={{ fontSize: '16px', fontWeight: 600, color: '#ffffff', marginBottom: '8px', marginTop: '16px' }}
+              style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#ffffff',
+                marginBottom: '8px',
+                marginTop: '16px',
+              }}
             >
               {paragraph.slice(2)}
             </h3>
@@ -324,7 +329,13 @@ function MarkdownContent({ content }: { content: string }) {
           return (
             <h4
               key={key}
-              style={{ fontSize: '14px', fontWeight: 600, color: '#ffffff', marginBottom: '8px', marginTop: '12px' }}
+              style={{
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#ffffff',
+                marginBottom: '8px',
+                marginTop: '12px',
+              }}
             >
               {paragraph.slice(3)}
             </h4>
@@ -492,14 +503,18 @@ export function BeadDetail({ bead, onClose, isLoading }: BeadDetailProps) {
         <div style={panelStyle} role="dialog" aria-labelledby="bead-detail-title" aria-modal="true">
           {isLoading ? (
             // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role, not form output
-            <div style={loadingStyle} role="status" aria-live="polite">Loading bead details...</div>
+            <div style={loadingStyle} role="status" aria-live="polite">
+              Loading bead details...
+            </div>
           ) : bead ? (
             <>
               {/* Sticky Header */}
               <div style={headerStyle}>
                 <div style={headerTopRowStyle}>
                   <div>
-                    <h2 id="bead-detail-title" style={titleStyle}>{bead.title}</h2>
+                    <h2 id="bead-detail-title" style={titleStyle}>
+                      {bead.title}
+                    </h2>
                     <div style={subtitleStyle}>{bead.id}</div>
                   </div>
                   <button
@@ -657,7 +672,9 @@ export function BeadDetail({ bead, onClose, isLoading }: BeadDetailProps) {
                       {bead.hook_bead && (
                         <div style={metadataItemStyle}>
                           <span style={metadataLabelStyle}>Hooked Bead</span>
-                          <span style={{ ...metadataValueStyle, fontFamily: 'monospace' }}>{bead.hook_bead}</span>
+                          <span style={{ ...metadataValueStyle, fontFamily: 'monospace' }}>
+                            {bead.hook_bead}
+                          </span>
                         </div>
                       )}
                       {bead.agent_state && (

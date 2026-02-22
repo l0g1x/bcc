@@ -7,97 +7,97 @@
  * A bead node in the graph.
  */
 export interface GraphNode {
-  id: string;
-  title: string;
-  status: string;
-  priority?: number;
-  labels?: string[];
-  type?: string;
+  id: string
+  title: string
+  status: string
+  priority?: number
+  labels?: string[]
+  type?: string
 }
 
 /**
  * A dependency edge in the graph.
  */
 export interface GraphEdge {
-  from: string;
-  to: string;
-  type: string;
+  from: string
+  to: string
+  type: string
 }
 
 /**
  * Graph statistics from bv.
  */
 export interface GraphStats {
-  nodes: number;
-  edges: number;
-  density: number;
-  avgDegree?: number;
+  nodes: number
+  edges: number
+  density: number
+  avgDegree?: number
 }
 
 /**
  * Graph export from bv --robot-graph.
  */
 export interface GraphExport {
-  generated_at: string;
-  data_hash: string;
-  format: 'json' | 'dot' | 'mermaid';
-  nodes: GraphNode[];
-  edges: GraphEdge[];
-  stats: GraphStats;
+  generated_at: string
+  data_hash: string
+  format: 'json' | 'dot' | 'mermaid'
+  nodes: GraphNode[]
+  edges: GraphEdge[]
+  stats: GraphStats
 }
 
 /**
  * A ranked metric entry (used for PageRank, betweenness, etc.)
  */
 export interface RankedMetric {
-  id: string;
-  title: string;
-  score: number;
-  rank?: number;
+  id: string
+  title: string
+  score: number
+  rank?: number
 }
 
 /**
  * HITS scores (authorities and hubs).
  */
 export interface HITSScores {
-  authorities: RankedMetric[];
-  hubs: RankedMetric[];
+  authorities: RankedMetric[]
+  hubs: RankedMetric[]
 }
 
 /**
  * Cycle information from graph analysis.
  */
 export interface CycleInfo {
-  count: number;
-  cycles: string[][];
+  count: number
+  cycles: string[][]
 }
 
 /**
  * Degree metrics for a node.
  */
 export interface DegreeMetrics {
-  id: string;
-  title: string;
-  inDegree: number;
-  outDegree: number;
-  totalDegree: number;
+  id: string
+  title: string
+  inDegree: number
+  outDegree: number
+  totalDegree: number
 }
 
 /**
  * Critical path information.
  */
 export interface CriticalPath {
-  length: number;
-  path: string[];
-  slack: Record<string, number>;
+  length: number
+  path: string[]
+  slack: Record<string, number>
 }
 
 /**
  * Topological sort order.
  */
 export interface TopoSort {
-  order: string[];
-  levels: Record<string, number>;
+  order: string[]
+  levels: Record<string, number>
 }
 
 /**
@@ -106,77 +106,77 @@ export interface TopoSort {
  */
 export interface GraphMetrics {
   /** ISO timestamp when metrics were generated */
-  generated_at: string;
+  generated_at: string
   /** Hash of source data for cache validation */
-  data_hash: string;
+  data_hash: string
 
   /** 1. PageRank - influence scores */
-  pagerank: RankedMetric[];
+  pagerank: RankedMetric[]
 
   /** 2. Betweenness centrality - bottleneck nodes */
-  betweenness: RankedMetric[];
+  betweenness: RankedMetric[]
 
   /** 3. HITS scores - authorities and hubs */
-  hits: HITSScores;
+  hits: HITSScores
 
   /** 4. Critical path length and slack */
-  criticalPath: CriticalPath;
+  criticalPath: CriticalPath
 
   /** 5. Eigenvector centrality - keystone nodes */
-  eigenvector: RankedMetric[];
+  eigenvector: RankedMetric[]
 
   /** 6. Degree metrics (in/out degree) */
-  degree: DegreeMetrics[];
+  degree: DegreeMetrics[]
 
   /** 7. Graph density (edges / max possible edges) */
-  density: number;
+  density: number
 
   /** 8. Cycle count and cycle details */
-  cycles: CycleInfo;
+  cycles: CycleInfo
 
   /** 9. Topological sort order */
-  topoSort: TopoSort;
+  topoSort: TopoSort
 
   /** Graph statistics summary */
-  stats: GraphStats;
+  stats: GraphStats
 
   /** Raw status from bv */
-  status?: Record<string, unknown>;
+  status?: Record<string, unknown>
 
   /** Usage hints for agents */
-  usageHints?: string[];
+  usageHints?: string[]
 }
 
 /**
  * Error response when bv is unavailable or fails.
  */
 export interface GraphError {
-  ok: false;
-  error: string;
-  code: 'BV_NOT_FOUND' | 'BV_ERROR' | 'PARSE_ERROR' | 'NO_BEADS';
+  ok: false
+  error: string
+  code: 'BV_NOT_FOUND' | 'BV_ERROR' | 'PARSE_ERROR' | 'NO_BEADS'
 }
 
 /**
  * Successful graph metrics response.
  */
 export interface GraphMetricsResponse {
-  ok: true;
-  metrics: GraphMetrics;
+  ok: true
+  metrics: GraphMetrics
 }
 
 /**
  * Successful graph export response.
  */
 export interface GraphExportResponse {
-  ok: true;
-  graph: GraphExport;
+  ok: true
+  graph: GraphExport
 }
 
 /** Union type for graph metrics endpoint */
-export type GraphMetricsResult = GraphMetricsResponse | GraphError;
+export type GraphMetricsResult = GraphMetricsResponse | GraphError
 
 /** Union type for graph export endpoint */
-export type GraphExportResult = GraphExportResponse | GraphError;
+export type GraphExportResult = GraphExportResponse | GraphError
 
 // ============================================================================
 // Cook API Types
@@ -185,69 +185,69 @@ export type GraphExportResult = GraphExportResponse | GraphError;
 /** A proto bead representing a step that will be created when poured */
 export interface ProtoBead {
   /** Step ID within the formula */
-  id: string;
+  id: string
   /** Human-readable title */
-  title: string;
+  title: string
   /** Detailed description of what this step does */
-  description: string;
+  description: string
   /** Priority level (0 = highest) */
-  priority: number;
+  priority: number
   /** IDs of steps this step depends on */
-  needs?: string[];
+  needs?: string[]
 }
 
 /** Variable definition from a formula */
 export interface FormulaVariable {
   /** Human-readable description of the variable */
-  description: string;
+  description: string
   /** Default value if not provided */
-  default?: string;
+  default?: string
   /** Whether this variable must be provided */
-  required?: boolean;
+  required?: boolean
   /** Allowed values (renders as dropdown) */
-  enum?: string[];
+  enum?: string[]
   /** Expected type: string (default), int, or bool */
-  type?: 'string' | 'int' | 'bool';
+  type?: 'string' | 'int' | 'bool'
   /** Regex pattern the value must match */
-  pattern?: string;
+  pattern?: string
 }
 
 /** Result of cooking a formula */
 export interface CookResult {
   /** Whether the cook succeeded */
-  ok: boolean;
+  ok: boolean
   /** Formula name */
-  formula?: string;
+  formula?: string
   /** Formula version */
-  version?: number;
+  version?: number
   /** Formula type (e.g., "workflow") */
-  type?: string;
+  type?: string
   /** Formula phase (e.g., "liquid") */
-  phase?: string;
+  phase?: string
   /** Variable definitions from the formula */
-  vars?: Record<string, FormulaVariable>;
+  vars?: Record<string, FormulaVariable>
   /** Steps that will be created (proto beads) */
-  steps?: ProtoBead[];
+  steps?: ProtoBead[]
   /** Source file path */
-  source?: string;
+  source?: string
   /** Variables that are required but not provided (for runtime mode) */
-  unbound_vars?: string[];
+  unbound_vars?: string[]
   /** Error message if cook failed */
-  error?: string;
+  error?: string
   /** Stderr output from cook command */
-  stderr?: string;
+  stderr?: string
   /** Exit code from cook command */
-  exit_code?: number;
+  exit_code?: number
 }
 
 /** Request payload for cook API */
 export interface CookRequest {
   /** Path to the formula file */
-  formula_path: string;
+  formula_path: string
   /** Variable substitutions (key=value pairs) */
-  vars?: Record<string, string>;
+  vars?: Record<string, string>
   /** Cooking mode: compile (keep placeholders) or runtime (substitute vars) */
-  mode?: 'compile' | 'runtime';
+  mode?: 'compile' | 'runtime'
 }
 
 // ============================================================================
@@ -257,30 +257,30 @@ export interface CookRequest {
 /** A formula file discovered in a search path */
 export interface Formula {
   /** Formula name (without extension) */
-  name: string;
+  name: string
   /** Full path to the formula file */
-  path: string;
+  path: string
   /** Search path this formula was found in */
-  searchPath: string;
+  searchPath: string
   /** Human-readable search path label */
-  searchPathLabel: string;
+  searchPathLabel: string
 }
 
 /** Successful formula list response */
 export interface FormulaListResponse {
-  ok: true;
+  ok: true
   /** Formulas grouped by search path */
-  formulas: Formula[];
+  formulas: Formula[]
   /** Total count of formulas */
-  count: number;
+  count: number
   /** Search paths that were checked */
-  searchPaths: string[];
+  searchPaths: string[]
 }
 
 /** Error response for formula list */
 export interface FormulaListError {
-  ok: false;
-  error: string;
+  ok: false
+  error: string
 }
 
 // ============================================================================
@@ -290,41 +290,41 @@ export interface FormulaListError {
 /** Request payload for sling API */
 export interface SlingRequest {
   /** Path to the formula file */
-  formula_path: string;
+  formula_path: string
   /** Target agent or crew (e.g., "bcc/polecats/fury" or "bcc/crew/main") */
-  target: string;
+  target: string
   /** Variable substitutions (key=value pairs) */
-  vars?: Record<string, string>;
+  vars?: Record<string, string>
 }
 
 /** Result of slinging a formula */
 export interface SlingResult {
   /** Whether the sling succeeded */
-  ok: boolean;
+  ok: boolean
   /** ID of the dispatched molecule/bead */
-  molecule_id?: string;
+  molecule_id?: string
   /** Target that received the work */
-  target?: string;
+  target?: string
   /** Formula that was slung */
-  formula?: string;
+  formula?: string
   /** Error message if sling failed */
-  error?: string;
+  error?: string
   /** Stderr output from sling command */
-  stderr?: string;
+  stderr?: string
   /** Exit code from sling command */
-  exit_code?: number;
+  exit_code?: number
 }
 
 /** Available sling target */
 export interface SlingTarget {
   /** Target identifier (e.g., "bcc/polecats/fury") */
-  id: string;
+  id: string
   /** Human-readable name */
-  name: string;
+  name: string
   /** Target type */
-  type: 'polecat' | 'crew' | 'rig';
+  type: 'polecat' | 'crew' | 'rig'
   /** Current status (if available) */
-  status?: 'available' | 'busy' | 'offline';
+  status?: 'available' | 'busy' | 'offline'
 }
 
 // ============================================================================
@@ -334,45 +334,45 @@ export interface SlingTarget {
 /** Request payload for pour API */
 export interface PourRequest {
   /** Proto ID to instantiate (e.g., formula name or proto-id) */
-  proto_id: string;
+  proto_id: string
   /** Variable substitutions (key=value pairs) */
-  vars?: Record<string, string>;
+  vars?: Record<string, string>
   /** Assignee for the root issue */
-  assignee?: string;
+  assignee?: string
   /** Whether to perform a dry run (preview only) */
-  dry_run?: boolean;
+  dry_run?: boolean
 }
 
 /** A created bead from pour operation */
 export interface CreatedBead {
   /** Bead ID */
-  id: string;
+  id: string
   /** Bead title */
-  title: string;
+  title: string
   /** Bead type (task, bug, epic, etc.) */
-  type: string;
+  type: string
   /** Bead priority */
-  priority: number;
+  priority: number
 }
 
 /** Result of pouring a formula */
 export interface PourResult {
   /** Whether the pour succeeded */
-  ok: boolean;
+  ok: boolean
   /** Molecule ID created from the pour */
-  molecule_id?: string;
+  molecule_id?: string
   /** List of beads created */
-  created_beads?: CreatedBead[];
+  created_beads?: CreatedBead[]
   /** Total count of beads created */
-  bead_count?: number;
+  bead_count?: number
   /** Error message if pour failed */
-  error?: string;
+  error?: string
   /** Stderr output from pour command */
-  stderr?: string;
+  stderr?: string
   /** Exit code from pour command */
-  exit_code?: number;
+  exit_code?: number
   /** Whether this was a dry run */
-  dry_run?: boolean;
+  dry_run?: boolean
 }
 
 // ============================================================================
@@ -382,25 +382,25 @@ export interface PourResult {
 /** Request payload for burn API */
 export interface BurnRequest {
   /** Molecule ID to burn/delete */
-  molecule_id: string;
+  molecule_id: string
   /** Whether to force deletion without confirmation */
-  force?: boolean;
+  force?: boolean
   /** Whether to perform a dry run (preview only) */
-  dry_run?: boolean;
+  dry_run?: boolean
 }
 
 /** Result of burning a molecule */
 export interface BurnResult {
   /** Whether the burn succeeded */
-  ok: boolean;
+  ok: boolean
   /** Number of beads deleted */
-  deleted_count?: number;
+  deleted_count?: number
   /** Error message if burn failed */
-  error?: string;
+  error?: string
   /** Stderr output from burn command */
-  stderr?: string;
+  stderr?: string
   /** Exit code from burn command */
-  exit_code?: number;
+  exit_code?: number
   /** Whether this was a dry run */
-  dry_run?: boolean;
+  dry_run?: boolean
 }

@@ -1,21 +1,21 @@
+import type { Formula } from '@beads-ide/shared'
 /**
  * Formula tree component for the sidebar.
  * Displays formulas grouped by search path directory.
  */
-import { useState, useMemo, type CSSProperties } from 'react';
-import type { Formula } from '@beads-ide/shared';
-import { useFormulas } from '../../hooks';
+import { type CSSProperties, useMemo, useState } from 'react'
+import { useFormulas } from '../../hooks'
 
 // Styles
 const treeContainerStyle: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   gap: '2px',
-};
+}
 
 const groupStyle: CSSProperties = {
   marginBottom: '8px',
-};
+}
 
 const groupHeaderStyle: CSSProperties = {
   display: 'flex',
@@ -33,16 +33,16 @@ const groupHeaderStyle: CSSProperties = {
   border: 'none',
   width: '100%',
   textAlign: 'left',
-};
+}
 
 const groupHeaderHoverStyle: CSSProperties = {
   ...groupHeaderStyle,
   backgroundColor: '#2a2d2e',
-};
+}
 
 const groupItemsStyle: CSSProperties = {
   paddingLeft: '12px',
-};
+}
 
 const itemStyle: CSSProperties = {
   display: 'flex',
@@ -57,24 +57,24 @@ const itemStyle: CSSProperties = {
   border: 'none',
   width: '100%',
   textAlign: 'left',
-};
+}
 
 const itemHoverStyle: CSSProperties = {
   ...itemStyle,
   backgroundColor: '#2a2d2e',
-};
+}
 
 const itemActiveStyle: CSSProperties = {
   ...itemStyle,
   backgroundColor: '#094771',
   color: '#ffffff',
-};
+}
 
 const iconStyle: CSSProperties = {
   width: '16px',
   height: '16px',
   flexShrink: 0,
-};
+}
 
 const skeletonStyle: CSSProperties = {
   height: '24px',
@@ -82,20 +82,20 @@ const skeletonStyle: CSSProperties = {
   borderRadius: '3px',
   marginBottom: '4px',
   animation: 'pulse 1.5s ease-in-out infinite',
-};
+}
 
 const emptyStateStyle: CSSProperties = {
   padding: '16px',
   textAlign: 'center',
   color: '#858585',
   fontSize: '12px',
-};
+}
 
 const emptyStateHeadingStyle: CSSProperties = {
   fontSize: '14px',
   color: '#cccccc',
   marginBottom: '12px',
-};
+}
 
 const searchPathListStyle: CSSProperties = {
   textAlign: 'left',
@@ -105,12 +105,12 @@ const searchPathListStyle: CSSProperties = {
   padding: '8px',
   borderRadius: '4px',
   marginTop: '12px',
-};
+}
 
 const searchPathItemStyle: CSSProperties = {
   padding: '2px 0',
   color: '#569cd6',
-};
+}
 
 const errorStyle: CSSProperties = {
   padding: '12px',
@@ -119,34 +119,55 @@ const errorStyle: CSSProperties = {
   backgroundColor: '#3c1f1e',
   borderRadius: '4px',
   margin: '8px',
-};
+}
 
 // SVG Icons (Lucide-style) - marked as decorative with aria-hidden
 function FolderIcon({ expanded }: { expanded: boolean }) {
   if (expanded) {
     return (
-      <svg style={iconStyle} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <svg
+        style={iconStyle}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        aria-hidden="true"
+      >
         <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
         <path d="M2 10h20" />
       </svg>
-    );
+    )
   }
   return (
-    <svg style={iconStyle} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+    <svg
+      style={iconStyle}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      aria-hidden="true"
+    >
       <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
     </svg>
-  );
+  )
 }
 
 function FileCodeIcon() {
   return (
-    <svg style={iconStyle} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+    <svg
+      style={iconStyle}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      aria-hidden="true"
+    >
       <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
       <polyline points="14 2 14 8 20 8" />
       <path d="m10 13-2 2 2 2" />
       <path d="m14 17 2-2-2-2" />
     </svg>
-  );
+  )
 }
 
 function ChevronIcon({ expanded }: { expanded: boolean }) {
@@ -165,35 +186,35 @@ function ChevronIcon({ expanded }: { expanded: boolean }) {
     >
       <path d="m9 18 6-6-6-6" />
     </svg>
-  );
+  )
 }
 
 // Group formulas by search path label
 interface FormulaGroup {
-  label: string;
-  searchPath: string;
-  formulas: Formula[];
+  label: string
+  searchPath: string
+  formulas: Formula[]
 }
 
 function groupFormulas(formulas: Formula[]): FormulaGroup[] {
-  const groups = new Map<string, FormulaGroup>();
+  const groups = new Map<string, FormulaGroup>()
 
   for (const formula of formulas) {
-    const key = formula.searchPath;
-    let group = groups.get(key);
+    const key = formula.searchPath
+    let group = groups.get(key)
     if (!group) {
       group = {
         label: formula.searchPathLabel,
         searchPath: formula.searchPath,
         formulas: [],
-      };
-      groups.set(key, group);
+      }
+      groups.set(key, group)
     }
-    group.formulas.push(formula);
+    group.formulas.push(formula)
   }
 
   // Convert to array and sort groups by label
-  return Array.from(groups.values()).sort((a, b) => a.label.localeCompare(b.label));
+  return Array.from(groups.values()).sort((a, b) => a.label.localeCompare(b.label))
 }
 
 // Loading skeleton component
@@ -207,7 +228,16 @@ function LoadingSkeleton() {
           50% { opacity: 0.5; }
         }`}
       </style>
-      <span className="sr-only" style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)' }}>
+      <span
+        className="sr-only"
+        style={{
+          position: 'absolute',
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden',
+          clip: 'rect(0, 0, 0, 0)',
+        }}
+      >
         Loading formulas...
       </span>
       <div style={{ ...skeletonStyle, width: '60%' }} aria-hidden="true" />
@@ -216,7 +246,7 @@ function LoadingSkeleton() {
       <div style={{ ...skeletonStyle, width: '65%', marginTop: '8px' }} aria-hidden="true" />
       <div style={{ ...skeletonStyle, width: '75%', marginLeft: '12px' }} aria-hidden="true" />
     </div>
-  );
+  )
 }
 
 // Empty state component
@@ -244,28 +274,28 @@ function EmptyState({ searchPaths }: { searchPaths: string[] }) {
         )}
       </div>
     </div>
-  );
+  )
 }
 
 // Formula group component
 interface FormulaGroupProps {
-  group: FormulaGroup;
-  selectedFormula: string | null;
-  onSelectFormula: (name: string) => void;
+  group: FormulaGroup
+  selectedFormula: string | null
+  onSelectFormula: (name: string) => void
 }
 
 function FormulaGroupSection({ group, selectedFormula, onSelectFormula }: FormulaGroupProps) {
-  const [expanded, setExpanded] = useState(true);
-  const [headerHovered, setHeaderHovered] = useState(false);
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(true)
+  const [headerHovered, setHeaderHovered] = useState(false)
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null)
 
   // Handle keyboard navigation within the group
   const handleKeyDown = (e: React.KeyboardEvent, formula: { name: string }) => {
     if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      onSelectFormula(formula.name);
+      e.preventDefault()
+      onSelectFormula(formula.name)
     }
-  };
+  }
 
   return (
     // biome-ignore lint/a11y/useSemanticElements: div group widget, fieldset would disrupt sidebar layout
@@ -282,21 +312,23 @@ function FormulaGroupSection({ group, selectedFormula, onSelectFormula }: Formul
         <ChevronIcon expanded={expanded} />
         <FolderIcon expanded={expanded} />
         <span>{group.label}</span>
-        <span style={{ color: '#858585', marginLeft: 'auto' }} aria-hidden="true">{group.formulas.length}</span>
+        <span style={{ color: '#858585', marginLeft: 'auto' }} aria-hidden="true">
+          {group.formulas.length}
+        </span>
       </button>
 
       {expanded && (
         // biome-ignore lint/a11y/useSemanticElements: div group widget, fieldset would disrupt layout
         <div style={groupItemsStyle} role="group">
           {group.formulas.map((formula) => {
-            const isSelected = selectedFormula === formula.name;
-            const isHovered = hoveredItem === formula.name;
+            const isSelected = selectedFormula === formula.name
+            const isHovered = hoveredItem === formula.name
 
-            let style = itemStyle;
+            let style = itemStyle
             if (isSelected) {
-              style = itemActiveStyle;
+              style = itemActiveStyle
             } else if (isHovered) {
-              style = itemHoverStyle;
+              style = itemHoverStyle
             }
 
             return (
@@ -314,38 +346,38 @@ function FormulaGroupSection({ group, selectedFormula, onSelectFormula }: Formul
                 <FileCodeIcon />
                 <span>{formula.name}</span>
               </button>
-            );
+            )
           })}
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // Main component
 export interface FormulaTreeProps {
   /** Currently selected formula name */
-  selectedFormula?: string | null;
+  selectedFormula?: string | null
   /** Callback when a formula is selected */
-  onSelectFormula?: (name: string) => void;
+  onSelectFormula?: (name: string) => void
 }
 
 export function FormulaTree({ selectedFormula = null, onSelectFormula }: FormulaTreeProps) {
-  const { formulas, isLoading, error, searchPaths } = useFormulas();
+  const { formulas, isLoading, error, searchPaths } = useFormulas()
 
-  const groups = useMemo(() => groupFormulas(formulas), [formulas]);
+  const groups = useMemo(() => groupFormulas(formulas), [formulas])
 
   const handleSelectFormula = (name: string) => {
     if (onSelectFormula) {
-      onSelectFormula(name);
+      onSelectFormula(name)
     }
     // Navigation to /formula/:name will be wired when router is fully integrated
     // For now, update URL directly for deep linking
-    window.history.pushState({}, '', `/formula/${encodeURIComponent(name)}`);
-  };
+    window.history.pushState({}, '', `/formula/${encodeURIComponent(name)}`)
+  }
 
   if (isLoading) {
-    return <LoadingSkeleton />;
+    return <LoadingSkeleton />
   }
 
   if (error) {
@@ -355,11 +387,11 @@ export function FormulaTree({ selectedFormula = null, onSelectFormula }: Formula
         <br />
         {error.message}
       </div>
-    );
+    )
   }
 
   if (formulas.length === 0) {
-    return <EmptyState searchPaths={searchPaths} />;
+    return <EmptyState searchPaths={searchPaths} />
   }
 
   return (
@@ -374,5 +406,5 @@ export function FormulaTree({ selectedFormula = null, onSelectFormula }: Formula
         />
       ))}
     </div>
-  );
+  )
 }

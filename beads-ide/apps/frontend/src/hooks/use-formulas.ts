@@ -1,43 +1,43 @@
+import type { Formula, FormulaListResponse } from '@beads-ide/shared'
 /**
  * Hook for fetching formula list from the backend API.
  */
-import { useState, useEffect, useCallback } from 'react';
-import type { Formula, FormulaListResponse } from '@beads-ide/shared';
+import { useCallback, useEffect, useState } from 'react'
 
 /** Return value of the useFormulas hook */
 export interface UseFormulasReturn {
   /** List of discovered formulas */
-  formulas: Formula[];
+  formulas: Formula[]
   /** Whether formulas are currently loading */
-  isLoading: boolean;
+  isLoading: boolean
   /** Error from the last fetch attempt */
-  error: Error | null;
+  error: Error | null
   /** Search paths that were checked */
-  searchPaths: string[];
+  searchPaths: string[]
   /** Manually refresh the formula list */
-  refresh: () => void;
+  refresh: () => void
 }
 
-const API_BASE = 'http://127.0.0.1:3001';
+const API_BASE = 'http://127.0.0.1:3001'
 
 /**
  * Fetch formulas from the backend API.
  */
 async function fetchFormulas(): Promise<FormulaListResponse> {
-  const response = await fetch(`${API_BASE}/api/formulas`);
+  const response = await fetch(`${API_BASE}/api/formulas`)
 
   if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Failed to fetch formulas: ${response.status} ${text}`);
+    const text = await response.text()
+    throw new Error(`Failed to fetch formulas: ${response.status} ${text}`)
   }
 
-  const data = await response.json();
+  const data = await response.json()
 
   if (!data.ok) {
-    throw new Error(data.error || 'Failed to fetch formulas');
+    throw new Error(data.error || 'Failed to fetch formulas')
   }
 
-  return data as FormulaListResponse;
+  return data as FormulaListResponse
 }
 
 /**
@@ -47,32 +47,32 @@ async function fetchFormulas(): Promise<FormulaListResponse> {
  * @returns Formula list, loading state, error, and refresh function
  */
 export function useFormulas(): UseFormulasReturn {
-  const [formulas, setFormulas] = useState<Formula[]>([]);
-  const [searchPaths, setSearchPaths] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [formulas, setFormulas] = useState<Formula[]>([])
+  const [searchPaths, setSearchPaths] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
 
   const doFetch = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
+    setIsLoading(true)
+    setError(null)
 
     try {
-      const result = await fetchFormulas();
-      setFormulas(result.formulas);
-      setSearchPaths(result.searchPaths);
+      const result = await fetchFormulas()
+      setFormulas(result.formulas)
+      setSearchPaths(result.searchPaths)
     } catch (err) {
-      setError(err instanceof Error ? err : new Error(String(err)));
-      setFormulas([]);
-      setSearchPaths([]);
+      setError(err instanceof Error ? err : new Error(String(err)))
+      setFormulas([])
+      setSearchPaths([])
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, []);
+  }, [])
 
   // Fetch on mount
   useEffect(() => {
-    doFetch();
-  }, [doFetch]);
+    doFetch()
+  }, [doFetch])
 
   return {
     formulas,
@@ -80,5 +80,5 @@ export function useFormulas(): UseFormulasReturn {
     error,
     searchPaths,
     refresh: doFetch,
-  };
+  }
 }

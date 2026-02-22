@@ -11,50 +11,50 @@ export const WORKFLOW_DEP_TYPES = [
   'parent-child',
   'conditional-blocks',
   'waits-for',
-] as const;
+] as const
 
-export type WorkflowDepType = (typeof WORKFLOW_DEP_TYPES)[number];
+export type WorkflowDepType = (typeof WORKFLOW_DEP_TYPES)[number]
 
 /** Dependency relationship between beads */
 export interface Dependency {
   /** Source bead ID (the bead that this dependency comes from) */
-  source: string;
+  source: string
   /** Target bead ID (the bead that depends on source) */
-  target: string;
+  target: string
   /** Type of dependency relationship */
-  type: string;
+  type: string
 }
 
 /** Minimal bead structure needed for wave computation */
 export interface Bead {
-  id: string;
+  id: string
   /** Dependencies where this bead is the target (things this bead depends on) */
-  dependencies?: Dependency[];
+  dependencies?: Dependency[]
 }
 
 /** A wave of beads that can execute in parallel */
 export interface Wave {
   /** Zero-indexed wave level */
-  level: number;
+  level: number
   /** Bead IDs in this wave */
-  beadIds: string[];
+  beadIds: string[]
 }
 
 /** Result of wave computation */
 export interface WaveResult {
   /** Waves in execution order (wave 0 first) */
-  waves: Wave[];
+  waves: Wave[]
   /** Groups of bead IDs that form cycles (if any) */
-  cycles: string[][];
+  cycles: string[][]
   /** Whether any cycles were detected */
-  hasCycles: boolean;
+  hasCycles: boolean
 }
 
 /**
  * Check if a dependency type affects workflow execution ordering.
  */
 export function isWorkflowDep(type: string): type is WorkflowDepType {
-  return WORKFLOW_DEP_TYPES.includes(type as WorkflowDepType);
+  return WORKFLOW_DEP_TYPES.includes(type as WorkflowDepType)
 }
 
 /**
@@ -72,119 +72,119 @@ export function isWorkflowDep(type: string): type is WorkflowDepType {
  */
 export function computeWaves(beads: Bead[]): WaveResult {
   if (beads.length === 0) {
-    return { waves: [], cycles: [], hasCycles: false };
+    return { waves: [], cycles: [], hasCycles: false }
   }
 
   // Build bead lookup and validate IDs exist
-  const beadIds = new Set(beads.map((b) => b.id));
+  const beadIds = new Set(beads.map((b) => b.id))
 
   // Build adjacency list: source -> targets (beads that depend on source)
   // And in-degree map: bead -> number of dependencies it has
-  const dependents = new Map<string, string[]>();
-  const inDegree = new Map<string, number>();
+  const dependents = new Map<string, string[]>()
+  const inDegree = new Map<string, number>()
 
   // Initialize all beads with zero in-degree
   for (const bead of beads) {
-    dependents.set(bead.id, []);
-    inDegree.set(bead.id, 0);
+    dependents.set(bead.id, [])
+    inDegree.set(bead.id, 0)
   }
 
   // Track processed edges to handle duplicates
-  const processedEdges = new Set<string>();
+  const processedEdges = new Set<string>()
 
   // Process dependencies to build the graph
   for (const bead of beads) {
-    if (!bead.dependencies) continue;
+    if (!bead.dependencies) continue
 
     for (const dep of bead.dependencies) {
       // Only consider workflow dependency types
-      if (!isWorkflowDep(dep.type)) continue;
+      if (!isWorkflowDep(dep.type)) continue
 
       // Skip dependencies to beads not in our set
-      if (!beadIds.has(dep.source)) continue;
+      if (!beadIds.has(dep.source)) continue
 
       // dep.source blocks dep.target, so target depends on source
       // When processing from bead's perspective: bead is target, dep.source is the blocker
-      const blocker = dep.source;
-      const dependent = bead.id;
+      const blocker = dep.source
+      const dependent = bead.id
 
       // Skip duplicate edges
-      const edgeKey = `${blocker}->${dependent}`;
-      if (processedEdges.has(edgeKey)) continue;
-      processedEdges.add(edgeKey);
+      const edgeKey = `${blocker}->${dependent}`
+      if (processedEdges.has(edgeKey)) continue
+      processedEdges.add(edgeKey)
 
       // Add to adjacency list: blocker -> dependent
-      const deps = dependents.get(blocker);
+      const deps = dependents.get(blocker)
       if (deps) {
-        deps.push(dependent);
+        deps.push(dependent)
       }
 
       // Increment in-degree for the dependent
-      inDegree.set(dependent, (inDegree.get(dependent) ?? 0) + 1);
+      inDegree.set(dependent, (inDegree.get(dependent) ?? 0) + 1)
     }
   }
 
   // BFS to compute waves
-  const waves: Wave[] = [];
-  const processed = new Set<string>();
+  const waves: Wave[] = []
+  const processed = new Set<string>()
 
   // Start with zero-in-degree nodes
-  let currentWave: string[] = [];
+  let currentWave: string[] = []
   for (const [id, degree] of inDegree) {
     if (degree === 0) {
-      currentWave.push(id);
+      currentWave.push(id)
     }
   }
 
   while (currentWave.length > 0) {
     // Sort for deterministic output
-    currentWave.sort();
+    currentWave.sort()
 
     waves.push({
       level: waves.length,
       beadIds: currentWave,
-    });
+    })
 
     // Mark as processed
     for (const id of currentWave) {
-      processed.add(id);
+      processed.add(id)
     }
 
     // Find next wave: decrement in-degree for dependents
-    const nextWave: string[] = [];
+    const nextWave: string[] = []
     for (const id of currentWave) {
-      const deps = dependents.get(id) ?? [];
+      const deps = dependents.get(id) ?? []
       for (const depId of deps) {
-        if (processed.has(depId)) continue;
+        if (processed.has(depId)) continue
 
-        const newDegree = (inDegree.get(depId) ?? 1) - 1;
-        inDegree.set(depId, newDegree);
+        const newDegree = (inDegree.get(depId) ?? 1) - 1
+        inDegree.set(depId, newDegree)
 
         if (newDegree === 0 && !nextWave.includes(depId)) {
-          nextWave.push(depId);
+          nextWave.push(depId)
         }
       }
     }
 
-    currentWave = nextWave;
+    currentWave = nextWave
   }
 
   // Detect cycles: any unprocessed beads are in cycles
-  const cycleNodes: string[] = [];
+  const cycleNodes: string[] = []
   for (const bead of beads) {
     if (!processed.has(bead.id)) {
-      cycleNodes.push(bead.id);
+      cycleNodes.push(bead.id)
     }
   }
 
   // Find strongly connected components (cycles) using simple DFS
-  const cycles = findCycles(cycleNodes, dependents, beadIds);
+  const cycles = findCycles(cycleNodes, dependents, beadIds)
 
   return {
     waves,
     cycles,
     hasCycles: cycles.length > 0,
-  };
+  }
 }
 
 /**
@@ -198,42 +198,42 @@ function findCycles(
   dependents: Map<string, string[]>,
   allBeadIds: Set<string>
 ): string[][] {
-  if (cycleNodes.length === 0) return [];
+  if (cycleNodes.length === 0) return []
 
-  const cycleSet = new Set(cycleNodes);
-  const visited = new Set<string>();
-  const cycles: string[][] = [];
+  const cycleSet = new Set(cycleNodes)
+  const visited = new Set<string>()
+  const cycles: string[][] = []
 
   for (const start of cycleNodes) {
-    if (visited.has(start)) continue;
+    if (visited.has(start)) continue
 
     // DFS to find all connected nodes in the cycle set
-    const component: string[] = [];
-    const stack = [start];
+    const component: string[] = []
+    const stack = [start]
 
     while (stack.length > 0) {
-      const node = stack.pop();
-      if (node === undefined) continue;
-      if (visited.has(node)) continue;
-      if (!cycleSet.has(node)) continue;
+      const node = stack.pop()
+      if (node === undefined) continue
+      if (visited.has(node)) continue
+      if (!cycleSet.has(node)) continue
 
-      visited.add(node);
-      component.push(node);
+      visited.add(node)
+      component.push(node)
 
       // Add dependents that are in cycle set
-      const deps = dependents.get(node) ?? [];
+      const deps = dependents.get(node) ?? []
       for (const dep of deps) {
         if (!visited.has(dep) && cycleSet.has(dep)) {
-          stack.push(dep);
+          stack.push(dep)
         }
       }
     }
 
     if (component.length > 0) {
-      component.sort();
-      cycles.push(component);
+      component.sort()
+      cycles.push(component)
     }
   }
 
-  return cycles;
+  return cycles
 }

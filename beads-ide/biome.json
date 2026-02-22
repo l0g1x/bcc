@@ -11,6 +11,7 @@
         "noUselessFragments": "warn"
       },
       "style": {
+        "noDefaultExport": "error",
         "noNonNullAssertion": "warn",
         "useImportType": "error"
       },
@@ -33,11 +34,6 @@
     }
   },
   "files": {
-    "ignore": [
-      "node_modules",
-      "dist",
-      "coverage",
-      "*.gen.ts"
-    ]
+    "ignore": ["node_modules", "dist", "coverage", "*.gen.ts"]
   }
 }

@@ -1,29 +1,29 @@
+import type {
+  DegreeMetrics,
+  GraphExport,
+  GraphExportResult,
+  GraphMetrics,
+  GraphMetricsResult,
+  RankedMetric,
+} from '@beads-ide/shared'
 /**
  * Graph routes for Beads IDE backend.
  * Proxies bv CLI commands to expose graph metrics and export data.
  */
-import { Hono } from 'hono';
-import { bvInsights, bvGraph, runCli } from '../cli.js';
-import type {
-  GraphMetrics,
-  GraphExport,
-  GraphMetricsResult,
-  GraphExportResult,
-  RankedMetric,
-  DegreeMetrics,
-} from '@beads-ide/shared';
+import { Hono } from 'hono'
+import { bvGraph, bvInsights, runCli } from '../cli.js'
 
-const graph = new Hono();
+const graph = new Hono()
 
 /**
  * Check if bv binary is available.
  */
 async function checkBvAvailable(): Promise<boolean> {
   try {
-    const result = await runCli('bv', ['--help']);
-    return result.exitCode === 0;
+    const result = await runCli('bv', ['--help'])
+    return result.exitCode === 0
   } catch {
-    return false;
+    return false
   }
 }
 
@@ -33,36 +33,36 @@ async function checkBvAvailable(): Promise<boolean> {
  */
 function parseInsightsToMetrics(raw: Record<string, unknown>): GraphMetrics {
   // Extract ranked lists with fallbacks
-  const influencers = (raw.Influencers as RankedMetric[] | undefined) ?? [];
-  const bottlenecks = (raw.Bottlenecks as RankedMetric[] | undefined) ?? [];
-  const keystones = (raw.Keystones as RankedMetric[] | undefined) ?? [];
-  const authorities = (raw.Authorities as RankedMetric[] | undefined) ?? [];
-  const hubs = (raw.Hubs as RankedMetric[] | undefined) ?? [];
-  const rawCycles = (raw.Cycles as string[][] | undefined) ?? [];
-  const slack = (raw.Slack as Record<string, unknown> | undefined) ?? {};
-  const stats = (raw.Stats as Record<string, unknown> | undefined) ?? {};
-  const advancedInsights = (raw.advanced_insights as Record<string, unknown> | undefined) ?? {};
+  const influencers = (raw.Influencers as RankedMetric[] | undefined) ?? []
+  const bottlenecks = (raw.Bottlenecks as RankedMetric[] | undefined) ?? []
+  const keystones = (raw.Keystones as RankedMetric[] | undefined) ?? []
+  const authorities = (raw.Authorities as RankedMetric[] | undefined) ?? []
+  const hubs = (raw.Hubs as RankedMetric[] | undefined) ?? []
+  const rawCycles = (raw.Cycles as string[][] | undefined) ?? []
+  const slack = (raw.Slack as Record<string, unknown> | undefined) ?? {}
+  const stats = (raw.Stats as Record<string, unknown> | undefined) ?? {}
+  const advancedInsights = (raw.advanced_insights as Record<string, unknown> | undefined) ?? {}
 
   // Extract degree metrics from stats or advanced_insights
-  const degreeData = (advancedInsights.degree_distribution as DegreeMetrics[] | undefined) ?? [];
+  const degreeData = (advancedInsights.degree_distribution as DegreeMetrics[] | undefined) ?? []
 
   // Extract critical path info
-  const criticalPathData = advancedInsights.critical_path as Record<string, unknown> | undefined;
+  const criticalPathData = advancedInsights.critical_path as Record<string, unknown> | undefined
   const criticalPath = {
     length: (criticalPathData?.length as number) ?? 0,
     path: (criticalPathData?.path as string[]) ?? [],
     slack: (slack.values as Record<string, number>) ?? (slack as Record<string, number>),
-  };
+  }
 
   // Extract topo sort
-  const topoData = advancedInsights.topological_sort as Record<string, unknown> | undefined;
+  const topoData = advancedInsights.topological_sort as Record<string, unknown> | undefined
   const topoSort = {
     order: (topoData?.order as string[]) ?? [],
     levels: (topoData?.levels as Record<string, number>) ?? {},
-  };
+  }
 
   // Graph density
-  const density = (stats.density as number) ?? (advancedInsights.density as number) ?? 0;
+  const density = (stats.density as number) ?? (advancedInsights.density as number) ?? 0
 
   return {
     generated_at: (raw.generated_at as string) ?? new Date().toISOString(),
@@ -111,7 +111,7 @@ function parseInsightsToMetrics(raw: Record<string, unknown>): GraphMetrics {
 
     status: raw.status as Record<string, unknown> | undefined,
     usageHints: raw.usage_hints as string[] | undefined,
-  };
+  }
 }
 
 /**
@@ -129,7 +129,7 @@ function parseGraphExport(raw: Record<string, unknown>): GraphExport {
       edges: ((raw.stats as Record<string, unknown>)?.edges as number) ?? 0,
       density: ((raw.stats as Record<string, unknown>)?.density as number) ?? 0,
     },
-  };
+  }
 }
 
 /**
@@ -138,18 +138,18 @@ function parseGraphExport(raw: Record<string, unknown>): GraphExport {
  */
 graph.get('/graph/metrics', async (c) => {
   // Check if bv is available
-  const bvAvailable = await checkBvAvailable();
+  const bvAvailable = await checkBvAvailable()
   if (!bvAvailable) {
     const errorResponse: GraphMetricsResult = {
       ok: false,
       error: 'bv binary not found or not executable',
       code: 'BV_NOT_FOUND',
-    };
-    return c.json(errorResponse, 503);
+    }
+    return c.json(errorResponse, 503)
   }
 
   try {
-    const result = await bvInsights();
+    const result = await bvInsights()
 
     if (result.exitCode !== 0) {
       // Check for common error cases
@@ -158,47 +158,47 @@ graph.get('/graph/metrics', async (c) => {
           ok: false,
           error: 'No beads database found. Initialize with "bd init".',
           code: 'NO_BEADS',
-        };
-        return c.json(errorResponse, 404);
+        }
+        return c.json(errorResponse, 404)
       }
 
       const errorResponse: GraphMetricsResult = {
         ok: false,
         error: result.stderr || 'bv command failed',
         code: 'BV_ERROR',
-      };
-      return c.json(errorResponse, 500);
+      }
+      return c.json(errorResponse, 500)
     }
 
     // Parse JSON output
-    let rawData: Record<string, unknown>;
+    let rawData: Record<string, unknown>
     try {
-      rawData = JSON.parse(result.stdout);
+      rawData = JSON.parse(result.stdout)
     } catch (parseError) {
       const errorResponse: GraphMetricsResult = {
         ok: false,
         error: `Failed to parse bv output: ${parseError instanceof Error ? parseError.message : 'unknown error'}`,
         code: 'PARSE_ERROR',
-      };
-      return c.json(errorResponse, 500);
+      }
+      return c.json(errorResponse, 500)
     }
 
-    const metrics = parseInsightsToMetrics(rawData);
+    const metrics = parseInsightsToMetrics(rawData)
     const response: GraphMetricsResult = {
       ok: true,
       metrics,
-    };
+    }
 
-    return c.json(response);
+    return c.json(response)
   } catch (error) {
     const errorResponse: GraphMetricsResult = {
       ok: false,
       error: error instanceof Error ? error.message : 'Unknown error',
       code: 'BV_ERROR',
-    };
-    return c.json(errorResponse, 500);
+    }
+    return c.json(errorResponse, 500)
   }
-});
+})
 
 /**
  * GET /api/graph/export
@@ -208,28 +208,28 @@ graph.get('/graph/metrics', async (c) => {
  */
 graph.get('/graph/export', async (c) => {
   // Check if bv is available
-  const bvAvailable = await checkBvAvailable();
+  const bvAvailable = await checkBvAvailable()
   if (!bvAvailable) {
     const errorResponse: GraphExportResult = {
       ok: false,
       error: 'bv binary not found or not executable',
       code: 'BV_NOT_FOUND',
-    };
-    return c.json(errorResponse, 503);
+    }
+    return c.json(errorResponse, 503)
   }
 
-  const format = c.req.query('format') ?? 'json';
+  const format = c.req.query('format') ?? 'json'
   if (!['json', 'dot', 'mermaid'].includes(format)) {
     const errorResponse: GraphExportResult = {
       ok: false,
       error: `Invalid format: ${format}. Use json, dot, or mermaid.`,
       code: 'BV_ERROR',
-    };
-    return c.json(errorResponse, 400);
+    }
+    return c.json(errorResponse, 400)
   }
 
   try {
-    const result = await bvGraph(format as 'json' | 'dot' | 'mermaid');
+    const result = await bvGraph(format as 'json' | 'dot' | 'mermaid')
 
     if (result.exitCode !== 0) {
       // Check for common error cases
@@ -238,46 +238,46 @@ graph.get('/graph/export', async (c) => {
           ok: false,
           error: 'No beads database found. Initialize with "bd init".',
           code: 'NO_BEADS',
-        };
-        return c.json(errorResponse, 404);
+        }
+        return c.json(errorResponse, 404)
       }
 
       const errorResponse: GraphExportResult = {
         ok: false,
         error: result.stderr || 'bv command failed',
         code: 'BV_ERROR',
-      };
-      return c.json(errorResponse, 500);
+      }
+      return c.json(errorResponse, 500)
     }
 
     // Parse JSON output
-    let rawData: Record<string, unknown>;
+    let rawData: Record<string, unknown>
     try {
-      rawData = JSON.parse(result.stdout);
+      rawData = JSON.parse(result.stdout)
     } catch (parseError) {
       const errorResponse: GraphExportResult = {
         ok: false,
         error: `Failed to parse bv output: ${parseError instanceof Error ? parseError.message : 'unknown error'}`,
         code: 'PARSE_ERROR',
-      };
-      return c.json(errorResponse, 500);
+      }
+      return c.json(errorResponse, 500)
     }
 
-    const graphExport = parseGraphExport(rawData);
+    const graphExport = parseGraphExport(rawData)
     const response: GraphExportResult = {
       ok: true,
       graph: graphExport,
-    };
+    }
 
-    return c.json(response);
+    return c.json(response)
   } catch (error) {
     const errorResponse: GraphExportResult = {
       ok: false,
       error: error instanceof Error ? error.message : 'Unknown error',
       code: 'BV_ERROR',
-    };
-    return c.json(errorResponse, 500);
+    }
+    return c.json(errorResponse, 500)
   }
-});
+})
 
-export { graph };
+export { graph }

@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vitest/config'
 
+// biome-ignore lint/style/noDefaultExport: Vitest config requires default export
 export default defineConfig({
   plugins: [react()],
   test: {

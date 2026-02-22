@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 type ModifierKey = 'ctrl' | 'alt' | 'shift' | 'meta'
 
@@ -74,7 +74,12 @@ function matchesHotkey(event: KeyboardEvent, parsed: ParsedHotkey): boolean {
 function isFormElement(element: Element | null): boolean {
   if (!element) return false
   const tagName = element.tagName.toLowerCase()
-  return tagName === 'input' || tagName === 'textarea' || tagName === 'select' || (element as HTMLElement).isContentEditable
+  return (
+    tagName === 'input' ||
+    tagName === 'textarea' ||
+    tagName === 'select' ||
+    (element as HTMLElement).isContentEditable
+  )
 }
 
 /**
@@ -90,7 +95,12 @@ export function useHotkey(
   callback: (event: KeyboardEvent) => void,
   options: HotkeyOptions = {}
 ): void {
-  const { enabled = true, preventDefault = true, stopPropagation = false, enableOnFormTags = false } = options
+  const {
+    enabled = true,
+    preventDefault = true,
+    stopPropagation = false,
+    enableOnFormTags = false,
+  } = options
 
   const callbackRef = useRef(callback)
   callbackRef.current = callback

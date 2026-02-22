@@ -4,109 +4,114 @@
  */
 
 /** Bead status values */
-export type BeadStatus = 'open' | 'in_progress' | 'hooked' | 'closed' | 'blocked';
+export type BeadStatus = 'open' | 'in_progress' | 'hooked' | 'closed' | 'blocked'
 
 /** Bead issue type values */
-export type BeadType = 'task' | 'bug' | 'epic' | 'agent' | 'convoy' | 'molecule';
+export type BeadType = 'task' | 'bug' | 'epic' | 'agent' | 'convoy' | 'molecule'
 
 /** Dependency relationship type */
-export type DependencyType = 'blocks' | 'parent-child' | 'conditional-blocks' | 'waits-for' | 'tracks';
+export type DependencyType =
+  | 'blocks'
+  | 'parent-child'
+  | 'conditional-blocks'
+  | 'waits-for'
+  | 'tracks'
 
 /**
  * Dependency reference in bead list.
  */
 export interface BeadDependency {
-  issue_id: string;
-  depends_on_id: string;
-  type: DependencyType | string;
-  created_at: string;
-  created_by: string;
-  metadata?: string;
+  issue_id: string
+  depends_on_id: string
+  type: DependencyType | string
+  created_at: string
+  created_by: string
+  metadata?: string
 }
 
 /**
  * Dependent reference in bead show (with inline bead data).
  */
 export interface BeadDependent {
-  id: string;
-  title: string;
-  description: string;
-  acceptance_criteria?: string;
-  status: BeadStatus | string;
-  priority: number;
-  issue_type: BeadType | string;
-  owner: string;
-  assignee?: string;
-  created_at: string;
-  created_by: string;
-  updated_at: string;
-  dependency_type: DependencyType | string;
+  id: string
+  title: string
+  description: string
+  acceptance_criteria?: string
+  status: BeadStatus | string
+  priority: number
+  issue_type: BeadType | string
+  owner: string
+  assignee?: string
+  created_at: string
+  created_by: string
+  updated_at: string
+  dependency_type: DependencyType | string
 }
 
 /**
  * Full bead structure as returned by bd CLI.
  */
 export interface BeadFull {
-  id: string;
-  title: string;
-  description: string;
-  acceptance_criteria?: string;
-  status: BeadStatus | string;
-  priority: number;
-  issue_type: BeadType | string;
-  owner: string;
-  assignee?: string;
-  created_at: string;
-  created_by: string;
-  updated_at: string;
+  id: string
+  title: string
+  description: string
+  acceptance_criteria?: string
+  status: BeadStatus | string
+  priority: number
+  issue_type: BeadType | string
+  owner: string
+  assignee?: string
+  created_at: string
+  created_by: string
+  updated_at: string
 
   /** Labels attached to the bead */
-  labels?: string[];
+  labels?: string[]
 
   /** Dependencies (beads this one depends on) - present in list output */
-  dependencies?: BeadDependency[];
+  dependencies?: BeadDependency[]
 
   /** Dependents (beads that depend on this one) - present in show output */
-  dependents?: BeadDependent[];
+  dependents?: BeadDependent[]
 
   /** Number of dependencies */
-  dependency_count: number;
+  dependency_count: number
 
   /** Number of dependents */
-  dependent_count: number;
+  dependent_count: number
 
   /** Number of comments */
-  comment_count: number;
+  comment_count: number
 
   // Agent-specific fields
   /** Hooked bead ID (for agent type) */
-  hook_bead?: string;
+  hook_bead?: string
   /** Agent state (for agent type) */
-  agent_state?: string;
+  agent_state?: string
   /** Last activity timestamp (for agent type) */
-  last_activity?: string;
+  last_activity?: string
 }
 
 /**
  * API error response structure.
  */
 export interface BeadApiError {
-  error: string;
-  code: string;
-  details?: string;
+  error: string
+  code: string
+  details?: string
 }
 
 /**
  * Successful beads list response.
  */
 export interface BeadsListResponse {
-  beads: BeadFull[];
-  count: number;
+  beads: BeadFull[]
+  count: number
 }
 
 /**
  * Successful single bead response.
  */
 export interface BeadShowResponse {
-  bead: BeadFull;
+  bead: BeadFull
 }

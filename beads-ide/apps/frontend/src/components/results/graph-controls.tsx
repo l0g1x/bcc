@@ -35,11 +35,15 @@ export interface DensityHealth {
   level: 'healthy' | 'warning' | 'critical'
 }
 
-export function getDensityHealth(density: number, nodeCount: number, edgeCount: number): DensityHealth {
+export function getDensityHealth(
+  density: number,
+  nodeCount: number,
+  edgeCount: number
+): DensityHealth {
   let level: DensityHealth['level'] = 'healthy'
   if (density > 0.12) {
     level = 'critical'
-  } else if (density > 0.10) {
+  } else if (density > 0.1) {
     level = 'warning'
   }
   return { density, nodeCount, edgeCount, level }
@@ -203,7 +207,10 @@ export function GraphControls({ state, onStateChange, density }: GraphControlsPr
             />{' '}
             Enable Focus
           </label>
-          <label htmlFor="focus-hops-select" style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden' }}>
+          <label
+            htmlFor="focus-hops-select"
+            style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden' }}
+          >
             Number of hops
           </label>
           <select

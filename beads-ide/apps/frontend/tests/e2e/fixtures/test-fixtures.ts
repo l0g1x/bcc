@@ -1,4 +1,4 @@
-import { test as base, expect, type Page } from '@playwright/test'
+import { type Page, test as base, expect } from '@playwright/test'
 
 /**
  * Mock CLI response types matching @beads-ide/shared types
@@ -152,8 +152,20 @@ needs = ["step-2"]
       source: 'formulas/test-multi.formula.toml',
       steps: [
         { id: 'step-1', title: 'Setup', description: 'Initial setup', priority: 2 },
-        { id: 'step-2', title: 'Implementation', description: 'Main implementation', priority: 2, needs: ['step-1'] },
-        { id: 'step-3', title: 'Testing', description: 'Write tests', priority: 2, needs: ['step-2'] },
+        {
+          id: 'step-2',
+          title: 'Implementation',
+          description: 'Main implementation',
+          priority: 2,
+          needs: ['step-1'],
+        },
+        {
+          id: 'step-3',
+          title: 'Testing',
+          description: 'Write tests',
+          priority: 2,
+          needs: ['step-2'],
+        },
       ],
       vars: {
         project_name: { description: 'Project name', required: true },
@@ -314,7 +326,9 @@ export class ApiMock {
       const formulaName = match ? match[1] : null
 
       if (method === 'GET' && formulaName) {
-        const formula = Object.values(this.formulas).find((f) => f.name === formulaName || f.name.startsWith(formulaName))
+        const formula = Object.values(this.formulas).find(
+          (f) => f.name === formulaName || f.name.startsWith(formulaName)
+        )
         if (formula) {
           await route.fulfill({
             status: 200,
@@ -327,7 +341,10 @@ export class ApiMock {
             }),
           })
         } else {
-          await route.fulfill({ status: 404, body: JSON.stringify({ ok: false, error: 'Formula not found' }) })
+          await route.fulfill({
+            status: 404,
+            body: JSON.stringify({ ok: false, error: 'Formula not found' }),
+          })
         }
       } else if (method === 'PUT') {
         // Mock save - just return success
@@ -389,7 +406,10 @@ export class ApiMock {
           body: JSON.stringify({ ok: true, bead }),
         })
       } else {
-        await route.fulfill({ status: 404, body: JSON.stringify({ ok: false, error: 'Bead not found' }) })
+        await route.fulfill({
+          status: 404,
+          body: JSON.stringify({ ok: false, error: 'Bead not found' }),
+        })
       }
     })
 

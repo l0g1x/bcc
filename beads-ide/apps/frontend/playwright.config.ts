@@ -6,13 +6,16 @@ import { defineConfig, devices } from '@playwright/test'
  * Tests run against the frontend dev server with mocked CLI responses.
  * All tests must complete in <60s total.
  */
+// biome-ignore lint/style/noDefaultExport: Playwright config requires default export
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI ? [['html'], ['junit', { outputFile: 'test-results/e2e-junit.xml' }]] : 'html',
+  reporter: process.env.CI
+    ? [['html'], ['junit', { outputFile: 'test-results/e2e-junit.xml' }]]
+    : 'html',
   // Strict 60s total timeout for all tests
   globalTimeout: 60_000,
   // Per-test timeout (generous for individual tests)

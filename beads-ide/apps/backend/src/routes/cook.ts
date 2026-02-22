@@ -1,12 +1,12 @@
+import type { CookRequest, CookResult } from '@beads-ide/shared'
 /**
  * Cook routes for Beads IDE backend.
  * Provides API for cooking formulas and getting proto bead previews.
  */
-import { Hono } from 'hono';
-import type { CookRequest, CookResult } from '@beads-ide/shared';
-import { bdCook, validateFormulaName } from '../cli.js';
+import { Hono } from 'hono'
+import { bdCook, validateFormulaName } from '../cli.js'
 
-const cook = new Hono();
+const cook = new Hono()
 
 /**
  * POST /api/cook
@@ -14,43 +14,40 @@ const cook = new Hono();
  */
 cook.post('/cook', async (c) => {
   try {
-    const body = await c.req.json<CookRequest>();
+    const body = await c.req.json<CookRequest>()
 
     if (!body.formula_path) {
       const result: CookResult = {
         ok: false,
         error: 'formula_path is required',
-      };
-      return c.json(result, 400);
+      }
+      return c.json(result, 400)
     }
 
     // Extract formula name from path for validation
     const formulaName = body.formula_path
       .replace(/\.formula\.(toml|json)$/, '')
-      .replace(/^.*\//, '');
+      .replace(/^.*\//, '')
 
     try {
-      validateFormulaName(formulaName);
+      validateFormulaName(formulaName)
     } catch (validationError) {
       const result: CookResult = {
         ok: false,
-        error:
-          validationError instanceof Error
-            ? validationError.message
-            : 'Invalid formula name',
-      };
-      return c.json(result, 400);
+        error: validationError instanceof Error ? validationError.message : 'Invalid formula name',
+      }
+      return c.json(result, 400)
     }
 
     // Run bd cook with JSON output
-    const cliResult = await bdCook(body.formula_path, body.vars);
+    const cliResult = await bdCook(body.formula_path, body.vars)
 
     if (cliResult.exitCode !== 0) {
       // Parse unbound variables from error message if present
-      const unboundMatch = cliResult.stderr.match(/Missing: ([^\n]+)/);
+      const unboundMatch = cliResult.stderr.match(/Missing: ([^\n]+)/)
       const unboundVars = unboundMatch
         ? unboundMatch[1].split(', ').map((v) => v.trim())
-        : undefined;
+        : undefined
 
       const result: CookResult = {
         ok: false,
@@ -58,13 +55,13 @@ cook.post('/cook', async (c) => {
         stderr: cliResult.stderr,
         exit_code: cliResult.exitCode,
         unbound_vars: unboundVars,
-      };
-      return c.json(result);
+      }
+      return c.json(result)
     }
 
     // Parse JSON output from cook
     try {
-      const cookOutput = JSON.parse(cliResult.stdout);
+      const cookOutput = JSON.parse(cliResult.stdout)
 
       // Transform to CookResult format
       const result: CookResult = {
@@ -76,25 +73,25 @@ cook.post('/cook', async (c) => {
         vars: cookOutput.vars,
         steps: cookOutput.steps,
         source: cookOutput.source,
-      };
+      }
 
-      return c.json(result);
+      return c.json(result)
     } catch (parseError) {
       const result: CookResult = {
         ok: false,
         error: 'Failed to parse cook output',
         stderr: cliResult.stdout,
         exit_code: 0,
-      };
-      return c.json(result, 500);
+      }
+      return c.json(result, 500)
     }
   } catch (error) {
     const result: CookResult = {
       ok: false,
       error: error instanceof Error ? error.message : 'Unknown error',
-    };
-    return c.json(result, 500);
+    }
+    return c.json(result, 500)
   }
-});
+})
 
-export { cook };
+export { cook }

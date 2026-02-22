@@ -1,18 +1,18 @@
+import type { CookResult, FormulaVariable, PourResult } from '@beads-ide/shared'
 /**
  * Cook preview panel with split view.
  * Shows formula editor on left, proto bead results on right.
  * Re-cooks automatically when formula content changes.
  * Includes Pour button when proto beads are ready.
  */
-import { useState, useCallback } from 'react';
-import type { CookResult, FormulaVariable, PourResult } from '@beads-ide/shared';
-import { useCook } from '../../hooks/use-cook';
-import { ProtoBeadList } from './proto-bead-list';
-import { PourDialog } from '../formulas/pour-dialog';
+import { useCallback, useState } from 'react'
+import { useCook } from '../../hooks/use-cook'
+import { PourDialog } from '../formulas/pour-dialog'
+import { ProtoBeadList } from './proto-bead-list'
 
 /** Props for unbound variables display */
 interface UnboundVarsProps {
-  vars: string[];
+  vars: string[]
 }
 
 /**
@@ -39,9 +39,7 @@ function UnboundVars({ vars }: UnboundVarsProps) {
       >
         Blocks pour
       </div>
-      <div style={{ fontSize: '12px', color: '#fecaca' }}>
-        Required variables not provided:
-      </div>
+      <div style={{ fontSize: '12px', color: '#fecaca' }}>Required variables not provided:</div>
       <div style={{ marginTop: '8px', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
         {vars.map((v) => (
           <span
@@ -60,13 +58,13 @@ function UnboundVars({ vars }: UnboundVarsProps) {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 /** Props for cook error display */
 interface CookErrorProps {
-  error: string;
-  stderr?: string;
+  error: string
+  stderr?: string
 }
 
 /**
@@ -104,12 +102,12 @@ function CookError({ error, stderr }: CookErrorProps) {
         {stderr || error}
       </div>
     </div>
-  );
+  )
 }
 
 /** Props for loading spinner */
 interface LoadingSpinnerProps {
-  text?: string;
+  text?: string
 }
 
 /**
@@ -159,20 +157,20 @@ function LoadingSpinner({ text = 'Cooking...' }: LoadingSpinnerProps) {
         }
       `}</style>
     </div>
-  );
+  )
 }
 
 /** Props for formula variables panel */
 interface VariablesPanelProps {
-  vars: Record<string, FormulaVariable>;
+  vars: Record<string, FormulaVariable>
 }
 
 /**
  * Displays formula variable definitions.
  */
 function VariablesPanel({ vars }: VariablesPanelProps) {
-  const entries = Object.entries(vars);
-  if (entries.length === 0) return null;
+  const entries = Object.entries(vars)
+  if (entries.length === 0) return null
 
   return (
     <div
@@ -230,16 +228,16 @@ function VariablesPanel({ vars }: VariablesPanelProps) {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 /** Props for preview results panel */
 interface PreviewResultsProps {
-  result: CookResult | null;
-  isLoading: boolean;
-  error: Error | null;
-  onPourClick?: () => void;
-  canPour?: boolean;
+  result: CookResult | null
+  isLoading: boolean
+  error: Error | null
+  onPourClick?: () => void
+  canPour?: boolean
 }
 
 /** Pour button styling */
@@ -257,25 +255,25 @@ const pourButtonStyle = {
   gap: '8px',
   marginBottom: '16px',
   transition: 'background-color 0.15s',
-};
+}
 
 const pourButtonDisabledStyle = {
   ...pourButtonStyle,
   backgroundColor: '#374151',
   cursor: 'not-allowed',
   opacity: 0.6,
-};
+}
 
 /**
  * Right panel showing cook results.
  */
 function PreviewResults({ result, isLoading, error, onPourClick, canPour }: PreviewResultsProps) {
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner />
   }
 
   if (error) {
-    return <CookError error={error.message} />;
+    return <CookError error={error.message} />
   }
 
   if (!result) {
@@ -290,7 +288,7 @@ function PreviewResults({ result, isLoading, error, onPourClick, canPour }: Prev
       >
         Select a formula to preview
       </div>
-    );
+    )
   }
 
   if (!result.ok) {
@@ -301,11 +299,11 @@ function PreviewResults({ result, isLoading, error, onPourClick, canPour }: Prev
         )}
         <CookError error={result.error ?? 'Cook failed'} stderr={result.stderr} />
       </>
-    );
+    )
   }
 
-  const stepCount = result.steps?.length ?? 0;
-  const showPourButton = stepCount > 0;
+  const stepCount = result.steps?.length ?? 0
+  const showPourButton = stepCount > 0
 
   return (
     <>
@@ -339,14 +337,14 @@ function PreviewResults({ result, isLoading, error, onPourClick, canPour }: Prev
       {result.vars && <VariablesPanel vars={result.vars} />}
       <ProtoBeadList beads={result.steps ?? []} />
     </>
-  );
+  )
 }
 
 /** Props for formula editor panel */
 interface FormulaEditorProps {
-  content: string;
-  onChange: (content: string) => void;
-  formulaPath: string;
+  content: string
+  onChange: (content: string) => void
+  formulaPath: string
 }
 
 /**
@@ -386,21 +384,21 @@ function FormulaEditor({ content, onChange, formulaPath }: FormulaEditorProps) {
         }}
       />
     </div>
-  );
+  )
 }
 
 /** Props for the cook preview component */
 export interface CookPreviewProps {
   /** Path to the formula file */
-  formulaPath: string;
+  formulaPath: string
   /** Initial formula content */
-  initialContent?: string;
+  initialContent?: string
   /** Variable substitutions for runtime mode */
-  vars?: Record<string, string>;
+  vars?: Record<string, string>
   /** Callback when formula content changes */
-  onContentChange?: (content: string) => void;
+  onContentChange?: (content: string) => void
   /** Callback after successful pour */
-  onPourSuccess?: (result: PourResult) => void;
+  onPourSuccess?: (result: PourResult) => void
 }
 
 /**
@@ -408,9 +406,7 @@ export interface CookPreviewProps {
  * Removes directory and extension to get the formula name.
  */
 function extractProtoId(formulaPath: string): string {
-  return formulaPath
-    .replace(/\.formula\.(toml|json)$/, '')
-    .replace(/^.*\//, '');
+  return formulaPath.replace(/\.formula\.(toml|json)$/, '').replace(/^.*\//, '')
 }
 
 /**
@@ -426,46 +422,46 @@ export function CookPreview({
   onContentChange,
   onPourSuccess,
 }: CookPreviewProps) {
-  const [content, setContent] = useState(initialContent);
-  const [isPourDialogOpen, setIsPourDialogOpen] = useState(false);
+  const [content, setContent] = useState(initialContent)
+  const [isPourDialogOpen, setIsPourDialogOpen] = useState(false)
 
   // Use the cook hook with 500ms debounce
   const { result, isLoading, error } = useCook(formulaPath, {
     debounceMs: 500,
     mode: 'compile',
     vars,
-  });
+  })
 
   const handleContentChange = useCallback(
     (newContent: string) => {
-      setContent(newContent);
-      onContentChange?.(newContent);
+      setContent(newContent)
+      onContentChange?.(newContent)
     },
     [onContentChange]
-  );
+  )
 
   const handlePourClick = useCallback(() => {
-    setIsPourDialogOpen(true);
-  }, []);
+    setIsPourDialogOpen(true)
+  }, [])
 
   const handlePourDialogClose = useCallback(() => {
-    setIsPourDialogOpen(false);
-  }, []);
+    setIsPourDialogOpen(false)
+  }, [])
 
   const handlePourSuccess = useCallback(
     (pourResult: PourResult) => {
-      onPourSuccess?.(pourResult);
+      onPourSuccess?.(pourResult)
     },
     [onPourSuccess]
-  );
+  )
 
   // Determine if pour is available (cook succeeded with steps, no unbound vars)
   const canPour =
     result?.ok === true &&
     (result.steps?.length ?? 0) > 0 &&
-    (!result.unbound_vars || result.unbound_vars.length === 0);
+    (!result.unbound_vars || result.unbound_vars.length === 0)
 
-  const protoId = extractProtoId(formulaPath);
+  const protoId = extractProtoId(formulaPath)
 
   return (
     <>
@@ -527,5 +523,5 @@ export function CookPreview({
         />
       )}
     </>
-  );
+  )
 }

@@ -1,29 +1,36 @@
+import type { SlingResult, SlingTarget } from '@beads-ide/shared'
 /**
  * Sling dialog for dispatching formulas to agents/crews.
  * Allows target selection and shows execution status.
  */
-import { useState, useCallback, useRef, useEffect, type CSSProperties, type ChangeEvent } from 'react';
-import { createPortal } from 'react-dom';
-import type { SlingResult, SlingTarget } from '@beads-ide/shared';
+import {
+  type CSSProperties,
+  type ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { createPortal } from 'react-dom'
 
 /** Props for the sling dialog */
 export interface SlingDialogProps {
   /** Whether the dialog is open */
-  isOpen: boolean;
+  isOpen: boolean
   /** Close the dialog */
-  onClose: () => void;
+  onClose: () => void
   /** Formula path to sling */
-  formulaPath: string;
+  formulaPath: string
   /** Variable values to pass */
-  vars?: Record<string, string>;
+  vars?: Record<string, string>
   /** Execute the sling */
-  onSling: (target: string) => Promise<SlingResult>;
+  onSling: (target: string) => Promise<SlingResult>
   /** Whether a sling is in progress */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Result from the last sling */
-  result?: SlingResult | null;
+  result?: SlingResult | null
   /** Navigate to results view */
-  onNavigateToResults?: (moleculeId: string) => void;
+  onNavigateToResults?: (moleculeId: string) => void
 }
 
 // Default targets (would come from API in production)
@@ -31,7 +38,7 @@ const DEFAULT_TARGETS: SlingTarget[] = [
   { id: 'bcc/polecats/fury', name: 'Fury (Polecat)', type: 'polecat', status: 'available' },
   { id: 'bcc/polecats/max', name: 'Max (Polecat)', type: 'polecat', status: 'available' },
   { id: 'bcc/crew/main', name: 'Main Crew', type: 'crew', status: 'available' },
-];
+]
 
 const overlayStyle: CSSProperties = {
   position: 'fixed',
@@ -41,7 +48,7 @@ const overlayStyle: CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
   zIndex: 1000,
-};
+}
 
 const dialogStyle: CSSProperties = {
   background: '#1a1a1a',
@@ -51,7 +58,7 @@ const dialogStyle: CSSProperties = {
   width: '100%',
   maxWidth: '480px',
   overflow: 'hidden',
-};
+}
 
 const headerStyle: CSSProperties = {
   padding: '16px 20px',
@@ -59,7 +66,7 @@ const headerStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-};
+}
 
 const titleStyle: CSSProperties = {
   fontSize: '16px',
@@ -69,7 +76,7 @@ const titleStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   gap: '8px',
-};
+}
 
 const closeButtonStyle: CSSProperties = {
   background: 'transparent',
@@ -79,11 +86,11 @@ const closeButtonStyle: CSSProperties = {
   cursor: 'pointer',
   padding: '4px',
   lineHeight: 1,
-};
+}
 
 const contentStyle: CSSProperties = {
   padding: '20px',
-};
+}
 
 const labelStyle: CSSProperties = {
   display: 'block',
@@ -91,11 +98,11 @@ const labelStyle: CSSProperties = {
   fontWeight: 500,
   color: '#a3a3a3',
   marginBottom: '8px',
-};
+}
 
 const selectContainerStyle: CSSProperties = {
   marginBottom: '16px',
-};
+}
 
 const selectStyle: CSSProperties = {
   width: '100%',
@@ -107,7 +114,7 @@ const selectStyle: CSSProperties = {
   color: '#fff',
   cursor: 'pointer',
   outline: 'none',
-};
+}
 
 const inputStyle: CSSProperties = {
   width: '100%',
@@ -119,13 +126,13 @@ const inputStyle: CSSProperties = {
   color: '#fff',
   outline: 'none',
   boxSizing: 'border-box',
-};
+}
 
 const hintStyle: CSSProperties = {
   fontSize: '12px',
   color: '#737373',
   marginTop: '6px',
-};
+}
 
 const formulaPathStyle: CSSProperties = {
   fontSize: '13px',
@@ -136,7 +143,7 @@ const formulaPathStyle: CSSProperties = {
   borderRadius: '4px',
   marginBottom: '16px',
   wordBreak: 'break-all',
-};
+}
 
 const footerStyle: CSSProperties = {
   padding: '16px 20px',
@@ -144,7 +151,7 @@ const footerStyle: CSSProperties = {
   display: 'flex',
   justifyContent: 'flex-end',
   gap: '12px',
-};
+}
 
 const buttonBaseStyle: CSSProperties = {
   padding: '8px 16px',
@@ -154,47 +161,47 @@ const buttonBaseStyle: CSSProperties = {
   cursor: 'pointer',
   border: 'none',
   transition: 'background 0.15s ease',
-};
+}
 
 const cancelButtonStyle: CSSProperties = {
   ...buttonBaseStyle,
   background: '#333',
   color: '#a3a3a3',
-};
+}
 
 const slingButtonStyle: CSSProperties = {
   ...buttonBaseStyle,
   background: '#3b82f6',
   color: '#fff',
-};
+}
 
 const slingButtonDisabledStyle: CSSProperties = {
   ...slingButtonStyle,
   background: '#1e3a5f',
   cursor: 'not-allowed',
   opacity: 0.6,
-};
+}
 
 const statusStyle: CSSProperties = {
   padding: '12px 16px',
   borderRadius: '6px',
   marginBottom: '16px',
   fontSize: '14px',
-};
+}
 
 const successStatusStyle: CSSProperties = {
   ...statusStyle,
   background: '#052e16',
   border: '1px solid #166534',
   color: '#86efac',
-};
+}
 
 const errorStatusStyle: CSSProperties = {
   ...statusStyle,
   background: '#450a0a',
   border: '1px solid #991b1b',
   color: '#fca5a5',
-};
+}
 
 const loadingStyle: CSSProperties = {
   ...statusStyle,
@@ -204,7 +211,7 @@ const loadingStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   gap: '10px',
-};
+}
 
 const retryButtonStyle: CSSProperties = {
   ...buttonBaseStyle,
@@ -213,7 +220,7 @@ const retryButtonStyle: CSSProperties = {
   marginTop: '8px',
   padding: '6px 12px',
   fontSize: '13px',
-};
+}
 
 const viewResultsButtonStyle: CSSProperties = {
   ...buttonBaseStyle,
@@ -222,7 +229,7 @@ const viewResultsButtonStyle: CSSProperties = {
   marginTop: '8px',
   padding: '6px 12px',
   fontSize: '13px',
-};
+}
 
 /**
  * Sling dialog component for dispatching formulas to agents/crews.
@@ -237,99 +244,98 @@ export function SlingDialog({
   result,
   onNavigateToResults,
 }: SlingDialogProps) {
-  const [selectedTarget, setSelectedTarget] = useState<string>('');
-  const [customTarget, setCustomTarget] = useState<string>('');
-  const [useCustom, setUseCustom] = useState(false);
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const customInputRef = useRef<HTMLInputElement>(null);
+  const [selectedTarget, setSelectedTarget] = useState<string>('')
+  const [customTarget, setCustomTarget] = useState<string>('')
+  const [useCustom, setUseCustom] = useState(false)
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const customInputRef = useRef<HTMLInputElement>(null)
 
   // Reset state when dialog opens and show/close dialog
   useEffect(() => {
     if (isOpen) {
-      setSelectedTarget(DEFAULT_TARGETS[0]?.id || '');
-      setCustomTarget('');
-      setUseCustom(false);
-      dialogRef.current?.showModal();
+      setSelectedTarget(DEFAULT_TARGETS[0]?.id || '')
+      setCustomTarget('')
+      setUseCustom(false)
+      dialogRef.current?.showModal()
     } else {
-      dialogRef.current?.close();
+      dialogRef.current?.close()
     }
-  }, [isOpen]);
+  }, [isOpen])
 
   // Focus custom input when switching to custom mode
   useEffect(() => {
     if (useCustom && customInputRef.current) {
-      customInputRef.current.focus();
+      customInputRef.current.focus()
     }
-  }, [useCustom]);
+  }, [useCustom])
 
   // Handle click outside to close
   const handleOverlayClick = useCallback(
     (e: React.MouseEvent) => {
       if (e.target === e.currentTarget && !isLoading) {
-        onClose();
+        onClose()
       }
     },
     [onClose, isLoading]
-  );
-
+  )
 
   const handleTargetChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+    const value = e.target.value
     if (value === '__custom__') {
-      setUseCustom(true);
-      setSelectedTarget('');
+      setUseCustom(true)
+      setSelectedTarget('')
     } else {
-      setUseCustom(false);
-      setSelectedTarget(value);
+      setUseCustom(false)
+      setSelectedTarget(value)
     }
-  }, []);
+  }, [])
 
   const handleCustomTargetChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setCustomTarget(e.target.value);
-  }, []);
+    setCustomTarget(e.target.value)
+  }, [])
 
   const handleSling = useCallback(async () => {
-    const target = useCustom ? customTarget : selectedTarget;
-    if (!target) return;
-    await onSling(target);
-  }, [useCustom, customTarget, selectedTarget, onSling]);
+    const target = useCustom ? customTarget : selectedTarget
+    if (!target) return
+    await onSling(target)
+  }, [useCustom, customTarget, selectedTarget, onSling])
 
   const handleRetry = useCallback(() => {
-    handleSling();
-  }, [handleSling]);
+    handleSling()
+  }, [handleSling])
 
   const handleViewResults = useCallback(() => {
     if (result?.molecule_id && onNavigateToResults) {
-      onNavigateToResults(result.molecule_id);
+      onNavigateToResults(result.molecule_id)
     }
-  }, [result, onNavigateToResults]);
+  }, [result, onNavigateToResults])
 
-  const currentTarget = useCustom ? customTarget : selectedTarget;
-  const canSling = currentTarget.trim() !== '' && !isLoading;
+  const currentTarget = useCustom ? customTarget : selectedTarget
+  const canSling = currentTarget.trim() !== '' && !isLoading
 
   // Handle dialog cancel event (backdrop click or escape)
   const handleDialogCancel = useCallback(
     (e: React.SyntheticEvent) => {
-      e.preventDefault();
+      e.preventDefault()
       if (!isLoading) {
-        onClose();
+        onClose()
       }
     },
     [onClose, isLoading]
-  );
+  )
 
   // Handle keyboard events on dialog (for accessibility)
   const handleDialogKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       // Handle Enter on the backdrop to close (matches click behavior)
       if (e.key === 'Enter' && e.target === dialogRef.current && !isLoading) {
-        onClose();
+        onClose()
       }
     },
     [onClose, isLoading]
-  );
+  )
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   const dialog = (
     <dialog
@@ -371,7 +377,9 @@ export function SlingDialog({
           {isLoading && (
             // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role on container div, not form output
             <div style={loadingStyle} role="status" aria-live="polite">
-              <span style={{ animation: 'spin 1s linear infinite' }} aria-hidden="true">&#x21BB;</span>
+              <span style={{ animation: 'spin 1s linear infinite' }} aria-hidden="true">
+                &#x21BB;
+              </span>
               <span>Slinging formula to {currentTarget}...</span>
             </div>
           )}
@@ -483,12 +491,7 @@ export function SlingDialog({
         </div>
 
         <footer style={footerStyle}>
-          <button
-            type="button"
-            onClick={onClose}
-            style={cancelButtonStyle}
-            disabled={isLoading}
-          >
+          <button type="button" onClick={onClose} style={cancelButtonStyle} disabled={isLoading}>
             {result?.ok ? 'Close' : 'Cancel'}
           </button>
           {!result?.ok && (
@@ -504,7 +507,7 @@ export function SlingDialog({
         </footer>
       </div>
     </dialog>
-  );
+  )
 
-  return createPortal(dialog, document.body);
+  return createPortal(dialog, document.body)
 }

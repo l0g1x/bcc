@@ -1,25 +1,25 @@
+import type { FormulaVariable, ProtoBead } from '@beads-ide/shared'
+import dagre from '@dagrejs/dagre'
+import {
+  Background,
+  BackgroundVariant,
+  Controls,
+  type Edge,
+  Handle,
+  MiniMap,
+  type Node,
+  type NodeProps,
+  Position,
+  ReactFlow,
+  useEdgesState,
+  useNodesState,
+} from '@xyflow/react'
 /**
  * Visual formula builder component.
  * Read-only DAG visualization of formula steps using React Flow.
  * TOML → visual (one-way sync); write-back is deferred to post-MVP.
  */
-import { useMemo, useCallback, type CSSProperties } from 'react'
-import {
-  ReactFlow,
-  Controls,
-  Background,
-  MiniMap,
-  Handle,
-  Position,
-  type Node,
-  type Edge,
-  type NodeProps,
-  BackgroundVariant,
-  useNodesState,
-  useEdgesState,
-} from '@xyflow/react'
-import dagre from '@dagrejs/dagre'
-import type { ProtoBead, FormulaVariable } from '@beads-ide/shared'
+import { type CSSProperties, useCallback, useMemo } from 'react'
 
 import '@xyflow/react/dist/style.css'
 
@@ -41,10 +41,7 @@ const NODE_HEIGHT = 80
 /**
  * Compute hierarchical layout using dagre.
  */
-function layoutNodes(
-  nodes: Node<StepNodeData>[],
-  edges: Edge[]
-): Node<StepNodeData>[] {
+function layoutNodes(nodes: Node<StepNodeData>[], edges: Edge[]): Node<StepNodeData>[] {
   const g = new dagre.graphlib.Graph()
   g.setDefaultEdgeLabel(() => ({}))
   g.setGraph({ rankdir: 'TB', nodesep: 60, ranksep: 80 })

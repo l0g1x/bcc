@@ -2,16 +2,16 @@
  * Degraded mode banner for when database/backend features are unavailable.
  * Shows at the top of the app to inform users of limited functionality.
  */
-import { useState, useEffect, useCallback, type CSSProperties } from 'react';
-import { onConnectionStateChange, checkHealth, type ConnectionState } from '../../lib/api';
+import { type CSSProperties, useCallback, useEffect, useState } from 'react'
+import { type ConnectionState, checkHealth, onConnectionStateChange } from '../../lib/api'
 
 export interface OfflineBannerProps {
   /** Override the connection state (useful for testing) */
-  forceState?: ConnectionState;
+  forceState?: ConnectionState
   /** Custom message for degraded state */
-  degradedMessage?: string;
+  degradedMessage?: string
   /** Custom message for disconnected state */
-  disconnectedMessage?: string;
+  disconnectedMessage?: string
 }
 
 const bannerStyle: CSSProperties = {
@@ -24,21 +24,21 @@ const bannerStyle: CSSProperties = {
   fontWeight: 500,
   textAlign: 'center',
   transition: 'opacity 0.3s, transform 0.3s',
-};
+}
 
 const degradedBannerStyle: CSSProperties = {
   ...bannerStyle,
   backgroundColor: '#78350f',
   color: '#fef3c7',
   borderBottom: '1px solid #92400e',
-};
+}
 
 const disconnectedBannerStyle: CSSProperties = {
   ...bannerStyle,
   backgroundColor: '#7f1d1d',
   color: '#fecaca',
   borderBottom: '1px solid #dc2626',
-};
+}
 
 const hiddenStyle: CSSProperties = {
   ...bannerStyle,
@@ -46,13 +46,13 @@ const hiddenStyle: CSSProperties = {
   height: 0,
   padding: 0,
   overflow: 'hidden',
-};
+}
 
 const iconStyle: CSSProperties = {
   width: '16px',
   height: '16px',
   flexShrink: 0,
-};
+}
 
 const retryButtonStyle: CSSProperties = {
   padding: '4px 12px',
@@ -64,13 +64,13 @@ const retryButtonStyle: CSSProperties = {
   borderRadius: '4px',
   cursor: 'pointer',
   transition: 'background-color 0.2s',
-};
+}
 
 const retryButtonDisabledStyle: CSSProperties = {
   ...retryButtonStyle,
   opacity: 0.5,
   cursor: 'not-allowed',
-};
+}
 
 /**
  * Warning icon for degraded mode
@@ -93,7 +93,7 @@ function WarningIcon() {
       <line x1="12" y1="9" x2="12" y2="13" />
       <line x1="12" y1="17" x2="12.01" y2="17" />
     </svg>
-  );
+  )
 }
 
 /**
@@ -121,7 +121,7 @@ function OfflineIcon() {
       <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
       <line x1="12" y1="20" x2="12.01" y2="20" />
     </svg>
-  );
+  )
 }
 
 /**
@@ -134,37 +134,37 @@ export function OfflineBanner({
   degradedMessage = 'Database unavailable. Formula editing still works, but bead data is not accessible.',
   disconnectedMessage = 'Backend server disconnected. Some features may not work.',
 }: OfflineBannerProps) {
-  const [connectionState, setConnectionState] = useState<ConnectionState>('connected');
-  const [isRetrying, setIsRetrying] = useState(false);
+  const [connectionState, setConnectionState] = useState<ConnectionState>('connected')
+  const [isRetrying, setIsRetrying] = useState(false)
 
   useEffect(() => {
     if (forceState !== undefined) {
-      setConnectionState(forceState);
-      return;
+      setConnectionState(forceState)
+      return
     }
 
-    return onConnectionStateChange(setConnectionState);
-  }, [forceState]);
+    return onConnectionStateChange(setConnectionState)
+  }, [forceState])
 
   const handleRetry = useCallback(async () => {
-    if (isRetrying) return;
+    if (isRetrying) return
 
-    setIsRetrying(true);
+    setIsRetrying(true)
     try {
-      await checkHealth();
+      await checkHealth()
     } finally {
-      setIsRetrying(false);
+      setIsRetrying(false)
     }
-  }, [isRetrying]);
+  }, [isRetrying])
 
   if (connectionState === 'connected') {
-    return <div style={hiddenStyle} aria-hidden="true" />;
+    return <div style={hiddenStyle} aria-hidden="true" />
   }
 
-  const isDegraded = connectionState === 'degraded';
-  const message = isDegraded ? degradedMessage : disconnectedMessage;
-  const style = isDegraded ? degradedBannerStyle : disconnectedBannerStyle;
-  const Icon = isDegraded ? WarningIcon : OfflineIcon;
+  const isDegraded = connectionState === 'degraded'
+  const message = isDegraded ? degradedMessage : disconnectedMessage
+  const style = isDegraded ? degradedBannerStyle : disconnectedBannerStyle
+  const Icon = isDegraded ? WarningIcon : OfflineIcon
 
   return (
     <div style={style} role="alert">
@@ -177,27 +177,27 @@ export function OfflineBanner({
         disabled={isRetrying}
         onMouseOver={(e) => {
           if (!isRetrying) {
-            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)';
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)'
           }
         }}
         onMouseOut={(e) => {
           if (!isRetrying) {
-            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)'
           }
         }}
         onFocus={(e) => {
           if (!isRetrying) {
-            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)';
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)'
           }
         }}
         onBlur={(e) => {
           if (!isRetrying) {
-            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)'
           }
         }}
       >
         {isRetrying ? 'Checking...' : 'Retry'}
       </button>
     </div>
-  );
+  )
 }

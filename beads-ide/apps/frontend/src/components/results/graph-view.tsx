@@ -1,3 +1,18 @@
+import {
+  Background,
+  BackgroundVariant,
+  Controls,
+  type Edge,
+  MiniMap,
+  type Node,
+  type NodeTypes,
+  type OnEdgesChange,
+  type OnNodesChange,
+  Panel,
+  ReactFlow,
+  useEdgesState,
+  useNodesState,
+} from '@xyflow/react'
 /**
  * Graph visualization component for bead dependency graphs.
  * Implements dense graph simplification strategies for 50-200 bead graphs.
@@ -10,28 +25,13 @@
  * - Density indicator: health warnings at density thresholds
  * - Accessible list/tree alternative for screen readers (WCAG 2.1 AA)
  */
-import { useState, useCallback, useMemo, type CSSProperties, type KeyboardEvent } from 'react'
-import {
-  ReactFlow,
-  Controls,
-  Background,
-  MiniMap,
-  useNodesState,
-  useEdgesState,
-  type Node,
-  type Edge,
-  type NodeTypes,
-  type OnNodesChange,
-  type OnEdgesChange,
-  BackgroundVariant,
-  Panel,
-} from '@xyflow/react'
+import { type CSSProperties, type KeyboardEvent, useCallback, useMemo, useState } from 'react'
 import '@xyflow/react/dist/style.css'
-import type { GraphNode, GraphEdge } from '@beads-ide/shared'
+import type { GraphEdge, GraphNode } from '@beads-ide/shared'
 import {
+  DEFAULT_SIMPLIFICATION_STATE,
   GraphControls,
   type GraphSimplificationState,
-  DEFAULT_SIMPLIFICATION_STATE,
   getDensityHealth,
 } from './graph-controls'
 
@@ -275,20 +275,13 @@ function getNHopNeighborhood(
 /**
  * Find epic nodes and their children for clustering
  */
-function findEpicsAndChildren(
-  nodes: GraphNode[],
-  edges: GraphEdge[]
-): Map<string, string[]> {
+function findEpicsAndChildren(nodes: GraphNode[], edges: GraphEdge[]): Map<string, string[]> {
   const epics = new Map<string, string[]>()
 
   // Find nodes that are epics (type === 'epic' or have 'epic' label)
   const epicIds = new Set<string>()
   for (const node of nodes) {
-    if (
-      node.type === 'epic' ||
-      node.labels?.includes('epic') ||
-      node.labels?.includes('parent')
-    ) {
+    if (node.type === 'epic' || node.labels?.includes('epic') || node.labels?.includes('parent')) {
       epicIds.add(node.id)
       epics.set(node.id, [])
     }
@@ -369,11 +362,7 @@ function applySimplification(
   // Focus mode: dim nodes outside N-hop neighborhood
   let focusedNodes: Set<string> | null = null
   if (state.focusMode && state.selectedNodeId) {
-    focusedNodes = getNHopNeighborhood(
-      state.selectedNodeId,
-      state.focusHops,
-      adjacencyMap
-    )
+    focusedNodes = getNHopNeighborhood(state.selectedNodeId, state.focusHops, adjacencyMap)
   }
 
   // Convert to React Flow format
@@ -433,9 +422,10 @@ function applySimplification(
     type: 'default',
     animated: e.type === 'blocks',
     style: {
-      stroke: focusedNodes && (!focusedNodes.has(e.from) || !focusedNodes.has(e.to))
-        ? 'rgba(100, 100, 100, 0.3)'
-        : '#555',
+      stroke:
+        focusedNodes && (!focusedNodes.has(e.from) || !focusedNodes.has(e.to))
+          ? 'rgba(100, 100, 100, 0.3)'
+          : '#555',
     },
   }))
 
@@ -568,10 +558,7 @@ function GraphListView({ nodes, edges, onBeadClick, onBeadDoubleClick }: GraphLi
       <h2 id="beads-list-heading" style={{ color: '#ccc', fontSize: '14px', marginBottom: '12px' }}>
         Beads ({nodes.length})
       </h2>
-      <ul
-        aria-labelledby="beads-list-heading"
-        style={{ listStyle: 'none', padding: 0, margin: 0 }}
-      >
+      <ul aria-labelledby="beads-list-heading" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
         {nodes.map((node) => {
           const statusInfo = getStatusIcon(node.status)
           const deps = dependencyMap.get(node.id)
@@ -607,7 +594,10 @@ function GraphListView({ nodes, edges, onBeadClick, onBeadDoubleClick }: GraphLi
                 {/* Dependencies summary */}
                 <div style={{ display: 'flex', gap: '8px', fontSize: '11px' }}>
                   {deps && deps.blockedBy.length > 0 && (
-                    <span style={{ color: '#f14c4c' }} title={`Blocked by: ${deps.blockedBy.join(', ')}`}>
+                    <span
+                      style={{ color: '#f14c4c' }}
+                      title={`Blocked by: ${deps.blockedBy.join(', ')}`}
+                    >
                       ← {deps.blockedBy.length}
                     </span>
                   )}
@@ -785,7 +775,9 @@ export function GraphView({
   return (
     <div style={containerStyle}>
       {/* View mode toggle for accessibility */}
-      <div style={{ ...viewToggleStyle, position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}>
+      <div
+        style={{ ...viewToggleStyle, position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}
+      >
         <button
           type="button"
           onClick={() => setViewMode('graph')}

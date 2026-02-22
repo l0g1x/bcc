@@ -2,13 +2,13 @@
  * Centralized API client with connection error detection and offline mode signaling.
  * All fetch errors flow through this module which returns ApiResponse<T> with { data, error } envelope.
  */
-import { toast } from 'sonner';
+import { toast } from 'sonner'
 
 /** API base URL for the backend server */
-export const API_BASE = 'http://127.0.0.1:3001';
+export const API_BASE = 'http://127.0.0.1:3001'
 
 /** Connection state for the backend */
-export type ConnectionState = 'connected' | 'disconnected' | 'degraded';
+export type ConnectionState = 'connected' | 'disconnected' | 'degraded'
 
 /** Error types for categorizing failures */
 export type ApiErrorType =
@@ -17,44 +17,44 @@ export type ApiErrorType =
   | 'client' // 4xx errors
   | 'timeout' // Request timeout
   | 'parse' // JSON parse error
-  | 'unknown';
+  | 'unknown'
 
 /** Structured API error with categorization */
 export interface ApiError {
-  type: ApiErrorType;
-  message: string;
-  status?: number;
-  details?: string;
-  retryable: boolean;
+  type: ApiErrorType
+  message: string
+  status?: number
+  details?: string
+  retryable: boolean
 }
 
 /** API response envelope - always returns either data or error */
 export interface ApiResponse<T> {
-  data: T | null;
-  error: ApiError | null;
+  data: T | null
+  error: ApiError | null
 }
 
 /** Connection state subscribers */
-type ConnectionStateListener = (state: ConnectionState) => void;
-const connectionListeners = new Set<ConnectionStateListener>();
-let currentConnectionState: ConnectionState = 'connected';
+type ConnectionStateListener = (state: ConnectionState) => void
+const connectionListeners = new Set<ConnectionStateListener>()
+let currentConnectionState: ConnectionState = 'connected'
 
 /**
  * Subscribe to connection state changes.
  * Returns unsubscribe function.
  */
 export function onConnectionStateChange(listener: ConnectionStateListener): () => void {
-  connectionListeners.add(listener);
+  connectionListeners.add(listener)
   // Immediately notify with current state
-  listener(currentConnectionState);
-  return () => connectionListeners.delete(listener);
+  listener(currentConnectionState)
+  return () => connectionListeners.delete(listener)
 }
 
 /**
  * Get current connection state.
  */
 export function getConnectionState(): ConnectionState {
-  return currentConnectionState;
+  return currentConnectionState
 }
 
 /**
@@ -62,9 +62,9 @@ export function getConnectionState(): ConnectionState {
  */
 function setConnectionState(state: ConnectionState): void {
   if (state !== currentConnectionState) {
-    currentConnectionState = state;
+    currentConnectionState = state
     for (const listener of connectionListeners) {
-      listener(state);
+      listener(state)
     }
   }
 }
@@ -80,7 +80,7 @@ function classifyError(error: unknown, response?: Response): ApiError {
       message: 'Cannot connect to backend server',
       details: 'The backend server is not running or unreachable.',
       retryable: true,
-    };
+    }
   }
 
   // Timeout
@@ -90,12 +90,12 @@ function classifyError(error: unknown, response?: Response): ApiError {
       message: 'Request timed out',
       details: 'The server took too long to respond.',
       retryable: true,
-    };
+    }
   }
 
   // HTTP errors with response
   if (response) {
-    const status = response.status;
+    const status = response.status
 
     if (status >= 500) {
       return {
@@ -104,7 +104,7 @@ function classifyError(error: unknown, response?: Response): ApiError {
         status,
         details: 'The server encountered an internal error.',
         retryable: true,
-      };
+      }
     }
 
     if (status >= 400) {
@@ -113,7 +113,7 @@ function classifyError(error: unknown, response?: Response): ApiError {
         message: `Request failed (${status})`,
         status,
         retryable: false,
-      };
+      }
     }
   }
 
@@ -124,7 +124,7 @@ function classifyError(error: unknown, response?: Response): ApiError {
       message: 'Invalid response format',
       details: 'The server returned invalid JSON.',
       retryable: false,
-    };
+    }
   }
 
   // Unknown errors
@@ -132,17 +132,17 @@ function classifyError(error: unknown, response?: Response): ApiError {
     type: 'unknown',
     message: error instanceof Error ? error.message : 'An unknown error occurred',
     retryable: false,
-  };
+  }
 }
 
 /** Options for API requests */
 export interface FetchOptions extends RequestInit {
   /** Timeout in milliseconds (default: 30000) */
-  timeout?: number;
+  timeout?: number
   /** Show toast on error (default: false) */
-  showToast?: boolean;
+  showToast?: boolean
   /** Custom toast message */
-  toastMessage?: string;
+  toastMessage?: string
 }
 
 /**
@@ -161,38 +161,38 @@ export async function apiFetch<T>(
   endpoint: string,
   options: FetchOptions = {}
 ): Promise<ApiResponse<T>> {
-  const { timeout = 30000, showToast = false, toastMessage, ...fetchOptions } = options;
+  const { timeout = 30000, showToast = false, toastMessage, ...fetchOptions } = options
 
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeout)
 
-  let response: Response | undefined;
+  let response: Response | undefined
 
   try {
     response = await fetch(url, {
       ...fetchOptions,
       signal: controller.signal,
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     // Connection successful
-    setConnectionState('connected');
+    setConnectionState('connected')
 
     if (!response.ok) {
-      const text = await response.text().catch(() => '');
-      const error = classifyError(null, response);
-      error.details = text || error.details;
+      const text = await response.text().catch(() => '')
+      const error = classifyError(null, response)
+      error.details = text || error.details
 
       if (showToast) {
-        toast.error(toastMessage || error.message);
+        toast.error(toastMessage || error.message)
       }
 
-      return { data: null, error };
+      return { data: null, error }
     }
 
-    const data = await response.json();
+    const data = await response.json()
 
     // Handle backend error envelope (if backend returns { ok: false, error: ... })
     if (data && typeof data === 'object' && 'ok' in data && !data.ok) {
@@ -201,31 +201,31 @@ export async function apiFetch<T>(
         message: data.error || 'Operation failed',
         details: data.stderr,
         retryable: false,
-      };
-
-      if (showToast) {
-        toast.error(toastMessage || error.message);
       }
 
-      return { data: null, error };
+      if (showToast) {
+        toast.error(toastMessage || error.message)
+      }
+
+      return { data: null, error }
     }
 
-    return { data: data as T, error: null };
+    return { data: data as T, error: null }
   } catch (err) {
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
-    const error = classifyError(err, response);
+    const error = classifyError(err, response)
 
     // Network errors indicate disconnected state
     if (error.type === 'network') {
-      setConnectionState('disconnected');
+      setConnectionState('disconnected')
     }
 
     if (showToast) {
-      toast.error(toastMessage || error.message);
+      toast.error(toastMessage || error.message)
     }
 
-    return { data: null, error };
+    return { data: null, error }
   }
 }
 
@@ -236,15 +236,15 @@ export async function apiFetch<T>(
 export async function checkHealth(): Promise<boolean> {
   const { error } = await apiFetch<{ status: string }>('/api/health', {
     timeout: 5000,
-  });
+  })
 
   if (error) {
-    setConnectionState(error.type === 'network' ? 'disconnected' : 'degraded');
-    return false;
+    setConnectionState(error.type === 'network' ? 'disconnected' : 'degraded')
+    return false
   }
 
-  setConnectionState('connected');
-  return true;
+  setConnectionState('connected')
+  return true
 }
 
 /**
@@ -263,7 +263,7 @@ export async function apiPost<T, B = unknown>(
     },
     body: JSON.stringify(body),
     ...options,
-  });
+  })
 }
 
 /**
@@ -277,10 +277,10 @@ export function showSlingError(error: ApiError, onRetry?: () => void): void {
         label: 'Retry',
         onClick: onRetry,
       },
-    });
+    })
   } else {
     toast.error(error.message, {
       description: error.details,
-    });
+    })
   }
 }

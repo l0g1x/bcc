@@ -1,7 +1,7 @@
 /**
  * Test fixtures for wave computation.
  */
-import type { Bead } from '../../src/wave.js';
+import type { Bead } from '../../src/wave.js'
 
 /**
  * Linear chain: A -> B -> C
@@ -17,7 +17,7 @@ export const linearChain: Bead[] = [
     id: 'C',
     dependencies: [{ source: 'B', target: 'C', type: 'blocks' }],
   },
-];
+]
 
 /**
  * Diamond pattern:
@@ -45,7 +45,7 @@ export const diamondPattern: Bead[] = [
       { source: 'C', target: 'D', type: 'blocks' },
     ],
   },
-];
+]
 
 /**
  * Simple cycle: A -> B -> C -> A
@@ -64,7 +64,7 @@ export const simpleCycle: Bead[] = [
     id: 'C',
     dependencies: [{ source: 'B', target: 'C', type: 'blocks' }],
   },
-];
+]
 
 /**
  * Mixed cycle: D depends on A, but A-B-C form a cycle
@@ -91,7 +91,7 @@ export const mixedCycle: Bead[] = [
     id: 'C',
     dependencies: [{ source: 'B', target: 'C', type: 'blocks' }],
   },
-];
+]
 
 /**
  * Disconnected components:
@@ -109,7 +109,7 @@ export const disconnected: Bead[] = [
     id: 'D',
     dependencies: [{ source: 'C', target: 'D', type: 'blocks' }],
   },
-];
+]
 
 /**
  * Complex DAG:
@@ -156,7 +156,7 @@ export const complexDag: Bead[] = [
       { source: 'F', target: 'G', type: 'blocks' },
     ],
   },
-];
+]
 
 /**
  * Mixed dependency types - only workflow types should be considered.
@@ -173,7 +173,7 @@ export const mixedDepTypes: Bead[] = [
     id: 'C',
     dependencies: [{ source: 'A', target: 'C', type: 'references' }],
   },
-];
+]
 
 /**
  * All workflow dependency types.
@@ -196,16 +196,16 @@ export const allWorkflowTypes: Bead[] = [
     id: 'E',
     dependencies: [{ source: 'D', target: 'E', type: 'waits-for' }],
   },
-];
+]
 
 /**
  * Generate a large DAG for performance testing.
  * Creates n beads where each bead (except first) depends on the previous.
  */
 export function generateLargeLinearChain(n: number): Bead[] {
-  const beads: Bead[] = [];
+  const beads: Bead[] = []
   for (let i = 0; i < n; i++) {
-    const id = `bead-${i.toString().padStart(4, '0')}`;
+    const id = `bead-${i.toString().padStart(4, '0')}`
     const deps: Bead['dependencies'] =
       i === 0
         ? []
@@ -215,10 +215,10 @@ export function generateLargeLinearChain(n: number): Bead[] {
               target: id,
               type: 'blocks',
             },
-          ];
-    beads.push({ id, dependencies: deps });
+          ]
+    beads.push({ id, dependencies: deps })
   }
-  return beads;
+  return beads
 }
 
 /**
@@ -226,12 +226,12 @@ export function generateLargeLinearChain(n: number): Bead[] {
  * Creates `width` parallel chains of `depth` length, all merging to a final node.
  */
 export function generateWideDag(width: number, depth: number): Bead[] {
-  const beads: Bead[] = [];
+  const beads: Bead[] = []
 
   // Create parallel chains
   for (let w = 0; w < width; w++) {
     for (let d = 0; d < depth; d++) {
-      const id = `chain${w}-depth${d}`;
+      const id = `chain${w}-depth${d}`
       const deps: Bead['dependencies'] =
         d === 0
           ? []
@@ -241,21 +241,21 @@ export function generateWideDag(width: number, depth: number): Bead[] {
                 target: id,
                 type: 'blocks',
               },
-            ];
-      beads.push({ id, dependencies: deps });
+            ]
+      beads.push({ id, dependencies: deps })
     }
   }
 
   // Final merge node
-  const finalDeps: Bead['dependencies'] = [];
+  const finalDeps: Bead['dependencies'] = []
   for (let w = 0; w < width; w++) {
     finalDeps.push({
       source: `chain${w}-depth${depth - 1}`,
       target: 'final',
       type: 'blocks',
-    });
+    })
   }
-  beads.push({ id: 'final', dependencies: finalDeps });
+  beads.push({ id: 'final', dependencies: finalDeps })
 
-  return beads;
+  return beads
 }
