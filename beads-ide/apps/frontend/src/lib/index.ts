@@ -23,3 +23,5 @@ export {
   type FormulaParseError,
   type FormulaParseResult,
 } from './formula-parser'
+
+export { updateVarDefault, updateVarDefaults } from './toml-updater'

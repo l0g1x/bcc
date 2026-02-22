@@ -9,7 +9,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { type CSSProperties, useCallback, useEffect, useState } from 'react'
 import { SlingDialog, TextEditor, VarsPanel, VisualBuilder } from '../components/formulas'
 import { useCook, useFormulaContent, useSling } from '../hooks'
-import { type FormulaParseError, parseAndValidateFormula } from '../lib/formula-parser'
+import { type FormulaParseError, parseAndValidateFormula, updateVarDefault } from '../lib'
 
 // --- Types ---
 
@@ -201,6 +201,18 @@ function FormulaPage() {
 
   const handleVarChange = useCallback((key: string, value: string) => {
     setVarValues((prev) => ({ ...prev, [key]: value }))
+    // Update the TOML source with the new default value
+    setTomlContent((prev) => {
+      const updated = updateVarDefault(prev, key, value)
+      // Re-parse to update errors
+      const result = parseAndValidateFormula(updated)
+      if (!result.ok) {
+        setParseErrors(result.errors)
+      } else {
+        setParseErrors([])
+      }
+      return updated
+    })
   }, [])
 
   const handleTomlChange = useCallback((content: string) => {
