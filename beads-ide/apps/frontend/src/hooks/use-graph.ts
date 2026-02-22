@@ -12,7 +12,7 @@ import type {
 } from '@beads-ide/shared'
 import { useCallback, useEffect, useState } from 'react'
 
-const API_BASE = 'http://127.0.0.1:3001'
+const API_BASE = '' // Use relative URLs for Vite proxy
 
 /** Graph data state */
 export interface GraphData {

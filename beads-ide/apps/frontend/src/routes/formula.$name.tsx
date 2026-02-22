@@ -173,6 +173,7 @@ function FormulaPage() {
   // Load formula content from disk
   const {
     content: loadedContent,
+    path: formulaPath,
     isLoading: contentLoading,
     error: contentError,
   } = useFormulaContent(name ?? null)
@@ -188,9 +189,6 @@ function FormulaPage() {
       }
     }
   }, [loadedContent, tomlContent])
-
-  // Build formula path from route param
-  const formulaPath = name ? `formulas/${name}.toml` : null
 
   // Cook the formula to get steps and vars
   const { result, isLoading, error, cook } = useCook(formulaPath, {

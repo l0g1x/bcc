@@ -16,7 +16,7 @@ export interface UseBeadReturn {
   refresh: () => void
 }
 
-const API_BASE = 'http://127.0.0.1:3001'
+const API_BASE = '' // Use relative URLs for Vite proxy
 
 /**
  * Fetch a single bead from the backend API.

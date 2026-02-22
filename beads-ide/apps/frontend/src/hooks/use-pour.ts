@@ -5,7 +5,7 @@ import type { BurnRequest, BurnResult, PourRequest, PourResult } from '@beads-id
  */
 import { useCallback, useState } from 'react'
 
-const API_BASE = 'http://127.0.0.1:3001'
+const API_BASE = '' // Use relative URLs for Vite proxy
 
 /** Return value of the pour hook */
 export interface UsePourReturn {
