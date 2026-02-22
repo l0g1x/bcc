@@ -1,13 +1,13 @@
-import type { SlingRequest } from '@beads-ide/shared'
+import type { PourResult, SlingRequest } from '@beads-ide/shared'
 /**
  * Formula editor route with text/visual view toggle and sling workflow.
  * Displays formula TOML in text mode or as a DAG in visual mode.
  * Visual view updates automatically when TOML changes (one-way sync).
- * Includes Cook preview and Sling dispatch functionality.
+ * Includes Cook preview, Sling dispatch, and Pour (local execution) functionality.
  */
 import { createFileRoute } from '@tanstack/react-router'
 import { type CSSProperties, useCallback, useEffect, useState } from 'react'
-import { SlingDialog, TextEditor, VarsPanel, VisualBuilder } from '../components/formulas'
+import { PourDialog, SlingDialog, TextEditor, VarsPanel, VisualBuilder } from '../components/formulas'
 import { useCook, useFormulaContent, useSling } from '../hooks'
 import { type FormulaParseError, parseAndValidateFormula, updateVarDefault } from '../lib'
 
@@ -92,6 +92,12 @@ const slingButtonStyle: CSSProperties = {
   color: '#fff',
 }
 
+const pourButtonStyle: CSSProperties = {
+  ...buttonBaseStyle,
+  background: '#4f46e5',
+  color: '#fff',
+}
+
 const contentStyle: CSSProperties = {
   display: 'flex',
   flex: 1,
@@ -162,6 +168,7 @@ function FormulaPage() {
   const [parseErrors, setParseErrors] = useState<FormulaParseError[]>([])
   const [varValues, setVarValues] = useState<Record<string, string>>({})
   const [slingDialogOpen, setSlingDialogOpen] = useState(false)
+  const [pourDialogOpen, setPourDialogOpen] = useState(false)
 
   // Load formula content from disk
   const {
@@ -239,6 +246,20 @@ function FormulaPage() {
     setSlingDialogOpen(false)
   }, [])
 
+  const handleOpenPour = useCallback(() => {
+    setPourDialogOpen(true)
+  }, [])
+
+  const handlePourClose = useCallback(() => {
+    setPourDialogOpen(false)
+  }, [])
+
+  const handlePourSuccess = useCallback((pourResult: PourResult) => {
+    console.log('Pour successful:', pourResult)
+    // Navigation to results could be added here
+    // For now, the dialog handles showing success state
+  }, [])
+
   const handleSlingExecute = useCallback(
     async (target: string) => {
       const request: SlingRequest = {
@@ -266,6 +287,16 @@ function FormulaPage() {
           <button type="button" onClick={handleCook} style={cookButtonStyle} disabled={isLoading}>
             {isLoading ? 'Cooking...' : 'Cook Preview'}
           </button>
+          {result?.steps && result.steps.length > 0 && (
+            <button
+              type="button"
+              onClick={handleOpenPour}
+              style={pourButtonStyle}
+              title="Create beads locally"
+            >
+              Pour ({result.steps.length})
+            </button>
+          )}
           <button
             type="button"
             onClick={handleOpenSling}
@@ -358,6 +389,17 @@ function FormulaPage() {
         result={slingResult}
         onNavigateToResults={handleNavigateToResults}
       />
+
+      {result && (
+        <PourDialog
+          isOpen={pourDialogOpen}
+          onClose={handlePourClose}
+          protoId={name ?? ''}
+          cookResult={result}
+          vars={varValues}
+          onPourSuccess={handlePourSuccess}
+        />
+      )}
     </div>
   )
 }
