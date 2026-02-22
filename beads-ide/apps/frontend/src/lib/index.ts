@@ -12,3 +12,5 @@ export {
   type ConnectionState,
   type FetchOptions,
 } from './api'
+
+export { cn } from './utils'

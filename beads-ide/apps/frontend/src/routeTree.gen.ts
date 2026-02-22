@@ -9,8 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as FormulaNameRouteImport } from './routes/formula.$name'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FormulaNameRoute = FormulaNameRouteImport.update({
   id: '/formula/$name',
   path: '/formula/$name',
@@ -18,29 +24,40 @@ const FormulaNameRoute = FormulaNameRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/formula/$name': typeof FormulaNameRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/formula/$name': typeof FormulaNameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/formula/$name': typeof FormulaNameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/formula/$name'
+  fullPaths: '/' | '/formula/$name'
   fileRoutesByTo: FileRoutesByTo
-  to: '/formula/$name'
-  id: '__root__' | '/formula/$name'
+  to: '/' | '/formula/$name'
+  id: '__root__' | '/' | '/formula/$name'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   FormulaNameRoute: typeof FormulaNameRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/formula/$name': {
       id: '/formula/$name'
       path: '/formula/$name'
@@ -52,6 +69,7 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   FormulaNameRoute: FormulaNameRoute,
 }
 export const routeTree = rootRouteImport

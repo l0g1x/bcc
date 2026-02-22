@@ -4,8 +4,8 @@
  */
 import { toast } from 'sonner'
 
-/** API base URL for the backend server */
-export const API_BASE = 'http://127.0.0.1:3001'
+/** API base URL - uses Vite proxy in development */
+export const API_BASE = ''
 
 /** Connection state for the backend */
 export type ConnectionState = 'connected' | 'disconnected' | 'degraded'

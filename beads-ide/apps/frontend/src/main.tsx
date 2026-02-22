@@ -1,12 +1,24 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { App } from './App'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { Toaster } from 'sonner'
+import { routeTree } from './routeTree.gen'
+import './app.css'
 
-const root = document.getElementById('root')
-if (!root) throw new Error('Root element not found')
+const router = createRouter({ routeTree })
 
-createRoot(root).render(
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router
+  }
+}
+
+const rootElement = document.getElementById('root')
+if (!rootElement) throw new Error('Root element not found')
+
+createRoot(rootElement).render(
   <StrictMode>
-    <App />
+    <RouterProvider router={router} />
+    <Toaster position="bottom-right" theme="dark" richColors />
   </StrictMode>
 )
