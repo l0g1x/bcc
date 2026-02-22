@@ -267,6 +267,7 @@ export function VisualBuilder({ steps, vars: _vars }: VisualBuilderProps) {
         panOnScroll={false}
         panOnDrag={true}
         style={{ backgroundColor: '#0f172a' }}
+        aria-label="Formula steps graph. Shows dependencies between steps as a directed acyclic graph."
       >
         <Controls
           showZoom={true}
