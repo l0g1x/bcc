@@ -27,3 +27,23 @@ export type {
   BeadsListResponse,
   BeadShowResponse,
 } from './types.js'
+
+// Graph metrics and visualization types
+export type {
+  GraphNode,
+  GraphEdge,
+  GraphStats,
+  GraphExport,
+  RankedMetric,
+  HITSScores,
+  CycleInfo,
+  DegreeMetrics,
+  CriticalPath,
+  TopoSort,
+  GraphMetrics,
+  GraphError,
+  GraphMetricsResponse,
+  GraphExportResponse,
+  GraphMetricsResult,
+  GraphExportResult,
+} from './ide-types.js'
