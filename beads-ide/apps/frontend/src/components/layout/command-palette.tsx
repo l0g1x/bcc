@@ -153,8 +153,8 @@ export function CommandPalette({
   // Cmd+K / Ctrl+K to open
   useHotkey('Mod+K', open)
 
-  // Escape to close
-  useHotkey('Escape', close, { enabled: isOpen })
+  // Escape to close (enableOnFormTags so it works when input is focused)
+  useHotkey('Escape', close, { enabled: isOpen, enableOnFormTags: true })
 
   // Arrow navigation
   useHotkey(
@@ -233,6 +233,9 @@ export function CommandPalette({
   )
 
   const selectedActionId = filteredActions[selectedIndex]?.id
+
+  // Don't render anything when closed
+  if (!isOpen) return null
 
   const dialog = (
     <dialog
