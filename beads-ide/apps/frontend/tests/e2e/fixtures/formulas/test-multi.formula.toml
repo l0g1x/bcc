@@ -1,0 +1,27 @@
+[formula]
+name = "test-multi"
+description = "A multi-step test formula for E2E testing"
+
+[vars]
+project_name = { description = "Project name", required = true }
+owner = { description = "Owner name", required = false, default = "team" }
+
+[[steps]]
+id = "step-1"
+title = "Setup"
+description = "Initial setup"
+type = "task"
+
+[[steps]]
+id = "step-2"
+title = "Implementation"
+description = "Main implementation"
+type = "task"
+needs = ["step-1"]
+
+[[steps]]
+id = "step-3"
+title = "Testing"
+description = "Write tests"
+type = "task"
+needs = ["step-2"]

@@ -1,0 +1,150 @@
+{
+  "health": {
+    "ok": true,
+    "bd_version": "1.0.0-test"
+  },
+  "formulas": [
+    {
+      "name": "test-simple.formula.toml",
+      "path": "formulas/test-simple.formula.toml",
+      "directory": "formulas/"
+    },
+    {
+      "name": "test-multi.formula.toml",
+      "path": "formulas/test-multi.formula.toml",
+      "directory": "formulas/"
+    }
+  ],
+  "cook": {
+    "simple": {
+      "ok": true,
+      "formula_path": "formulas/test-simple.formula.toml",
+      "steps": [
+        {
+          "id": "step-1",
+          "title": "First step",
+          "description": "Do the first thing",
+          "type": "task",
+          "deps": []
+        }
+      ],
+      "vars": {
+        "project_name": {
+          "description": "Name of the project",
+          "required": true
+        }
+      }
+    },
+    "multi": {
+      "ok": true,
+      "formula_path": "formulas/test-multi.formula.toml",
+      "steps": [
+        {
+          "id": "step-1",
+          "title": "Setup",
+          "description": "Initial setup",
+          "type": "task",
+          "deps": []
+        },
+        {
+          "id": "step-2",
+          "title": "Implementation",
+          "description": "Main implementation",
+          "type": "task",
+          "deps": ["step-1"]
+        },
+        {
+          "id": "step-3",
+          "title": "Testing",
+          "description": "Write tests",
+          "type": "task",
+          "deps": ["step-2"]
+        }
+      ],
+      "vars": {
+        "project_name": {
+          "description": "Project name",
+          "required": true
+        },
+        "owner": {
+          "description": "Owner name",
+          "required": false,
+          "default": "team"
+        }
+      }
+    },
+    "error": {
+      "ok": false,
+      "formula_path": "formulas/test-error.formula.toml",
+      "error": "TOML parse error",
+      "stderr": "Error: Invalid TOML syntax at line 3"
+    },
+    "unbound": {
+      "ok": false,
+      "formula_path": "formulas/test-unbound.formula.toml",
+      "unbound_vars": ["required_var", "another_var"],
+      "error": "Unbound required variables"
+    }
+  },
+  "beads": [
+    {
+      "id": "bcc-test-1",
+      "title": "First test bead",
+      "description": "Description for first bead",
+      "status": "open",
+      "priority": 1,
+      "issue_type": "task",
+      "labels": ["test", "e2e"],
+      "owner": "test-user",
+      "assignee": "",
+      "created_at": "2026-02-22T00:00:00Z",
+      "updated_at": "2026-02-22T00:00:00Z",
+      "created_by": "test-user",
+      "comment_count": 0
+    },
+    {
+      "id": "bcc-test-2",
+      "title": "Second test bead",
+      "description": "Description for second bead",
+      "status": "in_progress",
+      "priority": 2,
+      "issue_type": "task",
+      "labels": ["test"],
+      "owner": "test-user",
+      "assignee": "test-assignee",
+      "created_at": "2026-02-22T00:00:00Z",
+      "updated_at": "2026-02-22T01:00:00Z",
+      "created_by": "test-user",
+      "comment_count": 2
+    },
+    {
+      "id": "bcc-test-epic",
+      "title": "Test Epic",
+      "description": "An epic bead for testing",
+      "status": "open",
+      "priority": 1,
+      "issue_type": "epic",
+      "labels": ["epic", "test"],
+      "owner": "test-user",
+      "assignee": "",
+      "created_at": "2026-02-22T00:00:00Z",
+      "updated_at": "2026-02-22T00:00:00Z",
+      "created_by": "test-user",
+      "comment_count": 0
+    }
+  ],
+  "graphMetrics": {
+    "pagerank": {
+      "bcc-test-1": 0.5,
+      "bcc-test-2": 0.3,
+      "bcc-test-epic": 0.2
+    },
+    "betweenness": {
+      "bcc-test-1": 0.1,
+      "bcc-test-2": 0.2,
+      "bcc-test-epic": 0.7
+    },
+    "density": 0.05,
+    "cycles": []
+  }
+}

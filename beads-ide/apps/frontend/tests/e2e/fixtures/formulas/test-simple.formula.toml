@@ -1,0 +1,12 @@
+[formula]
+name = "test-simple"
+description = "A simple test formula for E2E testing"
+
+[vars]
+project_name = { description = "Name of the project", required = true }
+
+[[steps]]
+id = "step-1"
+title = "First step"
+description = "Do the first thing"
+type = "task"
