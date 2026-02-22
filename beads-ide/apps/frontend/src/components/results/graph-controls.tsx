@@ -140,7 +140,7 @@ export function GraphControls({ state, onStateChange, density }: GraphControlsPr
   }
 
   return (
-    <div style={controlsContainerStyle}>
+    <div style={controlsContainerStyle} role="region" aria-label="Graph display controls">
       {/* Density Health Indicator */}
       <div
         style={{
@@ -148,6 +148,8 @@ export function GraphControls({ state, onStateChange, density }: GraphControlsPr
           backgroundColor: getHealthBgColor(density.level),
           border: `1px solid ${getHealthColor(density.level)}`,
         }}
+        role="status"
+        aria-label={`Graph density ${density.level}: ${(density.density * 100).toFixed(1)}% with ${density.nodeCount} nodes and ${density.edgeCount} edges`}
       >
         <span
           style={{
@@ -156,6 +158,7 @@ export function GraphControls({ state, onStateChange, density }: GraphControlsPr
             borderRadius: '50%',
             backgroundColor: getHealthColor(density.level),
           }}
+          aria-hidden="true"
         />
         <span style={{ color: getHealthColor(density.level), fontWeight: 500 }}>
           Density: {(density.density * 100).toFixed(1)}%
@@ -166,8 +169,8 @@ export function GraphControls({ state, onStateChange, density }: GraphControlsPr
       </div>
 
       {/* Clustering Section */}
-      <div style={sectionStyle}>
-        <span style={sectionTitleStyle}>Clustering</span>
+      <fieldset style={{ ...sectionStyle, border: 'none', padding: 0, margin: 0 }}>
+        <legend style={sectionTitleStyle}>Clustering</legend>
         <div style={controlRowStyle}>
           <label style={labelStyle}>
             <input
@@ -175,15 +178,19 @@ export function GraphControls({ state, onStateChange, density }: GraphControlsPr
               checked={state.epicClustering}
               onChange={(e) => updateState({ epicClustering: e.target.checked })}
               style={checkboxStyle}
+              aria-describedby="epic-clustering-desc"
             />{' '}
             Epic Clustering
           </label>
         </div>
-      </div>
+        <span id="epic-clustering-desc" style={{ display: 'none' }}>
+          Collapse epic children into cluster nodes for simplified view
+        </span>
+      </fieldset>
 
       {/* Focus Mode Section */}
-      <div style={sectionStyle}>
-        <span style={sectionTitleStyle}>Focus Mode</span>
+      <fieldset style={{ ...sectionStyle, border: 'none', padding: 0, margin: 0 }}>
+        <legend style={sectionTitleStyle}>Focus Mode</legend>
         <div style={controlRowStyle}>
           <label style={labelStyle}>
             <input
@@ -194,11 +201,16 @@ export function GraphControls({ state, onStateChange, density }: GraphControlsPr
             />{' '}
             Enable Focus
           </label>
+          <label htmlFor="focus-hops-select" style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden' }}>
+            Number of hops
+          </label>
           <select
+            id="focus-hops-select"
             value={state.focusHops}
             onChange={(e) => updateState({ focusHops: Number.parseInt(e.target.value, 10) })}
             style={selectStyle}
             disabled={!state.focusMode}
+            aria-label="Number of hops to show around focused node"
           >
             <option value={1}>1 hop</option>
             <option value={2}>2 hops</option>
@@ -206,20 +218,20 @@ export function GraphControls({ state, onStateChange, density }: GraphControlsPr
           </select>
         </div>
         {state.focusMode && !state.selectedNodeId && (
-          <span style={{ color: '#888', fontSize: '10px', fontStyle: 'italic' }}>
+          <span style={{ color: '#888', fontSize: '10px', fontStyle: 'italic' }} role="status">
             Click a node to focus
           </span>
         )}
         {state.focusMode && state.selectedNodeId && (
-          <span style={{ color: '#007acc', fontSize: '10px' }}>
+          <span style={{ color: '#007acc', fontSize: '10px' }} role="status" aria-live="polite">
             Focused: {state.selectedNodeId}
           </span>
         )}
-      </div>
+      </fieldset>
 
       {/* Visual Simplification Section */}
-      <div style={sectionStyle}>
-        <span style={sectionTitleStyle}>Visual Simplification</span>
+      <fieldset style={{ ...sectionStyle, border: 'none', padding: 0, margin: 0 }}>
+        <legend style={sectionTitleStyle}>Visual Simplification</legend>
         <div style={controlRowStyle}>
           <label style={labelStyle}>
             <input
@@ -242,7 +254,7 @@ export function GraphControls({ state, onStateChange, density }: GraphControlsPr
             Fisheye Distortion
           </label>
         </div>
-      </div>
+      </fieldset>
     </div>
   )
 }

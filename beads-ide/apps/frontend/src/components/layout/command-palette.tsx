@@ -287,6 +287,7 @@ export function CommandPalette({ actions, placeholder = 'Type to search...' }: C
         {/* Results */}
         <div
           id="command-list"
+          role="listbox"
           aria-label="Commands"
           style={{
             maxHeight: '320px',
@@ -304,7 +305,7 @@ export function CommandPalette({ actions, placeholder = 'Type to search...' }: C
               }
 
               return (
-                <div key={category} aria-label={category}>
+                <div key={category} role="group" aria-label={category}>
                   <div
                     style={{
                       padding: '8px 16px 4px',
@@ -318,7 +319,7 @@ export function CommandPalette({ actions, placeholder = 'Type to search...' }: C
                     {category}
                   </div>
                   {categoryActions.map((action, idx) => (
-                    <div key={action.id} id={`option-${action.id}`}>
+                    <div key={action.id} id={`option-${action.id}`} role="option" aria-selected={selectedIndex === groupStartIndex + idx}>
                       <CommandPaletteItem
                         action={action}
                         isSelected={selectedIndex === groupStartIndex + idx}

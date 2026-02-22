@@ -8,8 +8,9 @@
  * - Semantic zoom: hide labels and simplify edges when zoomed out
  * - Fisheye distortion: magnify area around cursor
  * - Density indicator: health warnings at density thresholds
+ * - Accessible list/tree alternative for screen readers (WCAG 2.1 AA)
  */
-import { useState, useCallback, useMemo, type CSSProperties } from 'react'
+import { useState, useCallback, useMemo, type CSSProperties, type KeyboardEvent } from 'react'
 import {
   ReactFlow,
   Controls,
@@ -441,6 +442,205 @@ function applySimplification(
   return { nodes: flowNodes, edges: flowEdges }
 }
 
+// --- Accessible List View Alternative (WCAG 2.1 AA) ---
+
+const listViewContainerStyle: CSSProperties = {
+  width: '100%',
+  height: '100%',
+  backgroundColor: '#1e1e1e',
+  overflow: 'auto',
+  padding: '16px',
+}
+
+const listItemStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+  padding: '12px 16px',
+  marginBottom: '8px',
+  backgroundColor: '#2d2d2d',
+  borderRadius: '6px',
+  border: 'none',
+  cursor: 'pointer',
+  width: '100%',
+  textAlign: 'left',
+}
+
+const statusIconStyle: CSSProperties = {
+  width: '24px',
+  height: '24px',
+  borderRadius: '4px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '14px',
+  flexShrink: 0,
+}
+
+const viewToggleStyle: CSSProperties = {
+  display: 'flex',
+  gap: '4px',
+  marginBottom: '16px',
+}
+
+const toggleButtonStyle: CSSProperties = {
+  padding: '8px 16px',
+  border: 'none',
+  borderRadius: '4px',
+  cursor: 'pointer',
+  fontSize: '13px',
+  fontWeight: 500,
+}
+
+const toggleButtonActiveStyle: CSSProperties = {
+  ...toggleButtonStyle,
+  backgroundColor: '#007acc',
+  color: '#fff',
+}
+
+const toggleButtonInactiveStyle: CSSProperties = {
+  ...toggleButtonStyle,
+  backgroundColor: '#3c3c3c',
+  color: '#ccc',
+}
+
+/** Status icons for accessible differentiation (shape + icon, not color-only) */
+function getStatusIcon(status: string): { icon: string; color: string; label: string } {
+  switch (status.toLowerCase()) {
+    case 'done':
+    case 'completed':
+    case 'closed':
+      return { icon: '●', color: '#89d185', label: 'Closed' }
+    case 'in_progress':
+    case 'active':
+      return { icon: '◐', color: '#007acc', label: 'In Progress' }
+    case 'blocked':
+      return { icon: '⊘', color: '#f14c4c', label: 'Blocked' }
+    case 'review':
+      return { icon: '◎', color: '#cca700', label: 'Review' }
+    default:
+      return { icon: '○', color: '#555', label: 'Open' }
+  }
+}
+
+interface GraphListViewProps {
+  nodes: GraphNode[]
+  edges: GraphEdge[]
+  onBeadClick?: (beadId: string) => void
+  onBeadDoubleClick?: (beadId: string) => void
+}
+
+/**
+ * Accessible list view alternative to the visual graph.
+ * Provides screen reader navigation for bead dependency information.
+ */
+function GraphListView({ nodes, edges, onBeadClick, onBeadDoubleClick }: GraphListViewProps) {
+  // Build dependency map for each node
+  const dependencyMap = useMemo(() => {
+    const deps = new Map<string, { blocks: string[]; blockedBy: string[] }>()
+
+    for (const node of nodes) {
+      deps.set(node.id, { blocks: [], blockedBy: [] })
+    }
+
+    for (const edge of edges) {
+      // In beads: from -> to means "from blocks to" (or "to needs from")
+      deps.get(edge.from)?.blocks.push(edge.to)
+      deps.get(edge.to)?.blockedBy.push(edge.from)
+    }
+
+    return deps
+  }, [nodes, edges])
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>, nodeId: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      onBeadClick?.(nodeId)
+    }
+  }
+
+  const handleDoubleClick = (nodeId: string) => {
+    onBeadDoubleClick?.(nodeId)
+  }
+
+  return (
+    <div style={listViewContainerStyle}>
+      <h2 id="beads-list-heading" style={{ color: '#ccc', fontSize: '14px', marginBottom: '12px' }}>
+        Beads ({nodes.length})
+      </h2>
+      <ul
+        aria-labelledby="beads-list-heading"
+        style={{ listStyle: 'none', padding: 0, margin: 0 }}
+      >
+        {nodes.map((node) => {
+          const statusInfo = getStatusIcon(node.status)
+          const deps = dependencyMap.get(node.id)
+
+          return (
+            <li key={node.id}>
+              <button
+                type="button"
+                style={listItemStyle}
+                onClick={() => onBeadClick?.(node.id)}
+                onDoubleClick={() => handleDoubleClick(node.id)}
+                onKeyDown={(e) => handleKeyDown(e, node.id)}
+                aria-label={`${node.title}, Status: ${statusInfo.label}, ${deps?.blockedBy.length || 0} blockers, blocks ${deps?.blocks.length || 0} items`}
+              >
+                {/* Status icon with shape (accessible - not color-only) */}
+                <span
+                  style={{ ...statusIconStyle, backgroundColor: statusInfo.color }}
+                  aria-hidden="true"
+                >
+                  {statusInfo.icon}
+                </span>
+
+                {/* Node info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ color: '#ccc', fontSize: '13px', fontWeight: 500 }}>
+                    {node.title}
+                  </div>
+                  <div style={{ color: '#888', fontSize: '11px', fontFamily: 'monospace' }}>
+                    {node.id}
+                  </div>
+                </div>
+
+                {/* Dependencies summary */}
+                <div style={{ display: 'flex', gap: '8px', fontSize: '11px' }}>
+                  {deps && deps.blockedBy.length > 0 && (
+                    <span style={{ color: '#f14c4c' }} title={`Blocked by: ${deps.blockedBy.join(', ')}`}>
+                      ← {deps.blockedBy.length}
+                    </span>
+                  )}
+                  {deps && deps.blocks.length > 0 && (
+                    <span style={{ color: '#89d185' }} title={`Blocks: ${deps.blocks.join(', ')}`}>
+                      → {deps.blocks.length}
+                    </span>
+                  )}
+                </div>
+
+                {/* Type badge with shape */}
+                {node.type && (
+                  <span
+                    style={{
+                      padding: '2px 8px',
+                      backgroundColor: '#374151',
+                      borderRadius: '4px',
+                      fontSize: '10px',
+                      color: '#ccc',
+                    }}
+                  >
+                    {node.type}
+                  </span>
+                )}
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+
 export function GraphView({
   nodes: rawNodes,
   edges: rawEdges,
@@ -452,6 +652,7 @@ export function GraphView({
     DEFAULT_SIMPLIFICATION_STATE
   )
   const [zoom, setZoom] = useState(1)
+  const [viewMode, setViewMode] = useState<'graph' | 'list'>('graph')
 
   // Calculate density health
   const densityHealth = useMemo(
@@ -583,43 +784,75 @@ export function GraphView({
 
   return (
     <div style={containerStyle}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onNodeClick={handleNodeClick}
-        onNodeDoubleClick={handleNodeDoubleClick}
-        onMove={handleMove}
-        nodeTypes={effectiveNodeTypes}
-        fitView
-        fitViewOptions={{ padding: 0.2 }}
-        minZoom={0.1}
-        maxZoom={2}
-        defaultEdgeOptions={{
-          type: 'default',
-          style: { stroke: '#555' },
-        }}
-      >
-        <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#333" />
-        <Controls showZoom showFitView showInteractive={false} />
-        <MiniMap
-          nodeColor={(node) => {
-            const data = node.data as NodeData
-            if (data.isCluster) return '#007acc'
-            return getStatusColor((data as BeadData).status)
-          }}
-          maskColor="rgba(30, 30, 30, 0.8)"
-          style={{ backgroundColor: '#252526' }}
+      {/* View mode toggle for accessibility */}
+      <div style={{ ...viewToggleStyle, position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}>
+        <button
+          type="button"
+          onClick={() => setViewMode('graph')}
+          style={viewMode === 'graph' ? toggleButtonActiveStyle : toggleButtonInactiveStyle}
+          aria-pressed={viewMode === 'graph'}
+          aria-label="Graph view"
+        >
+          <span aria-hidden="true">◇</span> Graph
+        </button>
+        <button
+          type="button"
+          onClick={() => setViewMode('list')}
+          style={viewMode === 'list' ? toggleButtonActiveStyle : toggleButtonInactiveStyle}
+          aria-pressed={viewMode === 'list'}
+          aria-label="List view (accessible alternative)"
+        >
+          <span aria-hidden="true">≡</span> List
+        </button>
+      </div>
+
+      {viewMode === 'list' ? (
+        <GraphListView
+          nodes={rawNodes}
+          edges={rawEdges}
+          onBeadClick={onBeadClick}
+          onBeadDoubleClick={onBeadDoubleClick}
         />
-        <Panel position="top-right" style={controlsPanelStyle}>
-          <GraphControls
-            state={simplificationState}
-            onStateChange={setSimplificationState}
-            density={densityHealth}
+      ) : (
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onNodeClick={handleNodeClick}
+          onNodeDoubleClick={handleNodeDoubleClick}
+          onMove={handleMove}
+          nodeTypes={effectiveNodeTypes}
+          fitView
+          fitViewOptions={{ padding: 0.2 }}
+          minZoom={0.1}
+          maxZoom={2}
+          defaultEdgeOptions={{
+            type: 'default',
+            style: { stroke: '#555' },
+          }}
+          aria-label="Bead dependency graph. For an accessible alternative, switch to List view."
+        >
+          <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#333" />
+          <Controls showZoom showFitView showInteractive={false} />
+          <MiniMap
+            nodeColor={(node) => {
+              const data = node.data as NodeData
+              if (data.isCluster) return '#007acc'
+              return getStatusColor((data as BeadData).status)
+            }}
+            maskColor="rgba(30, 30, 30, 0.8)"
+            style={{ backgroundColor: '#252526' }}
           />
-        </Panel>
-      </ReactFlow>
+          <Panel position="top-right" style={controlsPanelStyle}>
+            <GraphControls
+              state={simplificationState}
+              onStateChange={setSimplificationState}
+              density={densityHealth}
+            />
+          </Panel>
+        </ReactFlow>
+      )}
     </div>
   )
 }

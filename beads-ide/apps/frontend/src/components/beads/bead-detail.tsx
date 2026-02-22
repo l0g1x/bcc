@@ -177,21 +177,22 @@ const loadingStyle: CSSProperties = {
 
 // --- Helper Components ---
 
-/** Status badge with color coding */
+/** Status badge with color + icon (WCAG 2.1 AA compliant - no color-only encoding) */
 function StatusBadge({ status }: { status: string }) {
-  const colors: Record<string, { bg: string; text: string }> = {
-    open: { bg: '#3b82f6', text: '#ffffff' },
-    in_progress: { bg: '#f59e0b', text: '#000000' },
-    hooked: { bg: '#8b5cf6', text: '#ffffff' },
-    closed: { bg: '#22c55e', text: '#000000' },
-    blocked: { bg: '#ef4444', text: '#ffffff' },
+  const colors: Record<string, { bg: string; text: string; icon: string }> = {
+    open: { bg: '#3b82f6', text: '#ffffff', icon: '○' },
+    in_progress: { bg: '#f59e0b', text: '#000000', icon: '◐' },
+    hooked: { bg: '#8b5cf6', text: '#ffffff', icon: '◎' },
+    closed: { bg: '#22c55e', text: '#000000', icon: '●' },
+    blocked: { bg: '#ef4444', text: '#ffffff', icon: '⊘' },
   }
 
-  const color = colors[status] ?? { bg: '#6b7280', text: '#ffffff' }
+  const color = colors[status] ?? { bg: '#6b7280', text: '#ffffff', icon: '○' }
 
   const style: CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
+    gap: '4px',
     padding: '2px 8px',
     borderRadius: '4px',
     fontSize: '11px',
@@ -201,37 +202,63 @@ function StatusBadge({ status }: { status: string }) {
     color: color.text,
   }
 
-  return <span style={style}>{status.replace('_', ' ')}</span>
+  return (
+    <span style={style} role="status" aria-label={`Status: ${status.replace('_', ' ')}`}>
+      <span aria-hidden="true">{color.icon}</span>
+      {status.replace('_', ' ')}
+    </span>
+  )
 }
 
-/** Priority badge */
+/** Priority badge with icon (WCAG 2.1 AA compliant - no color-only encoding) */
 function PriorityBadge({ priority }: { priority: number }) {
-  const colors: Record<number, string> = {
-    0: '#22c55e', // P0 - green (highest)
-    1: '#eab308', // P1 - yellow
-    2: '#f97316', // P2 - orange
-    3: '#ef4444', // P3 - red (lowest)
+  const priorities: Record<number, { bg: string; icon: string; label: string }> = {
+    0: { bg: '#22c55e', icon: '▲▲', label: 'Critical' }, // P0 - green (highest)
+    1: { bg: '#eab308', icon: '▲', label: 'High' }, // P1 - yellow
+    2: { bg: '#f97316', icon: '◆', label: 'Medium' }, // P2 - orange
+    3: { bg: '#ef4444', icon: '▼', label: 'Low' }, // P3 - red (lowest)
   }
+
+  const p = priorities[priority] ?? { bg: '#6b7280', icon: '○', label: 'Unknown' }
 
   const style: CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
+    gap: '3px',
     padding: '2px 8px',
     borderRadius: '4px',
     fontSize: '11px',
     fontWeight: 500,
-    backgroundColor: colors[priority] ?? '#6b7280',
+    backgroundColor: p.bg,
     color: '#000000',
   }
 
-  return <span style={style}>P{priority}</span>
+  return (
+    <span style={style} aria-label={`Priority ${priority}: ${p.label}`}>
+      <span aria-hidden="true">{p.icon}</span>
+      P{priority}
+    </span>
+  )
 }
 
-/** Type badge */
+/** Type badge with icon (WCAG 2.1 AA compliant - no color-only encoding) */
 function TypeBadge({ type }: { type: string }) {
+  const typeIcons: Record<string, string> = {
+    task: '☐',
+    bug: '🐛',
+    epic: '📦',
+    story: '📝',
+    agent: '🤖',
+    feature: '✨',
+    chore: '🔧',
+  }
+
+  const icon = typeIcons[type.toLowerCase()] ?? '○'
+
   const style: CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
+    gap: '4px',
     padding: '2px 8px',
     borderRadius: '4px',
     fontSize: '11px',
@@ -240,7 +267,12 @@ function TypeBadge({ type }: { type: string }) {
     color: '#e5e5e5',
   }
 
-  return <span style={style}>{type}</span>
+  return (
+    <span style={style} aria-label={`Type: ${type}`}>
+      <span aria-hidden="true">{icon}</span>
+      {type}
+    </span>
+  )
 }
 
 /** Label chip */
@@ -455,16 +487,16 @@ export function BeadDetail({ bead, onClose, isLoading }: BeadDetailProps) {
         <div style={overlayStyle} onClick={handleBackdropClick} role="presentation" />
 
         {/* Panel */}
-        <div style={panelStyle}>
+        <div style={panelStyle} role="dialog" aria-labelledby="bead-detail-title" aria-modal="true">
           {isLoading ? (
-            <div style={loadingStyle}>Loading bead details...</div>
+            <div style={loadingStyle} role="status" aria-live="polite">Loading bead details...</div>
           ) : bead ? (
             <>
               {/* Sticky Header */}
               <div style={headerStyle}>
                 <div style={headerTopRowStyle}>
                   <div>
-                    <h2 style={titleStyle}>{bead.title}</h2>
+                    <h2 id="bead-detail-title" style={titleStyle}>{bead.title}</h2>
                     <div style={subtitleStyle}>{bead.id}</div>
                   </div>
                   <button
