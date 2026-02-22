@@ -35,6 +35,7 @@ const PATTERNS = {
   /** Variable keys: alphanumeric, underscore */
   variableKey: /^[a-zA-Z0-9_]+$/,
   /** Variable values: no control characters (allow printable + common whitespace) */
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: Intentional - validating against control chars
   variableValue: /^[^\x00-\x1f]+$/,
   /** Shell metacharacters that should never appear in user input */
   shellMetachars: /[;|&`$(){}[\]<>\\'"]/,
