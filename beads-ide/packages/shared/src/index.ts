@@ -55,4 +55,8 @@ export type {
   Formula,
   FormulaListResponse,
   FormulaListError,
+  // Sling API types
+  SlingRequest,
+  SlingResult,
+  SlingTarget,
 } from './ide-types.js'

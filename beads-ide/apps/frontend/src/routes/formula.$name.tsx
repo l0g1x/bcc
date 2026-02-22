@@ -1,12 +1,14 @@
 /**
- * Formula editor route with text/visual view toggle.
+ * Formula editor route with text/visual view toggle and sling workflow.
  * Displays formula TOML in text mode or as a DAG in visual mode.
  * Visual view updates automatically when TOML changes (one-way sync).
+ * Includes Cook preview and Sling dispatch functionality.
  */
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useCallback, type CSSProperties } from 'react'
-import { useCook } from '../hooks/use-cook'
-import { VarsPanel, VisualBuilder } from '../components/formulas'
+import type { SlingRequest } from '@beads-ide/shared'
+import { VarsPanel, VisualBuilder, SlingDialog } from '../components/formulas'
+import { useCook, useSling } from '../hooks'
 
 // --- Types ---
 
@@ -37,6 +39,12 @@ const titleStyle: CSSProperties = {
   fontFamily: 'monospace',
 }
 
+const actionsStyle: CSSProperties = {
+  display: 'flex',
+  gap: '8px',
+  alignItems: 'center',
+}
+
 const toggleContainerStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
@@ -57,6 +65,31 @@ const toggleButtonStyle = (isActive: boolean): CSSProperties => ({
   cursor: 'pointer',
   transition: 'all 0.15s ease',
 })
+
+const buttonBaseStyle: CSSProperties = {
+  padding: '6px 12px',
+  borderRadius: '6px',
+  fontSize: '12px',
+  fontWeight: 500,
+  cursor: 'pointer',
+  border: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '6px',
+  transition: 'background 0.15s ease',
+}
+
+const cookButtonStyle: CSSProperties = {
+  ...buttonBaseStyle,
+  background: '#374151',
+  color: '#e5e7eb',
+}
+
+const slingButtonStyle: CSSProperties = {
+  ...buttonBaseStyle,
+  background: '#3b82f6',
+  color: '#fff',
+}
 
 const contentStyle: CSSProperties = {
   display: 'flex',
@@ -139,17 +172,20 @@ function FormulaPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('text')
   const [tomlContent, setTomlContent] = useState('')
   const [varValues, setVarValues] = useState<Record<string, string>>({})
+  const [slingDialogOpen, setSlingDialogOpen] = useState(false)
 
   // Build formula path from route param
-  // In a real app, this would map to actual file paths
   const formulaPath = name ? `formulas/${name}.toml` : null
 
   // Cook the formula to get steps and vars
-  const { result, isLoading, error } = useCook(formulaPath, {
+  const { result, isLoading, error, cook } = useCook(formulaPath, {
     mode: 'compile',
     vars: varValues,
     debounceMs: 300,
   })
+
+  // Sling hook
+  const { result: slingResult, isLoading: isSlinging, sling, reset: resetSling } = useSling()
 
   const handleToggleMode = useCallback((mode: ViewMode) => {
     setViewMode(mode)
@@ -163,28 +199,77 @@ function FormulaPage() {
     setTomlContent(e.target.value)
   }, [])
 
+  const handleCook = useCallback(() => {
+    cook()
+  }, [cook])
+
+  const handleOpenSling = useCallback(() => {
+    resetSling()
+    setSlingDialogOpen(true)
+  }, [resetSling])
+
+  const handleSlingClose = useCallback(() => {
+    setSlingDialogOpen(false)
+  }, [])
+
+  const handleSlingExecute = useCallback(
+    async (target: string) => {
+      const request: SlingRequest = {
+        formula_path: formulaPath ?? '',
+        target,
+        vars: Object.keys(varValues).length > 0 ? varValues : undefined,
+      }
+      return sling(request)
+    },
+    [formulaPath, varValues, sling]
+  )
+
+  const handleNavigateToResults = useCallback((moleculeId: string) => {
+    console.log('Navigate to molecule:', moleculeId)
+    setSlingDialogOpen(false)
+    // TODO: Navigate to molecule view
+  }, [])
+
   return (
     <div style={containerStyle}>
-      {/* Header with title and view toggle */}
+      {/* Header with title, view toggle, and action buttons */}
       <div style={headerStyle}>
         <div style={titleStyle}>{name}.toml</div>
-        <div style={toggleContainerStyle}>
+        <div style={actionsStyle}>
           <button
             type="button"
-            style={toggleButtonStyle(viewMode === 'text')}
-            onClick={() => handleToggleMode('text')}
-            aria-pressed={viewMode === 'text'}
+            onClick={handleCook}
+            style={cookButtonStyle}
+            disabled={isLoading}
           >
-            Text
+            {isLoading ? 'Cooking...' : 'Cook Preview'}
           </button>
           <button
             type="button"
-            style={toggleButtonStyle(viewMode === 'visual')}
-            onClick={() => handleToggleMode('visual')}
-            aria-pressed={viewMode === 'visual'}
+            onClick={handleOpenSling}
+            style={slingButtonStyle}
+            title="Dispatch to agent (Cmd+Shift+S)"
           >
-            Visual
+            Sling
           </button>
+          <div style={toggleContainerStyle}>
+            <button
+              type="button"
+              style={toggleButtonStyle(viewMode === 'text')}
+              onClick={() => handleToggleMode('text')}
+              aria-pressed={viewMode === 'text'}
+            >
+              Text
+            </button>
+            <button
+              type="button"
+              style={toggleButtonStyle(viewMode === 'visual')}
+              onClick={() => handleToggleMode('visual')}
+              aria-pressed={viewMode === 'visual'}
+            >
+              Visual
+            </button>
+          </div>
         </div>
       </div>
 
@@ -249,6 +334,17 @@ function FormulaPage() {
           {result?.vars && ` · ${Object.keys(result.vars).length} variables`}
         </span>
       </div>
+
+      <SlingDialog
+        isOpen={slingDialogOpen}
+        onClose={handleSlingClose}
+        formulaPath={formulaPath ?? ''}
+        vars={varValues}
+        onSling={handleSlingExecute}
+        isLoading={isSlinging}
+        result={slingResult}
+        onNavigateToResults={handleNavigateToResults}
+      />
     </div>
   )
 }

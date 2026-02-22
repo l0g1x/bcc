@@ -282,3 +282,47 @@ export interface FormulaListError {
   ok: false;
   error: string;
 }
+
+// ============================================================================
+// Sling API Types
+// ============================================================================
+
+/** Request payload for sling API */
+export interface SlingRequest {
+  /** Path to the formula file */
+  formula_path: string;
+  /** Target agent or crew (e.g., "bcc/polecats/fury" or "bcc/crew/main") */
+  target: string;
+  /** Variable substitutions (key=value pairs) */
+  vars?: Record<string, string>;
+}
+
+/** Result of slinging a formula */
+export interface SlingResult {
+  /** Whether the sling succeeded */
+  ok: boolean;
+  /** ID of the dispatched molecule/bead */
+  molecule_id?: string;
+  /** Target that received the work */
+  target?: string;
+  /** Formula that was slung */
+  formula?: string;
+  /** Error message if sling failed */
+  error?: string;
+  /** Stderr output from sling command */
+  stderr?: string;
+  /** Exit code from sling command */
+  exit_code?: number;
+}
+
+/** Available sling target */
+export interface SlingTarget {
+  /** Target identifier (e.g., "bcc/polecats/fury") */
+  id: string;
+  /** Human-readable name */
+  name: string;
+  /** Target type */
+  type: 'polecat' | 'crew' | 'rig';
+  /** Current status (if available) */
+  status?: 'available' | 'busy' | 'offline';
+}

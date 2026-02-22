@@ -6,6 +6,7 @@ import { beads } from './routes/beads.js'
 import { graph } from './routes/graph.js'
 import { cook } from './routes/cook.js'
 import { formulas } from './routes/formulas.js'
+import { sling } from './routes/sling.js'
 
 const app = new Hono()
 
@@ -21,6 +22,7 @@ app.route('/api', beads)
 app.route('/api', graph)
 app.route('/api', cook)
 app.route('/api', formulas)
+app.route('/api', sling)
 
 // Start server bound to localhost only (security requirement)
 serve({

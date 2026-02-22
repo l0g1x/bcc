@@ -300,3 +300,52 @@ export async function bvInsights(options?: CliOptions): Promise<CliResult> {
 export async function gtHook(options?: CliOptions): Promise<CliResult> {
   return runCli('gt', ['hook'], options);
 }
+
+/**
+ * Validates a sling target is safe for CLI usage.
+ * Target format: rig/polecats/name or rig/crew/name
+ * @throws Error if validation fails
+ */
+export function validateSlingTarget(target: string): void {
+  if (!target || typeof target !== 'string') {
+    throw new Error('Sling target is required');
+  }
+  if (target.length > 256) {
+    throw new Error('Sling target too long (max 256 characters)');
+  }
+  if (PATTERNS.shellMetachars.test(target)) {
+    throw new Error(`Sling target contains forbidden characters: ${target}`);
+  }
+  // Target format: rig/polecats/name or rig/crew/name
+  if (!/^[a-zA-Z0-9_-]+\/(polecats|crew)\/[a-zA-Z0-9_-]+$/.test(target)) {
+    throw new Error(`Invalid sling target format: ${target}. Expected: rig/polecats/name or rig/crew/name`);
+  }
+}
+
+/**
+ * Run gt sling command to dispatch a formula to a target.
+ */
+export async function gtSling(
+  formulaPath: string,
+  target: string,
+  vars?: Record<string, string>,
+  options?: CliOptions
+): Promise<CliResult> {
+  validateFormulaName(formulaPath.replace(/\.formula\.(toml|json)$/, '').replace(/^.*\//, ''));
+  validateSlingTarget(target);
+
+  const args = ['sling', formulaPath, '--to', target];
+
+  if (vars) {
+    for (const [key, value] of Object.entries(vars)) {
+      validateVariableKey(key);
+      validateVariableValue(value);
+      args.push('--var', `${key}=${value}`);
+    }
+  }
+
+  return runCli('gt', args, {
+    ...options,
+    timeout: options?.timeout ?? TIMEOUTS.cook, // Use cook timeout for sling
+  });
+}
