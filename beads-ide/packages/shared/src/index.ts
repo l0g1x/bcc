@@ -14,3 +14,16 @@ export {
   type WaveResult,
   type WorkflowDepType,
 } from './wave.js'
+
+// Bead API types
+export type {
+  BeadStatus,
+  BeadType,
+  DependencyType,
+  BeadDependency,
+  BeadDependent,
+  BeadFull,
+  BeadApiError,
+  BeadsListResponse,
+  BeadShowResponse,
+} from './types.js'
