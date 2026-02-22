@@ -204,6 +204,12 @@ export interface FormulaVariable {
   default?: string;
   /** Whether this variable must be provided */
   required?: boolean;
+  /** Allowed values (renders as dropdown) */
+  enum?: string[];
+  /** Expected type: string (default), int, or bool */
+  type?: 'string' | 'int' | 'bool';
+  /** Regex pattern the value must match */
+  pattern?: string;
 }
 
 /** Result of cooking a formula */
