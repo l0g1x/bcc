@@ -2,8 +2,10 @@ import type { SlingRequest, SlingResult } from '@beads-ide/shared'
 /**
  * Hook for slinging formulas to agents/crews.
  * Provides state management for the sling dialog and API calls.
+ * Shows toast notifications on failure with retry option.
  */
 import { useCallback, useState } from 'react'
+import { toast } from 'sonner'
 
 /** Return value of the sling hook */
 export interface UseSlingReturn {
@@ -60,16 +62,33 @@ export function useSling(): UseSlingReturn {
       setResult(slingResult)
 
       if (!slingResult.ok) {
-        setError(new Error(slingResult.error || 'Sling failed'))
+        const slingError = new Error(slingResult.error || 'Sling failed')
+        setError(slingError)
+        // Show toast with error details and retry option
+        toast.error('Sling failed', {
+          description: slingResult.stderr || slingResult.error || 'Unknown error',
+          action: {
+            label: 'Retry',
+            onClick: () => sling(request),
+          },
+        })
       }
 
       return slingResult
     } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err))
-      setError(error)
+      const slingError = err instanceof Error ? err : new Error(String(err))
+      setError(slingError)
+      // Show toast for network/parsing errors with retry option
+      toast.error('Sling request failed', {
+        description: slingError.message,
+        action: {
+          label: 'Retry',
+          onClick: () => sling(request),
+        },
+      })
       const failedResult: SlingResult = {
         ok: false,
-        error: error.message,
+        error: slingError.message,
       }
       setResult(failedResult)
       return failedResult

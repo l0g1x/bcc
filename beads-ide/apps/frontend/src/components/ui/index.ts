@@ -1,3 +1,5 @@
+export { ConnectionGate, type ConnectionGateProps } from './connection-gate'
+export { CycleWarning, type CycleWarningProps } from './cycle-warning'
 export {
   ErrorPage,
   GenericErrorPage,
