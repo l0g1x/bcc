@@ -1,14 +1,24 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "target": "ES2022",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
     "jsx": "react-jsx",
     "noEmit": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@beads-ide/shared": ["../../packages/shared/src/index.ts"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "vite.config.ts"]
 }

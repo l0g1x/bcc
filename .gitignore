@@ -5,3 +5,4 @@
 .runtime/
 .claude/commands/
 .logs/
+.beads/
