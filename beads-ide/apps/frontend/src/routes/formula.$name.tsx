@@ -6,9 +6,10 @@ import type { SlingRequest } from '@beads-ide/shared'
  * Includes Cook preview and Sling dispatch functionality.
  */
 import { createFileRoute } from '@tanstack/react-router'
-import { type CSSProperties, useCallback, useState } from 'react'
-import { SlingDialog, VarsPanel, VisualBuilder } from '../components/formulas'
-import { useCook, useSling } from '../hooks'
+import { type CSSProperties, useCallback, useEffect, useState } from 'react'
+import { SlingDialog, TextEditor, VarsPanel, VisualBuilder } from '../components/formulas'
+import { useCook, useFormulaContent, useSling } from '../hooks'
+import { type FormulaParseError, parseAndValidateFormula } from '../lib/formula-parser'
 
 // --- Types ---
 
@@ -112,19 +113,6 @@ const sidePanelStyle: CSSProperties = {
   padding: '16px',
 }
 
-const textEditorStyle: CSSProperties = {
-  flex: 1,
-  padding: '16px',
-  fontFamily: 'monospace',
-  fontSize: '13px',
-  color: '#e2e8f0',
-  backgroundColor: '#0f172a',
-  border: 'none',
-  resize: 'none',
-  outline: 'none',
-  lineHeight: 1.6,
-}
-
 const visualContainerStyle: CSSProperties = {
   flex: 1,
   position: 'relative',
@@ -171,8 +159,28 @@ function FormulaPage() {
   const { name } = Route.useParams()
   const [viewMode, setViewMode] = useState<ViewMode>('text')
   const [tomlContent, setTomlContent] = useState('')
+  const [parseErrors, setParseErrors] = useState<FormulaParseError[]>([])
   const [varValues, setVarValues] = useState<Record<string, string>>({})
   const [slingDialogOpen, setSlingDialogOpen] = useState(false)
+
+  // Load formula content from disk
+  const {
+    content: loadedContent,
+    isLoading: contentLoading,
+    error: contentError,
+  } = useFormulaContent(name ?? null)
+
+  // Set content when loaded from disk
+  useEffect(() => {
+    if (loadedContent && !tomlContent) {
+      setTomlContent(loadedContent)
+      // Parse initial content
+      const result = parseAndValidateFormula(loadedContent)
+      if (!result.ok) {
+        setParseErrors(result.errors)
+      }
+    }
+  }, [loadedContent, tomlContent])
 
   // Build formula path from route param
   const formulaPath = name ? `formulas/${name}.toml` : null
@@ -195,8 +203,15 @@ function FormulaPage() {
     setVarValues((prev) => ({ ...prev, [key]: value }))
   }, [])
 
-  const handleTomlChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTomlContent(e.target.value)
+  const handleTomlChange = useCallback((content: string) => {
+    setTomlContent(content)
+    // Parse and validate on change
+    const result = parseAndValidateFormula(content)
+    if (!result.ok) {
+      setParseErrors(result.errors)
+    } else {
+      setParseErrors([])
+    }
   }, [])
 
   const handleCook = useCallback(() => {
@@ -271,21 +286,25 @@ function FormulaPage() {
       {/* Main content area */}
       <div style={contentStyle}>
         <div style={mainPanelStyle}>
-          {isLoading && <div style={loadingStyle}>Cooking formula...</div>}
+          {(isLoading || contentLoading) && (
+            <div style={loadingStyle}>
+              {contentLoading ? 'Loading formula...' : 'Cooking formula...'}
+            </div>
+          )}
 
-          {error && <div style={errorStyle}>Error: {error.message}</div>}
+          {(error || contentError) && (
+            <div style={errorStyle}>Error: {(error || contentError)?.message}</div>
+          )}
 
-          {!isLoading && !error && viewMode === 'text' && (
-            <textarea
-              style={textEditorStyle}
+          {!isLoading && !contentLoading && !error && !contentError && viewMode === 'text' && (
+            <TextEditor
               value={tomlContent}
               onChange={handleTomlChange}
-              placeholder="# Formula TOML content will appear here..."
-              spellCheck={false}
+              errors={parseErrors}
             />
           )}
 
-          {!isLoading && !error && viewMode === 'visual' && (
+          {!isLoading && !contentLoading && !error && !contentError && viewMode === 'visual' && (
             <div style={visualContainerStyle}>
               {result?.steps ? (
                 <VisualBuilder steps={result.steps} vars={result.vars} />

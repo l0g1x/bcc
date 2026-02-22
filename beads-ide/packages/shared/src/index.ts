@@ -3,6 +3,16 @@ export interface Placeholder {
   id: string
 }
 
+// Formula parser
+export {
+  parseFormula,
+  parseAndValidateFormula,
+  validateDependencies,
+  type ParsedFormula as ParserParsedFormula,
+  type FormulaParseError,
+  type FormulaParseResult,
+} from './formula-parser.js'
+
 // Wave computation
 export {
   computeWaves,
