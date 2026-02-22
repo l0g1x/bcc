@@ -1,12 +1,15 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import type { Placeholder } from '@beads-ide/shared'
+import type { ApiResponse } from '@beads-ide/shared'
 
 const app = new Hono()
 
 app.get('/', (c) => {
-  const item: Placeholder = { id: 'beads-ide' }
-  return c.json({ message: 'Beads IDE API', id: item.id })
+  const response: ApiResponse<{ name: string }> = {
+    success: true,
+    data: { name: 'Beads IDE API' },
+  }
+  return c.json(response)
 })
 
 serve({
