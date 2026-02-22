@@ -249,3 +249,36 @@ export interface CookRequest {
   /** Cooking mode: compile (keep placeholders) or runtime (substitute vars) */
   mode?: 'compile' | 'runtime';
 }
+
+// ============================================================================
+// Formula List API Types
+// ============================================================================
+
+/** A formula file discovered in a search path */
+export interface Formula {
+  /** Formula name (without extension) */
+  name: string;
+  /** Full path to the formula file */
+  path: string;
+  /** Search path this formula was found in */
+  searchPath: string;
+  /** Human-readable search path label */
+  searchPathLabel: string;
+}
+
+/** Successful formula list response */
+export interface FormulaListResponse {
+  ok: true;
+  /** Formulas grouped by search path */
+  formulas: Formula[];
+  /** Total count of formulas */
+  count: number;
+  /** Search paths that were checked */
+  searchPaths: string[];
+}
+
+/** Error response for formula list */
+export interface FormulaListError {
+  ok: false;
+  error: string;
+}

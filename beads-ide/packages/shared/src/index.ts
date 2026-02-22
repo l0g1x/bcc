@@ -51,4 +51,8 @@ export type {
   FormulaVariable,
   CookResult,
   CookRequest,
+  // Formula list API types
+  Formula,
+  FormulaListResponse,
+  FormulaListError,
 } from './ide-types.js'
