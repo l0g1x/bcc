@@ -14,3 +14,12 @@ export {
 } from './api'
 
 export { cn } from './utils'
+
+export {
+  parseFormula,
+  parseAndValidateFormula,
+  validateDependencies,
+  type ParsedFormula,
+  type FormulaParseError,
+  type FormulaParseResult,
+} from './formula-parser'

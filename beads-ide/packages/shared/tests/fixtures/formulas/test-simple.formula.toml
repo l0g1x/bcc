@@ -1,0 +1,19 @@
+[formula]
+name = "test-simple"
+description = "A simple test formula"
+
+[vars]
+project_name = { description = "Name of the project", required = true }
+
+[[steps]]
+id = "step-1"
+title = "First step"
+description = "Do the first thing"
+priority = 0
+
+[[steps]]
+id = "step-2"
+title = "Second step"
+description = "Do the second thing"
+needs = ["step-1"]
+priority = 1
