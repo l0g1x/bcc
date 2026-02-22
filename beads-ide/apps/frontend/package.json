@@ -12,6 +12,9 @@
   },
   "dependencies": {
     "@beads-ide/shared": "*",
+    "@tanstack/react-router": "^1.95.1",
+    "@tanstack/router-devtools": "^1.95.1",
+    "@tanstack/router-plugin": "^1.95.1",
     "@xyflow/react": "^12.10.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
