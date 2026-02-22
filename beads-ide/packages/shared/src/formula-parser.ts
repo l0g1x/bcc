@@ -73,10 +73,7 @@ function validateVariable(key: string, value: unknown): FormulaVariable | Formul
 /**
  * Validates a step definition object.
  */
-function validateStep(
-  step: unknown,
-  index: number
-): ProtoBead | FormulaParseError {
+function validateStep(step: unknown, index: number): ProtoBead | FormulaParseError {
   if (typeof step !== 'object' || step === null) {
     return {
       message: `Step ${index + 1} must be an object`,

@@ -4,7 +4,11 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parseAndValidateFormula, parseFormula, validateDependencies } from '../src/formula-parser.js'
+import {
+  parseAndValidateFormula,
+  parseFormula,
+  validateDependencies,
+} from '../src/formula-parser.js'
 
 // Load test fixtures
 const fixturesDir = resolve(import.meta.dirname, 'fixtures/formulas')

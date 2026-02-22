@@ -1,13 +1,20 @@
+import { defaultKeymap, history, historyKeymap, redo, undo } from '@codemirror/commands'
+import { bracketMatching, defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language'
+import { highlightSelectionMatches, searchKeymap } from '@codemirror/search'
+import { EditorState, type Extension } from '@codemirror/state'
+import {
+  EditorView,
+  drawSelection,
+  highlightActiveLine,
+  highlightActiveLineGutter,
+  keymap,
+  lineNumbers,
+} from '@codemirror/view'
 /**
  * CodeMirror 6 TOML editor for .formula.toml files.
  * Provides syntax validation, undo/redo, and inline error display.
  */
 import { useCallback, useEffect, useRef } from 'react'
-import { EditorState, type Extension } from '@codemirror/state'
-import { EditorView, keymap, lineNumbers, highlightActiveLine, drawSelection, highlightActiveLineGutter } from '@codemirror/view'
-import { defaultKeymap, history, historyKeymap, undo, redo } from '@codemirror/commands'
-import { syntaxHighlighting, defaultHighlightStyle, bracketMatching } from '@codemirror/language'
-import { searchKeymap, highlightSelectionMatches } from '@codemirror/search'
 import type { FormulaParseError } from '../../lib/formula-parser'
 
 export interface TextEditorProps {
@@ -111,11 +118,7 @@ function createExtensions(onChange: (value: string) => void, readOnly: boolean):
     history(),
     tomlHighlight,
     darkTheme,
-    keymap.of([
-      ...defaultKeymap,
-      ...historyKeymap,
-      ...searchKeymap,
-    ]),
+    keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
     EditorView.updateListener.of((update) => {
       if (update.docChanged) {
         onChange(update.state.doc.toString())
@@ -183,7 +186,6 @@ export function TextEditor({
     }
   }, [value])
 
-
   // Handle undo via ref (for external buttons)
   const handleUndo = useCallback(() => {
     if (viewRef.current) {
@@ -225,7 +227,10 @@ export function TextEditor({
           }}
         >
           {errors.map((error, i) => (
-            <div key={`${error.line ?? 0}-${error.message.slice(0, 20)}`} style={{ marginBottom: i < errors.length - 1 ? '4px' : 0 }}>
+            <div
+              key={`${error.line ?? 0}-${error.message.slice(0, 20)}`}
+              style={{ marginBottom: i < errors.length - 1 ? '4px' : 0 }}
+            >
               {error.line ? (
                 <span>
                   <strong>Line {error.line}</strong>

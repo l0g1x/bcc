@@ -297,11 +297,7 @@ function FormulaPage() {
           )}
 
           {!isLoading && !contentLoading && !error && !contentError && viewMode === 'text' && (
-            <TextEditor
-              value={tomlContent}
-              onChange={handleTomlChange}
-              errors={parseErrors}
-            />
+            <TextEditor value={tomlContent} onChange={handleTomlChange} errors={parseErrors} />
           )}
 
           {!isLoading && !contentLoading && !error && !contentError && viewMode === 'visual' && (
