@@ -152,7 +152,8 @@ describe('Filter Performance', () => {
         const queue = [startNodeId]
 
         while (queue.length > 0) {
-          const current = queue.shift()!
+          const current = queue.shift()
+          if (current === undefined) continue
           for (const edge of graph.edges) {
             if (edge.source === current && !connected.has(edge.target)) {
               connected.add(edge.target)
