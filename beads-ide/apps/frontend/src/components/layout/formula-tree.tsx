@@ -1,4 +1,4 @@
-import type { Formula } from '@beads-ide/shared'
+import type { FormulaListItem } from '@beads-ide/shared'
 /**
  * Formula tree component for the sidebar.
  * Displays formulas grouped by search path directory.
@@ -193,10 +193,10 @@ function ChevronIcon({ expanded }: { expanded: boolean }) {
 interface FormulaGroup {
   label: string
   searchPath: string
-  formulas: Formula[]
+  formulas: FormulaListItem[]
 }
 
-function groupFormulas(formulas: Formula[]): FormulaGroup[] {
+function groupFormulas(formulas: FormulaListItem[]): FormulaGroup[] {
   const groups = new Map<string, FormulaGroup>()
 
   for (const formula of formulas) {

@@ -1,4 +1,4 @@
-import type { Formula, FormulaListResponse } from '@beads-ide/shared'
+import type { FormulaListItem, FormulaListResponse } from '@beads-ide/shared'
 /**
  * Hook for fetching formula list from the backend API.
  */
@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from 'react'
 /** Return value of the useFormulas hook */
 export interface UseFormulasReturn {
   /** List of discovered formulas */
-  formulas: Formula[]
+  formulas: FormulaListItem[]
   /** Whether formulas are currently loading */
   isLoading: boolean
   /** Error from the last fetch attempt */
@@ -47,7 +47,7 @@ async function fetchFormulas(): Promise<FormulaListResponse> {
  * @returns Formula list, loading state, error, and refresh function
  */
 export function useFormulas(): UseFormulasReturn {
-  const [formulas, setFormulas] = useState<Formula[]>([])
+  const [formulas, setFormulas] = useState<FormulaListItem[]>([])
   const [searchPaths, setSearchPaths] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
