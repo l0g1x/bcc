@@ -287,8 +287,10 @@ export function CommandPalette({ actions, placeholder = 'Type to search...' }: C
         {/* Results */}
         <div
           id="command-list"
+          // biome-ignore lint/a11y/useSemanticElements: custom listbox widget, <select> is not suitable for a command palette
           role="listbox"
           aria-label="Commands"
+          tabIndex={0}
           style={{
             maxHeight: '320px',
             overflowY: 'auto',
@@ -305,6 +307,7 @@ export function CommandPalette({ actions, placeholder = 'Type to search...' }: C
               }
 
               return (
+                // biome-ignore lint/a11y/useSemanticElements: div group widget, fieldset would disrupt command palette layout
                 <div key={category} role="group" aria-label={category}>
                   <div
                     style={{
@@ -319,7 +322,9 @@ export function CommandPalette({ actions, placeholder = 'Type to search...' }: C
                     {category}
                   </div>
                   {categoryActions.map((action, idx) => (
-                    <div key={action.id} id={`option-${action.id}`} role="option" aria-selected={selectedIndex === groupStartIndex + idx}>
+                    // biome-ignore lint/a11y/useSemanticElements: custom listbox option, <option> only valid inside <select>
+                    // biome-ignore lint/a11y/useFocusableInteractive: tabIndex below enables keyboard focus per ARIA listbox pattern
+                    <div key={action.id} id={`option-${action.id}`} role="option" tabIndex={-1} aria-selected={selectedIndex === groupStartIndex + idx}>
                       <CommandPaletteItem
                         action={action}
                         isSelected={selectedIndex === groupStartIndex + idx}

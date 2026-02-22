@@ -199,6 +199,7 @@ function groupFormulas(formulas: Formula[]): FormulaGroup[] {
 // Loading skeleton component
 function LoadingSkeleton() {
   return (
+    // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role on loading skeleton container
     <div style={treeContainerStyle} role="status" aria-live="polite" aria-label="Loading formulas">
       <style>
         {`@keyframes pulse {
@@ -267,6 +268,7 @@ function FormulaGroupSection({ group, selectedFormula, onSelectFormula }: Formul
   };
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: div group widget, fieldset would disrupt sidebar layout
     <div style={groupStyle} role="group" aria-label={group.label}>
       <button
         type="button"
@@ -284,6 +286,7 @@ function FormulaGroupSection({ group, selectedFormula, onSelectFormula }: Formul
       </button>
 
       {expanded && (
+        // biome-ignore lint/a11y/useSemanticElements: div group widget, fieldset would disrupt layout
         <div style={groupItemsStyle} role="group">
           {group.formulas.map((formula) => {
             const isSelected = selectedFormula === formula.name;
@@ -360,6 +363,7 @@ export function FormulaTree({ selectedFormula = null, onSelectFormula }: Formula
   }
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: landmark region container, section requires heading per WCAG
     <div style={treeContainerStyle} role="region" aria-label="Formula files">
       {groups.map((group) => (
         <FormulaGroupSection

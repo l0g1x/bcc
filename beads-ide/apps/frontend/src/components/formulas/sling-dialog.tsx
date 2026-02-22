@@ -369,6 +369,7 @@ export function SlingDialog({
 
           {/* Status indicators */}
           {isLoading && (
+            // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role on container div, not form output
             <div style={loadingStyle} role="status" aria-live="polite">
               <span style={{ animation: 'spin 1s linear infinite' }} aria-hidden="true">&#x21BB;</span>
               <span>Slinging formula to {currentTarget}...</span>
@@ -376,6 +377,7 @@ export function SlingDialog({
           )}
 
           {result && !isLoading && result.ok && (
+            // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role on container div, not form output
             <div style={successStatusStyle} role="status" aria-live="polite">
               <div>Slung to {result.target}</div>
               {result.molecule_id && (

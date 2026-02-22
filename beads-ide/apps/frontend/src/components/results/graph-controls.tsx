@@ -140,6 +140,7 @@ export function GraphControls({ state, onStateChange, density }: GraphControlsPr
   }
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: landmark region container, section requires heading per WCAG
     <div style={controlsContainerStyle} role="region" aria-label="Graph display controls">
       {/* Density Health Indicator */}
       <div
@@ -148,6 +149,7 @@ export function GraphControls({ state, onStateChange, density }: GraphControlsPr
           backgroundColor: getHealthBgColor(density.level),
           border: `1px solid ${getHealthColor(density.level)}`,
         }}
+        // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role on density health indicator
         role="status"
         aria-label={`Graph density ${density.level}: ${(density.density * 100).toFixed(1)}% with ${density.nodeCount} nodes and ${density.edgeCount} edges`}
       >
@@ -218,11 +220,13 @@ export function GraphControls({ state, onStateChange, density }: GraphControlsPr
           </select>
         </div>
         {state.focusMode && !state.selectedNodeId && (
+          // biome-ignore lint/a11y/useSemanticElements: inline status hint on span, output element is block-level
           <span style={{ color: '#888', fontSize: '10px', fontStyle: 'italic' }} role="status">
             Click a node to focus
           </span>
         )}
         {state.focusMode && state.selectedNodeId && (
+          // biome-ignore lint/a11y/useSemanticElements: inline status hint on span, output element is block-level
           <span style={{ color: '#007acc', fontSize: '10px' }} role="status" aria-live="polite">
             Focused: {state.selectedNodeId}
           </span>

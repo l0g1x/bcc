@@ -203,6 +203,7 @@ function StatusBadge({ status }: { status: string }) {
   }
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: inline status badge on span, output element is block-level
     <span style={style} role="status" aria-label={`Status: ${status.replace('_', ' ')}`}>
       <span aria-hidden="true">{color.icon}</span>
       {status.replace('_', ' ')}
@@ -487,8 +488,10 @@ export function BeadDetail({ bead, onClose, isLoading }: BeadDetailProps) {
         <div style={overlayStyle} onClick={handleBackdropClick} role="presentation" />
 
         {/* Panel */}
+        {/* biome-ignore lint/a11y/useSemanticElements: custom overlay dialog, <dialog> element requires showModal() API and breaks positioning */}
         <div style={panelStyle} role="dialog" aria-labelledby="bead-detail-title" aria-modal="true">
           {isLoading ? (
+            // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role, not form output
             <div style={loadingStyle} role="status" aria-live="polite">Loading bead details...</div>
           ) : bead ? (
             <>
