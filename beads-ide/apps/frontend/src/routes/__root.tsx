@@ -2,8 +2,11 @@ import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { Toaster } from 'sonner'
+import { BeadDetail } from '../components/beads/bead-detail'
 import { AppShell, FormulaTree } from '../components/layout'
 import { GenericErrorPage, OfflineBanner } from '../components/ui'
+import { BeadSelectionProvider, useBeadSelection } from '../contexts'
+import { useBead } from '../hooks'
 
 /** Props for ErrorBoundary component */
 interface ErrorBoundaryProps {
@@ -56,17 +59,31 @@ export const Route = createRootRoute({
   component: RootLayout,
 })
 
-function RootLayout() {
+/**
+ * Inner layout component that uses bead selection context.
+ */
+function RootLayoutInner() {
+  const { selectedBeadId, clearSelection } = useBeadSelection()
+  const { bead, isLoading, error } = useBead(selectedBeadId)
+
   return (
-    <ErrorBoundary>
+    <>
       <OfflineBanner />
       <AppShell
         sidebarContent={<FormulaTree />}
         mainContent={<Outlet />}
         detailContent={
-          <div style={{ padding: '16px', color: '#858585' }}>Bead detail will appear here</div>
+          <div style={{ padding: '16px', color: '#858585' }}>
+            {error ? (
+              <div style={{ color: '#f87171' }}>Error: {error.message}</div>
+            ) : (
+              'Select a bead to view details'
+            )}
+          </div>
         }
       />
+      {/* Bead detail overlay panel */}
+      {selectedBeadId && <BeadDetail bead={bead} onClose={clearSelection} isLoading={isLoading} />}
       <Toaster
         position="bottom-right"
         theme="dark"
@@ -79,6 +96,16 @@ function RootLayout() {
         }}
       />
       {import.meta.env.DEV && <TanStackRouterDevtools position="bottom-right" />}
+    </>
+  )
+}
+
+function RootLayout() {
+  return (
+    <ErrorBoundary>
+      <BeadSelectionProvider>
+        <RootLayoutInner />
+      </BeadSelectionProvider>
     </ErrorBoundary>
   )
 }
