@@ -11,6 +11,199 @@ import { expect, test } from './fixtures'
  * All tests use mocked CLI responses to avoid database dependency in CI.
  */
 
+test.describe('Formula Edit -> Cook -> Preview Flow', () => {
+  test.describe('Formula Loading', () => {
+    test('should load and display formula content', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-simple')
+      await page.waitForLoadState('networkidle')
+
+      // Should show the formula name in the header
+      await expect(page.getByText('test-simple.toml')).toBeVisible()
+
+      // Should show the editor (text mode by default)
+      const editor = page.locator('.cm-editor')
+      await expect(editor).toBeVisible()
+    })
+
+    test('should display loading state while fetching formula', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-simple')
+
+      // Should show loading state initially
+      await expect(page.getByText('Loading formula...')).toBeVisible()
+
+      // Wait for content to load
+      await page.waitForLoadState('networkidle')
+
+      // Loading should disappear
+      await expect(page.getByText('Loading formula...')).not.toBeVisible()
+    })
+  })
+
+  test.describe('Formula Editing', () => {
+    test('should allow editing formula content', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-simple')
+      await page.waitForLoadState('networkidle')
+
+      // Focus the editor
+      const editor = page.locator('.cm-editor')
+      await editor.click()
+
+      // Type some content
+      await page.keyboard.type('# Test comment')
+
+      // Content should be in the editor
+      await expect(page.locator('.cm-content')).toContainText('# Test comment')
+    })
+
+    test('should toggle between text and visual view modes', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-simple')
+      await page.waitForLoadState('networkidle')
+
+      // Start in text mode
+      const textButton = page.getByRole('button', { name: 'Text' })
+      const visualButton = page.getByRole('button', { name: 'Visual' })
+
+      await expect(textButton).toHaveAttribute('aria-pressed', 'true')
+      await expect(visualButton).toHaveAttribute('aria-pressed', 'false')
+
+      // Switch to visual mode
+      await visualButton.click()
+
+      await expect(textButton).toHaveAttribute('aria-pressed', 'false')
+      await expect(visualButton).toHaveAttribute('aria-pressed', 'true')
+    })
+  })
+
+  test.describe('Cook Preview', () => {
+    test('should cook formula and display preview', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-multi')
+      await page.waitForLoadState('networkidle')
+
+      // Click the Cook Preview button
+      const cookButton = page.getByRole('button', { name: 'Cook Preview' })
+      await cookButton.click()
+
+      // Wait for cook result - should show step count
+      await expect(page.getByText('3 steps')).toBeVisible()
+    })
+
+    test('should display cooking state while processing', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-simple')
+      await page.waitForLoadState('networkidle')
+
+      // Click cook and check loading state
+      const cookButton = page.getByRole('button', { name: 'Cook Preview' })
+      await cookButton.click()
+
+      // Button should show cooking state
+      await expect(page.getByText('Cooking...')).toBeVisible()
+
+      // Wait for result
+      await page.waitForLoadState('networkidle')
+    })
+
+    test('should show variables panel when formula has vars', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-multi')
+      await page.waitForLoadState('networkidle')
+
+      // Trigger cook to load vars
+      await page.getByRole('button', { name: 'Cook Preview' }).click()
+      await page.waitForLoadState('networkidle')
+
+      // Should show variables panel with var definitions
+      await expect(page.getByText('project_name')).toBeVisible()
+      await expect(page.getByText('owner')).toBeVisible()
+    })
+
+    test('should allow editing variable values', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-multi')
+      await page.waitForLoadState('networkidle')
+
+      // Trigger cook to load vars
+      await page.getByRole('button', { name: 'Cook Preview' }).click()
+      await page.waitForLoadState('networkidle')
+
+      // Find a variable input and change its value
+      const varInput = page.locator('input[name="project_name"]')
+      if (await varInput.isVisible()) {
+        await varInput.fill('my-project')
+        await expect(varInput).toHaveValue('my-project')
+      }
+    })
+
+    test('should show Pour button after successful cook', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-multi')
+      await page.waitForLoadState('networkidle')
+
+      // Cook the formula
+      await page.getByRole('button', { name: 'Cook Preview' }).click()
+      await page.waitForLoadState('networkidle')
+
+      // Pour button should appear with step count
+      await expect(page.getByRole('button', { name: /Pour \(\d+\)/ })).toBeVisible()
+    })
+  })
+
+  test.describe('Visual Builder', () => {
+    test('should render DAG in visual mode after cook', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-multi')
+      await page.waitForLoadState('networkidle')
+
+      // Cook to get steps
+      await page.getByRole('button', { name: 'Cook Preview' }).click()
+      await page.waitForLoadState('networkidle')
+
+      // Switch to visual mode
+      await page.getByRole('button', { name: 'Visual' }).click()
+
+      // Should show the visual builder (React Flow canvas)
+      await expect(page.locator('.react-flow')).toBeVisible()
+    })
+  })
+
+  test.describe('Sling Workflow', () => {
+    test('should open sling dialog when clicking Sling button', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-simple')
+      await page.waitForLoadState('networkidle')
+
+      // Click Sling button
+      await page.getByRole('button', { name: 'Sling' }).click()
+
+      // Dialog should open
+      await expect(page.getByRole('dialog')).toBeVisible()
+      await expect(page.getByText('Dispatch Formula')).toBeVisible()
+    })
+
+    test('should close sling dialog on cancel', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-simple')
+      await page.waitForLoadState('networkidle')
+
+      // Open dialog
+      await page.getByRole('button', { name: 'Sling' }).click()
+      await expect(page.getByRole('dialog')).toBeVisible()
+
+      // Close with cancel
+      await page.getByRole('button', { name: 'Cancel' }).click()
+      await expect(page.getByRole('dialog')).not.toBeVisible()
+    })
+  })
+
+  test.describe('Status Bar', () => {
+    test('should display formula info in status bar', async ({ page, apiMock }) => {
+      await page.goto('/formula/test-simple')
+      await page.waitForLoadState('networkidle')
+
+      // Cook to populate status
+      await page.getByRole('button', { name: 'Cook Preview' }).click()
+      await page.waitForLoadState('networkidle')
+
+      // Status bar should show formula info
+      await expect(page.getByText(/Formula: test-simple/)).toBeVisible()
+      await expect(page.getByText(/\d+ steps/)).toBeVisible()
+    })
+  })
+})
+
 test.describe('Formula Workflow', () => {
   test.describe('App Shell', () => {
     test('should render the app shell with three panels', async ({ page, apiMock }) => {

@@ -1,12 +1,15 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { Component, type ErrorInfo, type ReactNode } from 'react'
+import { Component, type ErrorInfo, type ReactNode, useCallback, useState } from 'react'
 import { Toaster } from 'sonner'
 import { BeadDetail } from '../components/beads/bead-detail'
 import { AppShell, FormulaTree } from '../components/layout'
+import { CommandPalette, useDefaultActions } from '../components/layout/command-palette'
 import { GenericErrorPage, OfflineBanner } from '../components/ui'
 import { BeadSelectionProvider, useBeadSelection } from '../contexts'
 import { useBead } from '../hooks'
+
+type ViewMode = 'list' | 'wave' | 'graph'
 
 /** Props for ErrorBoundary component */
 interface ErrorBoundaryProps {
@@ -65,13 +68,45 @@ export const Route = createRootRoute({
 function RootLayoutInner() {
   const { selectedBeadId, clearSelection } = useBeadSelection()
   const { bead, isLoading, error } = useBead(selectedBeadId)
+  const [viewMode, setViewMode] = useState<ViewMode>('list')
+
+  const handleOpenFormula = useCallback(() => {
+    // Navigate to first formula or show formula picker
+    console.log('Open Formula triggered')
+  }, [])
+
+  const handleCookPreview = useCallback(() => {
+    console.log('Cook Preview triggered')
+  }, [])
+
+  const handleSling = useCallback(() => {
+    console.log('Sling triggered')
+  }, [])
+
+  const actions = useDefaultActions({
+    onOpenFormula: handleOpenFormula,
+    onCookPreview: handleCookPreview,
+    onSling: handleSling,
+    onSwitchToGraph: () => setViewMode('graph'),
+    onSwitchToList: () => setViewMode('list'),
+    onSwitchToWave: () => setViewMode('wave'),
+  })
 
   return (
     <>
       <OfflineBanner />
       <AppShell
         sidebarContent={<FormulaTree />}
-        mainContent={<Outlet />}
+        mainContent={
+          <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ padding: '8px 16px', borderBottom: '1px solid #333', fontSize: '12px', color: '#888' }}>
+              Current view: {viewMode}
+            </div>
+            <div style={{ flex: 1, overflow: 'auto' }}>
+              <Outlet />
+            </div>
+          </div>
+        }
         detailContent={
           <div style={{ padding: '16px', color: '#858585' }}>
             {error ? (
@@ -84,6 +119,8 @@ function RootLayoutInner() {
       />
       {/* Bead detail overlay panel */}
       {selectedBeadId && <BeadDetail bead={bead} onClose={clearSelection} isLoading={isLoading} />}
+      {/* Global command palette */}
+      <CommandPalette actions={actions} placeholder="Search actions..." />
       <Toaster
         position="bottom-right"
         theme="dark"

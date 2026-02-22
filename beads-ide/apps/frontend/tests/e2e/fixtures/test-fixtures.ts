@@ -67,11 +67,12 @@ export interface MockFormulaListResponse {
 
 /**
  * Test formula fixtures
+ * Note: The path must match what the formula route generates: `formulas/${name}.toml`
  */
 export const TEST_FORMULAS = {
   simple: {
     name: 'test-simple',
-    path: 'formulas/test-simple.formula.toml',
+    path: 'formulas/test-simple.toml',
     searchPath: 'formulas/',
     searchPathLabel: 'Project Formulas',
     content: `[formula]
@@ -112,7 +113,7 @@ type = "task"
   },
   multiStep: {
     name: 'test-multi',
-    path: 'formulas/test-multi.formula.toml',
+    path: 'formulas/test-multi.toml',
     searchPath: 'formulas/',
     searchPathLabel: 'Project Formulas',
     content: `[formula]
@@ -175,7 +176,7 @@ needs = ["step-2"]
   },
   withError: {
     name: 'test-error',
-    path: 'formulas/test-error.formula.toml',
+    path: 'formulas/test-error.toml',
     searchPath: 'formulas/',
     searchPathLabel: 'Project Formulas',
     content: `[formula]
@@ -191,7 +192,7 @@ name = "test-error"
   },
   unboundVars: {
     name: 'test-unbound',
-    path: 'formulas/test-unbound.formula.toml',
+    path: 'formulas/test-unbound.toml',
     searchPath: 'formulas/',
     searchPathLabel: 'Project Formulas',
     content: `[formula]
@@ -282,8 +283,8 @@ export class ApiMock {
    * Set up all API route mocks
    */
   async setup(): Promise<void> {
-    // Mock health check
-    await this.page.route('**/api/health', async (route) => {
+    // Mock health check (both relative and absolute URLs)
+    await this.page.route(/\/api\/health$/, async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -291,8 +292,8 @@ export class ApiMock {
       })
     })
 
-    // Mock formula list - return the FormulaListResponse shape
-    await this.page.route('**/api/formulas', async (route) => {
+    // Mock formula list - return the FormulaListResponse shape (exact /api/formulas path)
+    await this.page.route(/\/api\/formulas$/, async (route) => {
       if (route.request().method() === 'GET') {
         const formulaList: MockFormula[] = Object.values(this.formulas).map((f) => ({
           name: f.name,
@@ -316,8 +317,8 @@ export class ApiMock {
       }
     })
 
-    // Mock individual formula fetch
-    await this.page.route('**/api/formulas/*', async (route) => {
+    // Mock individual formula fetch (matches /api/formulas/:name)
+    await this.page.route(/\/api\/formulas\/[^/]+$/, async (route) => {
       const url = route.request().url()
       const method = route.request().method()
 
@@ -359,7 +360,7 @@ export class ApiMock {
     })
 
     // Mock cook endpoint
-    await this.page.route('**/api/cook', async (route) => {
+    await this.page.route(/\/api\/cook$/, async (route) => {
       const body = route.request().postDataJSON()
       const formulaPath = body?.formula_path
       const formula = Object.values(this.formulas).find((f) => f.path === formulaPath)
@@ -380,7 +381,7 @@ export class ApiMock {
     })
 
     // Mock beads list
-    await this.page.route('**/api/beads', async (route) => {
+    await this.page.route(/\/api\/beads$/, async (route) => {
       if (route.request().method() === 'GET') {
         await route.fulfill({
           status: 200,
@@ -393,7 +394,7 @@ export class ApiMock {
     })
 
     // Mock individual bead fetch
-    await this.page.route('**/api/beads/*', async (route) => {
+    await this.page.route(/\/api\/beads\/[^/]+$/, async (route) => {
       const url = route.request().url()
       const match = url.match(/\/api\/beads\/([^/?]+)/)
       const beadId = match ? match[1] : null
@@ -414,7 +415,7 @@ export class ApiMock {
     })
 
     // Mock graph metrics
-    await this.page.route('**/api/graph/metrics', async (route) => {
+    await this.page.route(/\/api\/graph\/metrics$/, async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
