@@ -369,14 +369,16 @@ export function SlingDialog({
 
           {/* Status indicators */}
           {isLoading && (
-            <div style={loadingStyle}>
-              <span style={{ animation: 'spin 1s linear infinite' }}>&#x21BB;</span>
+            // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role on container div, not form output
+            <div style={loadingStyle} role="status" aria-live="polite">
+              <span style={{ animation: 'spin 1s linear infinite' }} aria-hidden="true">&#x21BB;</span>
               <span>Slinging formula to {currentTarget}...</span>
             </div>
           )}
 
           {result && !isLoading && result.ok && (
-            <div style={successStatusStyle}>
+            // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role on container div, not form output
+            <div style={successStatusStyle} role="status" aria-live="polite">
               <div>Slung to {result.target}</div>
               {result.molecule_id && (
                 <div style={{ fontSize: '12px', marginTop: '4px', fontFamily: 'monospace' }}>
@@ -392,7 +394,7 @@ export function SlingDialog({
           )}
 
           {result && !isLoading && !result.ok && (
-            <div style={errorStatusStyle}>
+            <div style={errorStatusStyle} role="alert" aria-live="assertive">
               <div>{result.error || 'Sling failed'}</div>
               {result.stderr && (
                 <pre

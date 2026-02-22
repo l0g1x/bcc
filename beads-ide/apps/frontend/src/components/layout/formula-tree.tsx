@@ -199,18 +199,22 @@ function groupFormulas(formulas: Formula[]): FormulaGroup[] {
 // Loading skeleton component
 function LoadingSkeleton() {
   return (
-    <div style={treeContainerStyle}>
+    // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role on loading skeleton container
+    <div style={treeContainerStyle} role="status" aria-live="polite" aria-label="Loading formulas">
       <style>
         {`@keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
         }`}
       </style>
-      <div style={{ ...skeletonStyle, width: '60%' }} />
-      <div style={{ ...skeletonStyle, width: '80%', marginLeft: '12px' }} />
-      <div style={{ ...skeletonStyle, width: '70%', marginLeft: '12px' }} />
-      <div style={{ ...skeletonStyle, width: '65%', marginTop: '8px' }} />
-      <div style={{ ...skeletonStyle, width: '75%', marginLeft: '12px' }} />
+      <span className="sr-only" style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)' }}>
+        Loading formulas...
+      </span>
+      <div style={{ ...skeletonStyle, width: '60%' }} aria-hidden="true" />
+      <div style={{ ...skeletonStyle, width: '80%', marginLeft: '12px' }} aria-hidden="true" />
+      <div style={{ ...skeletonStyle, width: '70%', marginLeft: '12px' }} aria-hidden="true" />
+      <div style={{ ...skeletonStyle, width: '65%', marginTop: '8px' }} aria-hidden="true" />
+      <div style={{ ...skeletonStyle, width: '75%', marginLeft: '12px' }} aria-hidden="true" />
     </div>
   );
 }
@@ -255,8 +259,17 @@ function FormulaGroupSection({ group, selectedFormula, onSelectFormula }: Formul
   const [headerHovered, setHeaderHovered] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
+  // Handle keyboard navigation within the group
+  const handleKeyDown = (e: React.KeyboardEvent, formula: { name: string }) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSelectFormula(formula.name);
+    }
+  };
+
   return (
-    <div style={groupStyle}>
+    // biome-ignore lint/a11y/useSemanticElements: div group widget, fieldset would disrupt sidebar layout
+    <div style={groupStyle} role="group" aria-label={group.label}>
       <button
         type="button"
         style={headerHovered ? groupHeaderHoverStyle : groupHeaderStyle}
@@ -269,11 +282,12 @@ function FormulaGroupSection({ group, selectedFormula, onSelectFormula }: Formul
         <ChevronIcon expanded={expanded} />
         <FolderIcon expanded={expanded} />
         <span>{group.label}</span>
-        <span style={{ color: '#858585', marginLeft: 'auto' }}>{group.formulas.length}</span>
+        <span style={{ color: '#858585', marginLeft: 'auto' }} aria-hidden="true">{group.formulas.length}</span>
       </button>
 
       {expanded && (
-        <div style={groupItemsStyle}>
+        // biome-ignore lint/a11y/useSemanticElements: div group widget, fieldset would disrupt layout
+        <div style={groupItemsStyle} role="group">
           {group.formulas.map((formula) => {
             const isSelected = selectedFormula === formula.name;
             const isHovered = hoveredItem === formula.name;
@@ -291,6 +305,7 @@ function FormulaGroupSection({ group, selectedFormula, onSelectFormula }: Formul
                 key={formula.path}
                 style={style}
                 onClick={() => onSelectFormula(formula.name)}
+                onKeyDown={(e) => handleKeyDown(e, formula)}
                 onMouseEnter={() => setHoveredItem(formula.name)}
                 onMouseLeave={() => setHoveredItem(null)}
                 aria-pressed={isSelected}
@@ -348,7 +363,8 @@ export function FormulaTree({ selectedFormula = null, onSelectFormula }: Formula
   }
 
   return (
-    <div style={treeContainerStyle}>
+    // biome-ignore lint/a11y/useSemanticElements: landmark region container, section requires heading per WCAG
+    <div style={treeContainerStyle} role="region" aria-label="Formula files">
       {groups.map((group) => (
         <FormulaGroupSection
           key={group.searchPath}

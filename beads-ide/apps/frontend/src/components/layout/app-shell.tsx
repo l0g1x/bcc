@@ -135,25 +135,27 @@ export function AppShell({ sidebarContent, mainContent, detailContent }: AppShel
           minSize={collapsed ? COLLAPSED_SIDEBAR_SIZE : MIN_SIDEBAR_SIZE}
           maxSize={collapsed ? COLLAPSED_SIDEBAR_SIZE : 40}
         >
-          <Sidebar collapsed={collapsed} onToggleCollapse={handleToggleCollapse}>
-            {sidebarContent}
-          </Sidebar>
+          <nav aria-label="Formula explorer">
+            <Sidebar collapsed={collapsed} onToggleCollapse={handleToggleCollapse}>
+              {sidebarContent}
+            </Sidebar>
+          </nav>
         </Panel>
 
         <PanelResizer orientation="horizontal" />
 
         <Panel defaultSize={sizes.main} minSize={MIN_MAIN_SIZE}>
-          <div style={mainPanelStyle}>
+          <main style={mainPanelStyle} aria-label="Main content">
             {mainContent}
-          </div>
+          </main>
         </Panel>
 
         <PanelResizer orientation="horizontal" />
 
         <Panel defaultSize={sizes.detail} minSize={MIN_DETAIL_SIZE}>
-          <div style={detailPanelStyle}>
+          <aside style={detailPanelStyle} aria-label="Details panel">
             {detailContent}
-          </div>
+          </aside>
         </Panel>
       </PanelGroup>
     </div>
