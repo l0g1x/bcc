@@ -2,11 +2,13 @@
  * Cook preview panel with split view.
  * Shows formula editor on left, proto bead results on right.
  * Re-cooks automatically when formula content changes.
+ * Includes Pour button when proto beads are ready.
  */
 import { useState, useCallback } from 'react';
-import type { CookResult, FormulaVariable } from '@beads-ide/shared';
+import type { CookResult, FormulaVariable, PourResult } from '@beads-ide/shared';
 import { useCook } from '../../hooks/use-cook';
 import { ProtoBeadList } from './proto-bead-list';
+import { PourDialog } from '../formulas/pour-dialog';
 
 /** Props for unbound variables display */
 interface UnboundVarsProps {
@@ -236,12 +238,38 @@ interface PreviewResultsProps {
   result: CookResult | null;
   isLoading: boolean;
   error: Error | null;
+  onPourClick?: () => void;
+  canPour?: boolean;
 }
+
+/** Pour button styling */
+const pourButtonStyle = {
+  backgroundColor: '#4f46e5',
+  color: '#fff',
+  border: 'none',
+  padding: '10px 20px',
+  borderRadius: '6px',
+  fontSize: '14px',
+  fontWeight: 600 as const,
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  marginBottom: '16px',
+  transition: 'background-color 0.15s',
+};
+
+const pourButtonDisabledStyle = {
+  ...pourButtonStyle,
+  backgroundColor: '#374151',
+  cursor: 'not-allowed',
+  opacity: 0.6,
+};
 
 /**
  * Right panel showing cook results.
  */
-function PreviewResults({ result, isLoading, error }: PreviewResultsProps) {
+function PreviewResults({ result, isLoading, error, onPourClick, canPour }: PreviewResultsProps) {
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -276,8 +304,38 @@ function PreviewResults({ result, isLoading, error }: PreviewResultsProps) {
     );
   }
 
+  const stepCount = result.steps?.length ?? 0;
+  const showPourButton = stepCount > 0;
+
   return (
     <>
+      {showPourButton && (
+        <button
+          type="button"
+          style={canPour ? pourButtonStyle : pourButtonDisabledStyle}
+          onClick={canPour ? onPourClick : undefined}
+          disabled={!canPour}
+          aria-label={`Pour ${stepCount} beads`}
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 2v10" />
+            <path d="M18.5 8c.83.9 1.5 2.02 1.5 3.5 0 2.48-2.02 4.5-4.5 4.5H8.5C6.02 16 4 13.98 4 11.5c0-1.48.67-2.6 1.5-3.5" />
+            <path d="M8 22h8" />
+            <path d="M12 16v6" />
+          </svg>
+          Pour {stepCount} Bead{stepCount !== 1 ? 's' : ''}
+        </button>
+      )}
       {result.vars && <VariablesPanel vars={result.vars} />}
       <ProtoBeadList beads={result.steps ?? []} />
     </>
@@ -341,20 +399,35 @@ export interface CookPreviewProps {
   vars?: Record<string, string>;
   /** Callback when formula content changes */
   onContentChange?: (content: string) => void;
+  /** Callback after successful pour */
+  onPourSuccess?: (result: PourResult) => void;
+}
+
+/**
+ * Extract the proto ID from a formula path.
+ * Removes directory and extension to get the formula name.
+ */
+function extractProtoId(formulaPath: string): string {
+  return formulaPath
+    .replace(/\.formula\.(toml|json)$/, '')
+    .replace(/^.*\//, '');
 }
 
 /**
  * Split-view cook preview panel.
  * Shows formula editor on left, proto bead results on right.
  * Re-cooks automatically when the formula is saved via debounced auto-save.
+ * Includes Pour button when proto beads are ready.
  */
 export function CookPreview({
   formulaPath,
   initialContent = '',
   vars,
   onContentChange,
+  onPourSuccess,
 }: CookPreviewProps) {
   const [content, setContent] = useState(initialContent);
+  const [isPourDialogOpen, setIsPourDialogOpen] = useState(false);
 
   // Use the cook hook with 500ms debounce
   const { result, isLoading, error } = useCook(formulaPath, {
@@ -371,45 +444,88 @@ export function CookPreview({
     [onContentChange]
   );
 
+  const handlePourClick = useCallback(() => {
+    setIsPourDialogOpen(true);
+  }, []);
+
+  const handlePourDialogClose = useCallback(() => {
+    setIsPourDialogOpen(false);
+  }, []);
+
+  const handlePourSuccess = useCallback(
+    (pourResult: PourResult) => {
+      onPourSuccess?.(pourResult);
+    },
+    [onPourSuccess]
+  );
+
+  // Determine if pour is available (cook succeeded with steps, no unbound vars)
+  const canPour =
+    result?.ok === true &&
+    (result.steps?.length ?? 0) > 0 &&
+    (!result.unbound_vars || result.unbound_vars.length === 0);
+
+  const protoId = extractProtoId(formulaPath);
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: '100%',
-        minHeight: '400px',
-        backgroundColor: '#0f172a',
-        border: '1px solid #1e293b',
-        borderRadius: '8px',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Left panel: Formula editor */}
+    <>
       <div
         style={{
-          flex: 1,
-          borderRight: '1px solid #1e293b',
           display: 'flex',
-          flexDirection: 'column',
+          height: '100%',
+          minHeight: '400px',
+          backgroundColor: '#0f172a',
+          border: '1px solid #1e293b',
+          borderRadius: '8px',
+          overflow: 'hidden',
         }}
       >
-        <FormulaEditor
-          content={content}
-          onChange={handleContentChange}
-          formulaPath={formulaPath}
-        />
+        {/* Left panel: Formula editor */}
+        <div
+          style={{
+            flex: 1,
+            borderRight: '1px solid #1e293b',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <FormulaEditor
+            content={content}
+            onChange={handleContentChange}
+            formulaPath={formulaPath}
+          />
+        </div>
+
+        {/* Right panel: Preview results */}
+        <div
+          style={{
+            flex: 1,
+            padding: '16px',
+            overflowY: 'auto',
+            backgroundColor: '#111827',
+          }}
+        >
+          <PreviewResults
+            result={result}
+            isLoading={isLoading}
+            error={error}
+            onPourClick={handlePourClick}
+            canPour={canPour}
+          />
+        </div>
       </div>
 
-      {/* Right panel: Preview results */}
-      <div
-        style={{
-          flex: 1,
-          padding: '16px',
-          overflowY: 'auto',
-          backgroundColor: '#111827',
-        }}
-      >
-        <PreviewResults result={result} isLoading={isLoading} error={error} />
-      </div>
-    </div>
+      {/* Pour confirmation dialog */}
+      {result?.ok && (
+        <PourDialog
+          isOpen={isPourDialogOpen}
+          onClose={handlePourDialogClose}
+          protoId={protoId}
+          cookResult={result}
+          vars={vars}
+          onPourSuccess={handlePourSuccess}
+        />
+      )}
+    </>
   );
 }

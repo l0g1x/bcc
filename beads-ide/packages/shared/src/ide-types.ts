@@ -326,3 +326,81 @@ export interface SlingTarget {
   /** Current status (if available) */
   status?: 'available' | 'busy' | 'offline';
 }
+
+// ============================================================================
+// Pour API Types
+// ============================================================================
+
+/** Request payload for pour API */
+export interface PourRequest {
+  /** Proto ID to instantiate (e.g., formula name or proto-id) */
+  proto_id: string;
+  /** Variable substitutions (key=value pairs) */
+  vars?: Record<string, string>;
+  /** Assignee for the root issue */
+  assignee?: string;
+  /** Whether to perform a dry run (preview only) */
+  dry_run?: boolean;
+}
+
+/** A created bead from pour operation */
+export interface CreatedBead {
+  /** Bead ID */
+  id: string;
+  /** Bead title */
+  title: string;
+  /** Bead type (task, bug, epic, etc.) */
+  type: string;
+  /** Bead priority */
+  priority: number;
+}
+
+/** Result of pouring a formula */
+export interface PourResult {
+  /** Whether the pour succeeded */
+  ok: boolean;
+  /** Molecule ID created from the pour */
+  molecule_id?: string;
+  /** List of beads created */
+  created_beads?: CreatedBead[];
+  /** Total count of beads created */
+  bead_count?: number;
+  /** Error message if pour failed */
+  error?: string;
+  /** Stderr output from pour command */
+  stderr?: string;
+  /** Exit code from pour command */
+  exit_code?: number;
+  /** Whether this was a dry run */
+  dry_run?: boolean;
+}
+
+// ============================================================================
+// Burn API Types (rollback/undo pour)
+// ============================================================================
+
+/** Request payload for burn API */
+export interface BurnRequest {
+  /** Molecule ID to burn/delete */
+  molecule_id: string;
+  /** Whether to force deletion without confirmation */
+  force?: boolean;
+  /** Whether to perform a dry run (preview only) */
+  dry_run?: boolean;
+}
+
+/** Result of burning a molecule */
+export interface BurnResult {
+  /** Whether the burn succeeded */
+  ok: boolean;
+  /** Number of beads deleted */
+  deleted_count?: number;
+  /** Error message if burn failed */
+  error?: string;
+  /** Stderr output from burn command */
+  stderr?: string;
+  /** Exit code from burn command */
+  exit_code?: number;
+  /** Whether this was a dry run */
+  dry_run?: boolean;
+}

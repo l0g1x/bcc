@@ -349,3 +349,90 @@ export async function gtSling(
     timeout: options?.timeout ?? TIMEOUTS.cook, // Use cook timeout for sling
   });
 }
+
+/**
+ * Validate a proto ID for CLI usage.
+ * Proto IDs can be formula names or bead IDs.
+ * @throws Error if validation fails
+ */
+export function validateProtoId(protoId: string): void {
+  if (!protoId || typeof protoId !== 'string') {
+    throw new Error('Proto ID is required');
+  }
+  if (protoId.length > 256) {
+    throw new Error('Proto ID too long (max 256 characters)');
+  }
+  if (PATTERNS.shellMetachars.test(protoId)) {
+    throw new Error(`Proto ID contains forbidden characters: ${protoId}`);
+  }
+  // Allow formula names (alphanumeric, underscore, dash, dot) or bead IDs
+  if (!/^[a-zA-Z0-9_.-]+(-[a-zA-Z0-9_.-]+)*$/.test(protoId)) {
+    throw new Error(`Invalid proto ID format: ${protoId}`);
+  }
+}
+
+/**
+ * Run bd mol pour command with validated inputs.
+ */
+export async function bdPour(
+  protoId: string,
+  vars?: Record<string, string>,
+  options?: {
+    assignee?: string;
+    dryRun?: boolean;
+  } & CliOptions
+): Promise<CliResult> {
+  validateProtoId(protoId);
+
+  const args = ['mol', 'pour', protoId, '--json'];
+
+  if (options?.assignee) {
+    // Validate assignee (similar to variable key)
+    if (PATTERNS.shellMetachars.test(options.assignee)) {
+      throw new Error(`Assignee contains forbidden characters: ${options.assignee}`);
+    }
+    args.push('--assignee', options.assignee);
+  }
+
+  if (options?.dryRun) {
+    args.push('--dry-run');
+  }
+
+  if (vars) {
+    for (const [key, value] of Object.entries(vars)) {
+      validateVariableKey(key);
+      validateVariableValue(value);
+      args.push('--var', `${key}=${value}`);
+    }
+  }
+
+  return runCli('bd', args, {
+    ...options,
+    timeout: options?.timeout ?? TIMEOUTS.cook, // Same timeout as cook
+  });
+}
+
+/**
+ * Run bd mol burn command with validated inputs.
+ */
+export async function bdBurn(
+  moleculeId: string,
+  options?: {
+    force?: boolean;
+    dryRun?: boolean;
+  } & CliOptions
+): Promise<CliResult> {
+  validateBeadId(moleculeId);
+
+  const args = ['mol', 'burn', moleculeId, '--json'];
+
+  if (options?.force) {
+    args.push('--force');
+  }
+
+  if (options?.dryRun) {
+    args.push('--dry-run');
+  }
+
+  return runCli('bd', args, options);
+}

@@ -59,4 +59,11 @@ export type {
   SlingRequest,
   SlingResult,
   SlingTarget,
+  // Pour API types
+  PourRequest,
+  CreatedBead,
+  PourResult,
+  // Burn API types (rollback)
+  BurnRequest,
+  BurnResult,
 } from './ide-types.js'
