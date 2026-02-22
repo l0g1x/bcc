@@ -4,7 +4,7 @@ import type { BeadDependent, BeadFull } from '@beads-ide/shared'
  * Read-only view of full bead details when a bead is clicked in the list.
  * Follows openedi's transaction-detail-modal.tsx slide-in pattern.
  */
-import { type CSSProperties, useCallback, useEffect, useState } from 'react'
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react'
 
 // --- Styles ---
 
@@ -436,18 +436,54 @@ export interface BeadDetailProps {
 export function BeadDetail({ bead, onClose, isLoading }: BeadDetailProps) {
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [showAcceptanceCriteria, setShowAcceptanceCriteria] = useState(false)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const previousActiveElement = useRef<HTMLElement | null>(null)
 
-  // Handle Escape key to close
+  // Focus trap and management for accessibility (WCAG 2.1 AA)
   useEffect(() => {
+    if (!bead && !isLoading) return
+
+    // Store the previously focused element to restore focus on close
+    previousActiveElement.current = document.activeElement as HTMLElement
+
+    // Focus the panel when it opens
+    const timer = setTimeout(() => {
+      panelRef.current?.focus()
+    }, 10)
+
+    // Handle Tab key to trap focus within the panel
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         onClose()
+        return
+      }
+
+      if (e.key === 'Tab' && panelRef.current) {
+        const focusableElements = panelRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        const firstElement = focusableElements[0]
+        const lastElement = focusableElements[focusableElements.length - 1]
+
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault()
+          lastElement?.focus()
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault()
+          firstElement?.focus()
+        }
       }
     }
 
     document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [onClose])
+
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener('keydown', handleKeyDown)
+      // Restore focus to the previous element when closing
+      previousActiveElement.current?.focus()
+    }
+  }, [bead, isLoading, onClose])
 
   // Reset expansion state when bead changes
   // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally reset on bead ID change only
@@ -498,9 +534,16 @@ export function BeadDetail({ bead, onClose, isLoading }: BeadDetailProps) {
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: keyboard handled via document-level Escape listener */}
         <div style={overlayStyle} onClick={handleBackdropClick} role="presentation" />
 
-        {/* Panel */}
-        {/* biome-ignore lint/a11y/useSemanticElements: custom overlay dialog, <dialog> element requires showModal() API and breaks positioning */}
-        <div style={panelStyle} role="dialog" aria-labelledby="bead-detail-title" aria-modal="true">
+        {/* Panel - using div with role="dialog" for slide-in positioning that <dialog> doesn't support */}
+        <div
+          ref={panelRef}
+          style={panelStyle}
+          // biome-ignore lint/a11y/useSemanticElements: slide-in panel positioning requires custom div, <dialog> showModal() breaks the layout
+          role="dialog"
+          aria-labelledby="bead-detail-title"
+          aria-modal="true"
+          tabIndex={-1}
+        >
           {isLoading ? (
             // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role, not form output
             <div style={loadingStyle} role="status" aria-live="polite">

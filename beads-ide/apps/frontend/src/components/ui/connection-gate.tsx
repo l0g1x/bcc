@@ -86,7 +86,10 @@ export function ConnectionGate({ children, pollInterval = 5000 }: ConnectionGate
   // Show loading spinner during initial check
   if (gateState === 'checking') {
     return (
+      // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role for loading indicator
       <div
+        role="status"
+        aria-live="polite"
         style={{
           display: 'flex',
           alignItems: 'center',

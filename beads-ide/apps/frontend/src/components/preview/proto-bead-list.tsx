@@ -9,18 +9,23 @@ interface ProtoBeadCardProps {
   bead: ProtoBead
 }
 
-/** Type badge colors based on priority */
-const priorityColors: Record<number, string> = {
-  0: '#22c55e', // green - highest priority
-  1: '#eab308', // yellow - medium priority
-  2: '#f97316', // orange - lower priority
+/** Priority badge config with colors and icons (WCAG 2.1 AA - not color-only) */
+const priorityConfig: Record<number, { color: string; icon: string; label: string }> = {
+  0: { color: '#22c55e', icon: '▲▲', label: 'Critical' }, // green - highest priority
+  1: { color: '#eab308', icon: '▲', label: 'High' }, // yellow - high priority
+  2: { color: '#f97316', icon: '◆', label: 'Medium' }, // orange - medium priority
+  3: { color: '#ef4444', icon: '▼', label: 'Low' }, // red - low priority
 }
 
 /**
  * Card displaying a single proto bead.
  */
 function ProtoBeadCard({ bead }: ProtoBeadCardProps) {
-  const priorityColor = priorityColors[bead.priority] ?? '#6b7280'
+  const priority = priorityConfig[bead.priority] ?? {
+    color: '#6b7280',
+    icon: '○',
+    label: 'Unknown',
+  }
   const dependencyCount = bead.needs?.length ?? 0
 
   return (
@@ -53,14 +58,19 @@ function ProtoBeadCard({ bead }: ProtoBeadCardProps) {
         </span>
         <span
           style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '3px',
             fontSize: '11px',
             padding: '2px 6px',
             borderRadius: '4px',
-            backgroundColor: priorityColor,
+            backgroundColor: priority.color,
             color: '#000',
             fontWeight: 500,
           }}
+          aria-label={`Priority ${bead.priority}: ${priority.label}`}
         >
+          <span aria-hidden="true">{priority.icon}</span>
           P{bead.priority}
         </span>
       </div>

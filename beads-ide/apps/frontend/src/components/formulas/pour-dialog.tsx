@@ -4,7 +4,14 @@ import type { CookResult, PourResult } from '@beads-ide/shared'
  * Shows what will be created and provides pour/cancel actions.
  * Includes rollback option after successful pour.
  */
-import { type CSSProperties, type KeyboardEvent, useCallback, useEffect, useState } from 'react'
+import {
+  type CSSProperties,
+  type KeyboardEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { toast } from 'sonner'
 import { usePour } from '../../hooks/use-pour'
 
@@ -234,6 +241,7 @@ export function PourDialog({
   const { pour, burn, isLoading } = usePour()
   const [pourResult, setPourResult] = useState<PourResult | null>(null)
   const [isBurning, setIsBurning] = useState(false)
+  const dialogRef = useRef<HTMLDialogElement>(null)
 
   const handlePour = useCallback(async () => {
     try {
@@ -289,19 +297,30 @@ export function PourDialog({
     onClose()
   }, [onClose])
 
-  // Handle Escape key to close dialog
+  // Manage dialog open/close with showModal for proper focus trap (WCAG 2.1 AA)
   useEffect(() => {
-    if (!isOpen) return
+    const dialog = dialogRef.current
+    if (!dialog) return
 
-    const handleKeyDown = (e: globalThis.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        handleClose()
+    if (isOpen) {
+      if (!dialog.open) {
+        dialog.showModal()
+      }
+    } else {
+      if (dialog.open) {
+        dialog.close()
       }
     }
+  }, [isOpen])
 
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, handleClose])
+  // Handle native dialog cancel event (Escape key)
+  const handleDialogCancel = useCallback(
+    (e: React.SyntheticEvent) => {
+      e.preventDefault()
+      handleClose()
+    },
+    [handleClose]
+  )
 
   if (!isOpen) return null
 
@@ -309,25 +328,31 @@ export function PourDialog({
   const beadCount = steps.length
   const hasPoured = pourResult?.ok
 
-  const handleOverlayKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+  const handleOverlayKeyDown = (e: KeyboardEvent<HTMLDialogElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
       handleClose()
     }
   }
 
   return (
-    <div
-      style={overlayStyle}
+    <dialog
+      ref={dialogRef}
+      style={{
+        ...overlayStyle,
+        border: 'none',
+        padding: 0,
+        maxWidth: '100vw',
+        maxHeight: '100vh',
+      }}
+      aria-labelledby="pour-dialog-title"
+      onCancel={handleDialogCancel}
       onClick={handleClose}
       onKeyDown={handleOverlayKeyDown}
-      role="presentation"
     >
-      <dialog
-        open
+      <div
         style={dialogStyle}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
-        aria-labelledby="pour-dialog-title"
       >
         <div style={headerStyle}>
           <h2 id="pour-dialog-title" style={titleStyle}>
@@ -413,7 +438,7 @@ export function PourDialog({
             </>
           )}
         </div>
-      </dialog>
-    </div>
+      </div>
+    </dialog>
   )
 }

@@ -112,10 +112,14 @@ interface LoadingSpinnerProps {
 
 /**
  * Loading spinner shown during cook.
+ * Uses role="status" and aria-live for screen reader accessibility (WCAG 2.1 AA).
  */
 function LoadingSpinner({ text = 'Cooking...' }: LoadingSpinnerProps) {
   return (
+    // biome-ignore lint/a11y/useSemanticElements: intentional ARIA status role for loading indicator
     <div
+      role="status"
+      aria-live="polite"
       style={{
         display: 'flex',
         alignItems: 'center',
