@@ -456,11 +456,13 @@ export const test = base.extend<TestFixtures>({
   },
 
   // Test formulas fixture
+  // biome-ignore lint/correctness/noEmptyPattern: Playwright fixture pattern
   testFormulas: async ({}, use) => {
     await use(TEST_FORMULAS)
   },
 
   // Test beads fixture
+  // biome-ignore lint/correctness/noEmptyPattern: Playwright fixture pattern
   testBeads: async ({}, use) => {
     await use(TEST_BEADS)
   },
