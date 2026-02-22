@@ -89,3 +89,35 @@ export function apiPut<T>(path: string, body: unknown): Promise<ApiResponse<T>> 
 export function apiDelete<T>(path: string): Promise<ApiResponse<T>> {
   return apiFetch<T>(path, { method: 'DELETE' })
 }
+
+export interface SaveFormulaResponse {
+  success: boolean;
+  error?: string;
+}
+
+const API_BASE = '/api';
+
+/**
+ * Save a formula to disk.
+ * @param name - The formula name (filename without extension)
+ * @param content - The TOML content to save
+ */
+export async function saveFormula(
+  name: string,
+  content: string
+): Promise<SaveFormulaResponse> {
+  const response = await fetch(`${API_BASE}/formulas/${encodeURIComponent(name)}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+    body: content,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => 'Unknown error');
+    throw new Error(errorText || `Failed to save formula: ${response.status}`);
+  }
+
+  return response.json();
+}
