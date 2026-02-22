@@ -25,7 +25,16 @@ import {
  * - Density indicator: health warnings at density thresholds
  * - Accessible list/tree alternative for screen readers (WCAG 2.1 AA)
  */
-import { type CSSProperties, type KeyboardEvent, useCallback, useMemo, useState } from 'react'
+import {
+  type CSSProperties,
+  type KeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import '@xyflow/react/dist/style.css'
 import type { GraphEdge, GraphNode } from '@beads-ide/shared'
 import {
@@ -89,6 +98,10 @@ const controlsPanelStyle: CSSProperties = {
 // Zoom thresholds for semantic zoom
 const ZOOM_THRESHOLD_LABELS = 0.5 // Hide labels below this zoom
 const ZOOM_THRESHOLD_DETAILS = 0.3 // Simplify further below this zoom
+
+// Fisheye distortion parameters
+const FISHEYE_RADIUS = 200 // Radius of fisheye effect in pixels
+const FISHEYE_DISTORTION = 3 // Distortion strength (higher = more magnification)
 
 // Node style constants
 const NODE_WIDTH = 180
@@ -296,6 +309,45 @@ function findEpicsAndChildren(nodes: GraphNode[], edges: GraphEdge[]): Map<strin
   }
 
   return epics
+}
+
+/**
+ * Apply fisheye distortion to node positions based on cursor position.
+ * Magnifies nodes near the cursor while compressing distant nodes.
+ */
+function applyFisheyeDistortion(
+  nodes: Node<NodeData>[],
+  cursorX: number,
+  cursorY: number
+): Node<NodeData>[] {
+  return nodes.map((node) => {
+    const dx = node.position.x - cursorX
+    const dy = node.position.y - cursorY
+    const distance = Math.sqrt(dx * dx + dy * dy)
+
+    if (distance === 0 || distance > FISHEYE_RADIUS * 2) {
+      return node
+    }
+
+    // Normalized distance (0 = at cursor, 1 = at radius edge)
+    const normalizedDist = Math.min(distance / FISHEYE_RADIUS, 1)
+
+    // Apply distortion formula: magnify near center, compress at edges
+    // Using a polynomial falloff for smooth transition
+    const distortionFactor =
+      normalizedDist < 1
+        ? FISHEYE_DISTORTION * normalizedDist * (1 - normalizedDist * normalizedDist) +
+          normalizedDist
+        : 1
+
+    const newX = cursorX + dx * distortionFactor
+    const newY = cursorY + dy * distortionFactor
+
+    return {
+      ...node,
+      position: { x: newX, y: newY },
+    }
+  })
 }
 
 /**
@@ -643,6 +695,8 @@ export function GraphView({
   )
   const [zoom, setZoom] = useState(1)
   const [viewMode, setViewMode] = useState<'graph' | 'list'>('graph')
+  const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   // Calculate density health
   const densityHealth = useMemo(
@@ -664,6 +718,46 @@ export function GraphView({
     setNodes(initialNodes as Node[])
     setEdges(initialEdges)
   }, [initialNodes, initialEdges, setNodes, setEdges])
+
+  // Apply fisheye distortion when enabled and mouse is moving
+  useEffect(() => {
+    if (simplificationState.fisheyeMode && mousePosition) {
+      const distortedNodes = applyFisheyeDistortion(
+        initialNodes as Node<NodeData>[],
+        mousePosition.x,
+        mousePosition.y
+      )
+      setNodes(distortedNodes as Node[])
+    } else if (!simplificationState.fisheyeMode) {
+      // Reset to original positions when fisheye disabled
+      setNodes(initialNodes as Node[])
+    }
+  }, [simplificationState.fisheyeMode, mousePosition, initialNodes, setNodes])
+
+  // Handle mouse move for fisheye effect
+  const handleMouseMove = useCallback(
+    (event: ReactMouseEvent<HTMLDivElement>) => {
+      if (!simplificationState.fisheyeMode || !containerRef.current) {
+        return
+      }
+
+      const rect = containerRef.current.getBoundingClientRect()
+      // Convert screen coordinates to flow coordinates (accounting for zoom and pan)
+      const flowX = (event.clientX - rect.left - rect.width / 2) / zoom
+      const flowY = (event.clientY - rect.top - rect.height / 2) / zoom
+
+      setMousePosition({ x: flowX, y: flowY })
+    },
+    [simplificationState.fisheyeMode, zoom]
+  )
+
+  // Clear mouse position when leaving the container
+  const handleMouseLeave = useCallback(() => {
+    if (simplificationState.fisheyeMode) {
+      setMousePosition(null)
+      setNodes(initialNodes as Node[])
+    }
+  }, [simplificationState.fisheyeMode, initialNodes, setNodes])
 
   const handleNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
@@ -773,7 +867,12 @@ export function GraphView({
   }, [simplificationState.semanticZoom, zoom])
 
   return (
-    <div style={containerStyle}>
+    <div
+      ref={containerRef}
+      style={containerStyle}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
       {/* View mode toggle for accessibility */}
       <div
         style={{ ...viewToggleStyle, position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}
