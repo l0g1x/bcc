@@ -4,6 +4,7 @@ import type { Placeholder } from '@beads-ide/shared'
 import { health } from './routes/health.js'
 import { beads } from './routes/beads.js'
 import { graph } from './routes/graph.js'
+import { cook } from './routes/cook.js'
 
 const app = new Hono()
 
@@ -17,6 +18,7 @@ app.get('/', (c) => {
 app.route('/api', health)
 app.route('/api', beads)
 app.route('/api', graph)
+app.route('/api', cook)
 
 // Start server bound to localhost only (security requirement)
 serve({

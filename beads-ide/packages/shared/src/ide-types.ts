@@ -177,3 +177,69 @@ export type GraphMetricsResult = GraphMetricsResponse | GraphError;
 
 /** Union type for graph export endpoint */
 export type GraphExportResult = GraphExportResponse | GraphError;
+
+// ============================================================================
+// Cook API Types
+// ============================================================================
+
+/** A proto bead representing a step that will be created when poured */
+export interface ProtoBead {
+  /** Step ID within the formula */
+  id: string;
+  /** Human-readable title */
+  title: string;
+  /** Detailed description of what this step does */
+  description: string;
+  /** Priority level (0 = highest) */
+  priority: number;
+  /** IDs of steps this step depends on */
+  needs?: string[];
+}
+
+/** Variable definition from a formula */
+export interface FormulaVariable {
+  /** Human-readable description of the variable */
+  description: string;
+  /** Default value if not provided */
+  default?: string;
+  /** Whether this variable must be provided */
+  required?: boolean;
+}
+
+/** Result of cooking a formula */
+export interface CookResult {
+  /** Whether the cook succeeded */
+  ok: boolean;
+  /** Formula name */
+  formula?: string;
+  /** Formula version */
+  version?: number;
+  /** Formula type (e.g., "workflow") */
+  type?: string;
+  /** Formula phase (e.g., "liquid") */
+  phase?: string;
+  /** Variable definitions from the formula */
+  vars?: Record<string, FormulaVariable>;
+  /** Steps that will be created (proto beads) */
+  steps?: ProtoBead[];
+  /** Source file path */
+  source?: string;
+  /** Variables that are required but not provided (for runtime mode) */
+  unbound_vars?: string[];
+  /** Error message if cook failed */
+  error?: string;
+  /** Stderr output from cook command */
+  stderr?: string;
+  /** Exit code from cook command */
+  exit_code?: number;
+}
+
+/** Request payload for cook API */
+export interface CookRequest {
+  /** Path to the formula file */
+  formula_path: string;
+  /** Variable substitutions (key=value pairs) */
+  vars?: Record<string, string>;
+  /** Cooking mode: compile (keep placeholders) or runtime (substitute vars) */
+  mode?: 'compile' | 'runtime';
+}

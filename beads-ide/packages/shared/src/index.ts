@@ -46,4 +46,9 @@ export type {
   GraphExportResponse,
   GraphMetricsResult,
   GraphExportResult,
+  // Cook API types
+  ProtoBead,
+  FormulaVariable,
+  CookResult,
+  CookRequest,
 } from './ide-types.js'
