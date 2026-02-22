@@ -404,3 +404,72 @@ export interface BurnResult {
   /** Whether this was a dry run */
   dry_run?: boolean
 }
+
+// ============================================================================
+// Formula Detail API Types (GET/PUT :name, cook, sling)
+// ============================================================================
+
+/** Parsed formula structure returned with formula content */
+export interface ParsedFormula {
+  /** Formula name */
+  name: string
+  /** Formula version */
+  version?: number
+  /** Formula type */
+  type?: string
+  /** Formula phase */
+  phase?: string
+  /** Variable definitions */
+  vars?: Record<string, FormulaVariable>
+  /** Steps defined in formula */
+  steps?: ProtoBead[]
+}
+
+/** Successful formula read response */
+export interface FormulaReadResponse {
+  ok: true
+  /** Formula name */
+  name: string
+  /** Full path to the formula file */
+  path: string
+  /** Raw TOML/JSON content of the formula */
+  content: string
+  /** Parsed formula structure (from bd cook --compile) */
+  parsed?: ParsedFormula
+}
+
+/** Error response for formula operations */
+export interface FormulaApiError {
+  ok: false
+  error: string
+  code: 'NOT_FOUND' | 'INVALID_NAME' | 'VALIDATION_ERROR' | 'WRITE_ERROR' | 'PARSE_ERROR'
+}
+
+/** Request payload for PUT /api/formulas/:name */
+export interface FormulaWriteRequest {
+  /** TOML/JSON content to write */
+  content: string
+}
+
+/** Successful formula write response */
+export interface FormulaWriteResponse {
+  ok: true
+  /** Formula name */
+  name: string
+  /** Path where the formula was written */
+  path: string
+}
+
+/** Request payload for POST /api/formulas/:name/cook */
+export interface FormulaCookRequest {
+  /** Variable substitutions */
+  vars?: Record<string, string>
+}
+
+/** Request payload for POST /api/formulas/:name/sling */
+export interface FormulaSlingRequest {
+  /** Target agent or crew (e.g., "bcc/polecats/fury") */
+  target: string
+  /** Variable substitutions */
+  vars?: Record<string, string>
+}

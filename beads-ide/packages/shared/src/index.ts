@@ -66,4 +66,12 @@ export type {
   // Burn API types (rollback)
   BurnRequest,
   BurnResult,
+  // Formula detail API types
+  ParsedFormula,
+  FormulaReadResponse,
+  FormulaApiError,
+  FormulaWriteRequest,
+  FormulaWriteResponse,
+  FormulaCookRequest,
+  FormulaSlingRequest,
 } from './ide-types.js'
