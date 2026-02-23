@@ -2,6 +2,9 @@
 
 Compile any codebase into a richly-connected bead graph for AI agent navigation. Like `gcc` compiles source code into machine code, `bcc` compiles a codebase into a dependency-rich bead graph optimized for graph-theoretic analysis.
 
+<img width="3555" height="2129" alt="image" src="https://github.com/user-attachments/assets/4ac51c77-d731-4592-963c-639f08a5fa81" />
+
+
 ## Overview
 
 BCC consists of:
