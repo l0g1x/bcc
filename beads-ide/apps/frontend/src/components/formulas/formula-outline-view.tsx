@@ -162,6 +162,10 @@ export function FormulaOutlineView({
   const stepCount = result.steps?.length ?? 0
   const expansionCount = groups.length
 
+  // Calculate total tree item count for aria-setsize
+  const varsCount = result.vars && Object.keys(result.vars).length > 0 ? 1 : 0
+  const totalTreeItems = varsCount + groups.length + ungrouped.length
+
   return (
     <div style={containerStyle}>
       {/* Formula Header */}
@@ -173,13 +177,19 @@ export function FormulaOutlineView({
         expansionCount={expansionCount}
       />
 
-      <div style={contentStyle}>
+      <div
+        style={contentStyle}
+        role="tree"
+        aria-label={`Formula outline: ${result.formula ?? 'Unknown'}`}
+      >
         {/* Variables Section */}
         {result.vars && Object.keys(result.vars).length > 0 && (
           <VariablesSection
             vars={result.vars}
             values={varValues}
             onValueChange={onVarChange}
+            treePosition={1}
+            treeSize={totalTreeItems}
           />
         )}
 
@@ -197,13 +207,15 @@ export function FormulaOutlineView({
             color={GROUP_COLORS[index % GROUP_COLORS.length]}
             availableStepIds={availableStepIds}
             onStepFieldChange={onStepFieldChange}
+            treePosition={varsCount + index + 1}
+            treeSize={totalTreeItems}
           />
         ))}
 
         {/* Ungrouped Steps */}
         {ungrouped.length > 0 && (
           <>
-            <div style={ungroupedHeaderStyle}>Other Steps</div>
+            <div style={ungroupedHeaderStyle} role="presentation">Other Steps</div>
             {ungrouped.map((step, index) => (
               <StepItem
                 key={step.id}
@@ -215,6 +227,9 @@ export function FormulaOutlineView({
                 }
                 availableStepIds={availableStepIds}
                 onFieldChange={onStepFieldChange}
+                treeLevel={1}
+                treePosition={varsCount + groups.length + index + 1}
+                treeSize={totalTreeItems}
               />
             ))}
           </>

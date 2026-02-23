@@ -22,6 +22,12 @@ export interface StepItemProps {
   availableStepIds?: string[]
   /** Callback when a field is edited */
   onFieldChange?: (stepId: string, field: string, value: string | number | string[]) => void
+  /** Tree nesting level for aria-level */
+  treeLevel?: number
+  /** Position in parent group (1-indexed) for aria-posinset */
+  treePosition?: number
+  /** Total siblings in parent group for aria-setsize */
+  treeSize?: number
 }
 
 const containerStyle = (isSelected: boolean): CSSProperties => ({
@@ -203,6 +209,9 @@ export function StepItem({
   indent = 0,
   availableStepIds = [],
   onFieldChange,
+  treeLevel = 1,
+  treePosition,
+  treeSize,
 }: StepItemProps) {
   const hasNeeds = step.needs && step.needs.length > 0
   const isGate = step.needs && step.needs.length > 1
@@ -252,12 +261,17 @@ export function StepItem({
         ...containerStyle(isSelected),
         paddingLeft: `${indent * 16}px`,
       }}
+      role="treeitem"
+      aria-selected={isSelected}
+      aria-level={treeLevel}
+      aria-posinset={treePosition}
+      aria-setsize={treeSize}
+      aria-label={`Step ${number}: ${step.title}`}
     >
       {/* Header row - always visible */}
       <div
         style={headerStyle(isSelected)}
         onClick={onClick}
-        role="button"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {

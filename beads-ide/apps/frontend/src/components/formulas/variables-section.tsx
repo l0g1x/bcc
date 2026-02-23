@@ -14,6 +14,10 @@ export interface VariablesSectionProps {
   onValueChange: (key: string, value: string) => void
   /** Initial expanded state */
   defaultExpanded?: boolean
+  /** Position in parent tree (1-indexed) for aria-posinset */
+  treePosition?: number
+  /** Total siblings in parent tree for aria-setsize */
+  treeSize?: number
 }
 
 const containerStyle: CSSProperties = {
@@ -106,6 +110,8 @@ export function VariablesSection({
   values,
   onValueChange,
   defaultExpanded = true,
+  treePosition,
+  treeSize,
 }: VariablesSectionProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
 
@@ -120,12 +126,19 @@ export function VariablesSection({
   }
 
   return (
-    <div style={containerStyle}>
+    <div
+      style={containerStyle}
+      role="treeitem"
+      aria-expanded={isExpanded}
+      aria-level={1}
+      aria-posinset={treePosition}
+      aria-setsize={treeSize}
+      aria-label={`Variables, ${entries.length} items`}
+    >
       {/* Header */}
       <div
         style={headerStyle(isExpanded)}
         onClick={toggleExpanded}
-        role="button"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -133,17 +146,16 @@ export function VariablesSection({
             toggleExpanded()
           }
         }}
-        aria-expanded={isExpanded}
       >
-        <span style={chevronStyle(isExpanded)}>▶</span>
+        <span style={chevronStyle(isExpanded)} aria-hidden="true">▶</span>
         <span style={labelStyle}>Variables</span>
-        <span style={countBadgeStyle}>{entries.length}</span>
+        <span style={countBadgeStyle} aria-hidden="true">{entries.length}</span>
       </div>
 
       {/* Variables */}
-      <div style={varsContainerStyle(isExpanded)}>
+      <div style={varsContainerStyle(isExpanded)} role="group">
         {entries.map(([key, def]) => (
-          <div key={key}>
+          <div key={key} role="treeitem" aria-level={2}>
             <div style={varRowStyle}>
               <span style={varNameStyle}>{key}</span>
               <input
