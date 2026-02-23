@@ -19,6 +19,30 @@ Total estimated effort: 8-12 implementation days across 5 phases.
 
 ---
 
+## Phase 0: Prerequisites (Blockers)
+
+**Goal:** Fix critical blockers before main implementation.
+
+### 0.1 Add saveFormula() API Function
+- **File:** `apps/frontend/src/lib/api.ts`
+- **Add:** Export function calling `PUT /api/formulas/:name`
+- **Effort:** 10 minutes
+- **Acceptance:** Function exported, can be imported by hooks
+
+### 0.2 Performance Baseline Measurement
+- **Files:** Key routes and components
+- **Measure:**
+  - Mode switch latency (text ↔ visual)
+  - Node selection response time
+  - Initial render time (50-step formula)
+- **Output:** Baseline metrics documented
+- **Acceptance:** Numbers recorded for post-implementation comparison
+
+**Phase 0 Dependencies:** None
+**Phase 0 Outputs:** API ready, baseline metrics recorded
+
+---
+
 ## Phase 1: Save Infrastructure (P0 - Foundation)
 
 **Goal:** Enable explicit save with dirty state tracking. All other features depend on this.
@@ -56,7 +80,13 @@ Total estimated effort: 8-12 implementation days across 5 phases.
 - **Effect:** `useEffect` adding `beforeunload` listener when `isDirty`
 - **Acceptance:** Browser shows native dialog on tab close with unsaved changes
 
-**Phase 1 Dependencies:** None
+### 1.6 Implement Double-Click to Edit
+- **File:** `apps/frontend/src/components/formulas/visual-builder.tsx`
+- **Change:** Single-click selects node, double-click opens step editor
+- **Pattern:** Use click timing or `onDoubleClick` event
+- **Acceptance:** Single-click shows selection outline, double-click opens panel
+
+**Phase 1 Dependencies:** Phase 0 (saveFormula)
 **Phase 1 Outputs:** Working save, visible dirty state, browser protection
 
 ---
@@ -142,6 +172,12 @@ Total estimated effort: 8-12 implementation days across 5 phases.
 - **Media query:** `@media (prefers-reduced-motion: reduce)`
 - **Apply:** Disable transitions, animations, set `transition: none`
 - **Acceptance:** No animations when OS setting enabled
+
+### 3.6 Add Outline View Tree Semantics
+- **File:** `apps/frontend/src/components/formulas/formula-outline-view.tsx`
+- **Add:** ARIA tree roles (`role="tree"`, `role="treeitem"`, `aria-level`, `aria-posinset`, `aria-setsize`)
+- **Behavior:** Arrow keys navigate tree, screen reader announces position
+- **Acceptance:** VoiceOver reads "Step X, tree item, 3 of 5, level 2"
 
 **Phase 3 Dependencies:** None (can parallel with Phase 2)
 **Phase 3 Outputs:** WCAG 2.1 AA compliant interface
@@ -230,19 +266,49 @@ Total estimated effort: 8-12 implementation days across 5 phases.
 
 ---
 
+## Phase 6: Performance Validation (P1 - Quality Gate)
+
+**Goal:** Verify implementation meets spec performance budgets.
+
+### 6.1 Measure Post-Implementation Performance
+- **Compare:** Against Phase 0.2 baseline
+- **Targets:**
+  - Mode switch < 100ms
+  - Node selection < 50ms
+  - Step editor open < 100ms
+  - Initial render (50 steps) < 1s
+  - Save < 500ms
+  - Search/filter < 100ms
+- **Acceptance:** All targets met or regressions documented
+
+### 6.2 Performance Optimization (If Needed)
+- **Triggers:** Any target missed by >20%
+- **Actions:** Profile, optimize, re-measure
+- **Acceptance:** All targets met or exceptions approved
+
+**Phase 6 Dependencies:** Phases 1-5 complete
+**Phase 6 Outputs:** Performance validated, ready for release
+
+---
+
 ## Dependency Graph
 
 ```
-Phase 1 (Save) ──┬──► Phase 2 (Navigation)
-                 │
-                 └──► Phase 4 (Shortcuts)
-                           │
-Phase 3 (A11y) ───────────┴──► Phase 5 (Polish)
+Phase 0 (Prerequisites) ──► Phase 1 (Save) ──┬──► Phase 2 (Navigation)
+                                              │
+                                              └──► Phase 4 (Shortcuts)
+                                                        │
+                           Phase 3 (A11y) ─────────────┴──► Phase 5 (Polish)
+                                                                  │
+                                                                  ▼
+                                                           Phase 6 (Perf)
 ```
 
-Phases 1 and 3 can run in parallel.
+Phase 0 must complete first (blockers).
+Phases 1 and 3 can run in parallel after Phase 0.
 Phases 2 and 4 depend on Phase 1.
 Phase 5 depends on Phases 1-3.
+Phase 6 validates after all implementation complete.
 
 ---
 
@@ -250,10 +316,10 @@ Phase 5 depends on Phases 1-3.
 
 | Week | Tasks | Output |
 |------|-------|--------|
-| 1 | 1.1-1.5, 3.1-3.2 | Save working, skip link, labels fixed |
-| 2 | 2.1-2.4, 3.3-3.5 | Navigation safe, live regions, arrow nav |
+| 1 | 0.1-0.2, 1.1-1.6, 3.1-3.2 | Blockers fixed, save working, skip link, labels |
+| 2 | 2.1-2.4, 3.3-3.6 | Navigation safe, live regions, arrow nav, outline tree |
 | 3 | 4.1-4.4, 5.1-5.3 | Shortcuts discoverable, groups polished |
-| 4 | 5.4-5.5, testing | Progress streaming (if time), QA |
+| 4 | 5.5, 6.1-6.2, testing | Panel polish, performance validation, QA |
 
 ---
 
@@ -305,9 +371,9 @@ From spec, implemented:
 
 ## Open Questions
 
-1. **Undo (Cmd+Z):** Spec mentions but not detailed. Defer to v2.1?
-2. **Progress streaming:** High effort. Polling fallback acceptable for v2?
-3. **Double-click vs single-click:** Current is single-click. Change to double?
+1. **Undo (Cmd+Z):** Spec mentions but not detailed. **Decision: Defer to v2.1.**
+2. **Progress streaming:** High effort. **Decision: Defer to v2.1, polling fallback for v2.0.**
+3. ~~**Double-click vs single-click:**~~ **Resolved: Task 1.6 implements double-click per spec.**
 
 ---
 
