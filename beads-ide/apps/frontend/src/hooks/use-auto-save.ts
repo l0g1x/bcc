@@ -3,6 +3,7 @@
  *
  * Saves formula content 500ms after the user stops typing.
  * Provides save state indicator and error handling via Sonner toasts.
+ * Announces "Formula saved" to screen readers on successful save.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -19,11 +20,15 @@ export interface UseAutoSaveOptions {
   content: string;
   /** Whether auto-save is enabled (default: true) */
   enabled?: boolean;
+  /** Callback to announce messages for screen readers */
+  onAnnounce?: (message: string) => void;
 }
 
 export interface UseAutoSaveReturn {
   /** Current save state */
   saveState: SaveState;
+  /** Whether content has unsaved changes */
+  hasUnsavedChanges: boolean;
   /** Manually trigger a save (bypasses debounce) */
   saveNow: () => Promise<void>;
 }
@@ -50,11 +55,15 @@ export function useAutoSave({
   name,
   content,
   enabled = true,
+  onAnnounce,
 }: UseAutoSaveOptions): UseAutoSaveReturn {
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSavedContentRef = useRef<string>(content);
   const isMountedRef = useRef(true);
+
+  // Track unsaved changes
+  const hasUnsavedChanges = content !== lastSavedContentRef.current;
 
   // Track mounted state for cleanup
   useEffect(() => {
@@ -79,6 +88,9 @@ export function useAutoSave({
         lastSavedContentRef.current = contentToSave;
         setSaveState('saved');
 
+        // Announce for screen readers
+        onAnnounce?.('Formula saved');
+
         // Reset to idle after showing "Saved" briefly
         setTimeout(() => {
           if (isMountedRef.current) {
@@ -101,7 +113,7 @@ export function useAutoSave({
         }, 3000);
       }
     },
-    [name]
+    [name, onAnnounce]
   );
 
   // Manual save function (bypasses debounce)
@@ -143,6 +155,7 @@ export function useAutoSave({
 
   return {
     saveState,
+    hasUnsavedChanges,
     saveNow,
   };
 }

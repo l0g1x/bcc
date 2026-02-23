@@ -7,7 +7,7 @@ import type { PourResult, ProtoBead, SlingRequest } from '@beads-ide/shared'
  * Step nodes in Visual view can be clicked to edit in the StepEditorPanel.
  */
 import { createFileRoute } from '@tanstack/react-router'
-import { type CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   FormulaFlowView,
   FormulaOutlineView,
@@ -19,6 +19,7 @@ import {
   VisualBuilder,
 } from '../components/formulas'
 import { OpenCodeTerminal } from '../components/opencode'
+import { useAnnounce } from '../contexts'
 import { useCook, useFormulaContent, useSling } from '../hooks'
 import {
   type FormulaParseError,
@@ -190,6 +191,7 @@ export const Route = createFileRoute('/formula/$name')({
 
 function FormulaPage() {
   const { name } = Route.useParams()
+  const announce = useAnnounce()
   const [viewMode, setViewMode] = useState<ViewMode>('text')
   const [tomlContent, setTomlContent] = useState('')
   const [parseErrors, setParseErrors] = useState<FormulaParseError[]>([])
@@ -198,6 +200,10 @@ function FormulaPage() {
   const [pourDialogOpen, setPourDialogOpen] = useState(false)
   const [selectedStepId, setSelectedStepId] = useState<string | null>(null)
   const [showAiPanel, setShowAiPanel] = useState(false)
+
+  // Track when unsaved changes are first detected
+  const hasAnnouncedUnsavedRef = useRef(false)
+  const lastSavedContentRef = useRef('')
 
   // Load formula content from disk
   const {
@@ -219,6 +225,8 @@ function FormulaPage() {
   useEffect(() => {
     if (loadedContent) {
       setTomlContent(loadedContent)
+      lastSavedContentRef.current = loadedContent
+      hasAnnouncedUnsavedRef.current = false
       // Parse initial content
       const result = parseAndValidateFormula(loadedContent)
       if (!result.ok) {
@@ -251,7 +259,10 @@ function FormulaPage() {
   // Handle step selection in visual mode
   const handleStepSelect = useCallback((stepId: string | null) => {
     setSelectedStepId(stepId)
-  }, [])
+    if (stepId) {
+      announce('Step selected')
+    }
+  }, [announce])
 
   // Handle step field changes from the StepEditorPanel
   // NOTE: Editing only works for steps defined directly in the source TOML.
@@ -307,6 +318,11 @@ function FormulaPage() {
 
   const handleTomlChange = useCallback((content: string) => {
     setTomlContent(content)
+    // Announce unsaved changes on first divergence
+    if (content !== lastSavedContentRef.current && !hasAnnouncedUnsavedRef.current) {
+      hasAnnouncedUnsavedRef.current = true
+      announce('Unsaved changes')
+    }
     // Parse and validate on change
     const result = parseAndValidateFormula(content)
     if (!result.ok) {
@@ -314,7 +330,7 @@ function FormulaPage() {
     } else {
       setParseErrors([])
     }
-  }, [])
+  }, [announce])
 
   const handleCook = useCallback(() => {
     cook()
