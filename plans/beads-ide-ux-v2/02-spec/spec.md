@@ -21,9 +21,9 @@ Beads IDE UX v2 is a comprehensive UI/UX improvement initiative for the Beads ID
 ## Scope Questions & Answers
 
 ### Summary
-- **Questions addressed:** 38 (P0 + P1)
-- **Auto-answered (best practices):** 25
-- **Human decisions:** 13
+- **Questions addressed:** 38 (P0 + P1) — all complete
+- **Auto-answered (best practices):** 23
+- **Human decisions:** 15 (includes Q31, Q35 added post-review)
 - **Deferred to P2/P3:** 51
 
 ### P0: Critical Decisions
@@ -65,7 +65,9 @@ Beads IDE UX v2 is a comprehensive UI/UX improvement initiative for the Beads ID
 | 28 | Mode switch animation? | Instant swap, no animation. Tab-like toggle. No false impression of spatial relationship. | Best practice - VS Code, GitHub, JetBrains |
 | 29 | Panel edits on mode switch? | Close panel, edits preserved. Current implementation already writes to TOML state immediately. | Codebase + human confirmation |
 | 30 | Design scale? | Medium (50-100 formulas, 20-50 steps). Add search/filter, lazy loading. No full virtualization yet. | Human choice - practical near-term target |
-| 31-38 | Loading states, error recovery, etc. | See auto-answered table below | Best practices from VS Code, Figma, WCAG |
+| 31 | Dense cross-group dependency UX at scale? | Progressive reveal: hide cross-group edges by default, show via toggle or on node/group selection. Prevents visual clutter while preserving discoverability. | Human choice - clarity over comprehensive display |
+| 32-34, 36-38 | Loading states, error recovery, etc. | See auto-answered table below | Best practices from VS Code, Figma, WCAG |
+| 35 | Pour/Sling progress communication? | Log stream in detail panel with elapsed time counter + step status indicators (pending/running/complete icons). Sonner toast on completion. | Human choice - maximum visibility during execution |
 
 ### Auto-Answered Questions (Best Practices)
 
@@ -162,11 +164,25 @@ No schema changes required. All features work with existing structures:
 7. Unsaved indicator appears
 8. Cmd+S to save to disk
 
+*Acceptance Criteria:*
+- [ ] Given: User is in visual mode. When: User single-clicks a node. Then: Node shows blue selection border + glow, connected edges highlight.
+- [ ] Given: User has a node selected. When: User double-clicks the node. Then: Step editor panel opens within 100ms.
+- [ ] Given: Step editor is open. When: User edits any field. Then: Unsaved indicator appears in sidebar and header.
+- [ ] Given: User has edited fields. When: User presses Escape. Then: Panel closes, changes remain in state (not discarded).
+- [ ] Given: Unsaved changes exist. When: User presses Cmd+S. Then: File saves, unsaved indicator disappears, success toast appears.
+
 **Flow 2: Handling Unsaved Changes on Navigation**
 1. User has unsaved changes (indicator visible)
 2. User tries to navigate away (sidebar, browser back, close tab)
 3. Modal appears: "You have unsaved changes"
 4. Options: Save (saves then navigates), Don't Save (discards then navigates), Cancel (stays)
+
+*Acceptance Criteria:*
+- [ ] Given: Unsaved changes exist. When: User clicks a different formula in sidebar. Then: Modal appears with three buttons.
+- [ ] Given: Modal is shown. When: User clicks "Save". Then: File saves, navigation proceeds, user lands on new formula.
+- [ ] Given: Modal is shown. When: User clicks "Don't Save". Then: Changes discarded, navigation proceeds.
+- [ ] Given: Modal is shown. When: User clicks "Cancel" or presses Escape. Then: Modal closes, user stays on current formula, changes preserved.
+- [ ] Given: Unsaved changes exist. When: User closes browser tab. Then: Browser `beforeunload` dialog appears.
 
 **Flow 3: Discovering Keyboard Shortcuts**
 1. User hovers toolbar button, sees tooltip with shortcut hint
@@ -176,6 +192,12 @@ No schema changes required. All features work with existing structures:
 5. Shortcuts panel opens as non-modal overlay
 6. User can pin it for reference while working
 
+*Acceptance Criteria:*
+- [ ] Given: User hovers any toolbar button. When: Tooltip appears. Then: Tooltip includes keyboard shortcut (e.g., "Cook Preview (Cmd+Enter)").
+- [ ] Given: User has never used IDE before. When: Page loads. Then: Toast appears within 5s: "Tip: Press Cmd+/ for keyboard shortcuts".
+- [ ] Given: User presses Cmd+/. When: Shortcuts panel opens. Then: Panel is non-modal (user can still interact with canvas).
+- [ ] Given: Shortcuts panel is open. When: User clicks pin icon. Then: Panel remains visible across mode switches.
+
 **Flow 4: Navigating with Screen Reader**
 1. User focuses the page, skip link appears
 2. User activates skip link to jump to main content
@@ -184,6 +206,57 @@ No schema changes required. All features work with existing structures:
 5. Enter on step opens step editor panel
 6. Form fields have proper labels read by screen reader
 7. Live region announces changes (step selected, saved, etc.)
+
+*Acceptance Criteria:*
+- [ ] Given: Page loads. When: User presses Tab once. Then: "Skip to main content" link is visible and focused.
+- [ ] Given: Skip link is focused. When: User presses Enter. Then: Focus moves to main content area.
+- [ ] Given: User is in outline view. When: Screen reader reads the tree. Then: Each node announces its role ("tree item"), name, and position ("3 of 5").
+- [ ] Given: Step editor is open. When: Screen reader reads form. Then: Each input is announced with its label (not just "text field").
+- [ ] Given: User saves a file. When: Save completes. Then: Live region announces "Formula saved" (aria-live="polite").
+
+**Flow 5: Executing Pour/Sling with Progress Feedback**
+1. User clicks Pour or Sling button
+2. If unsaved changes, warning modal appears (per Flow 2 pattern)
+3. Execution starts, detail panel shows log stream
+4. Elapsed time counter updates every second
+5. Step status indicators show pending → running → complete
+6. On completion, Sonner toast announces success/failure
+7. Log stream persists for review
+
+*Acceptance Criteria:*
+- [ ] Given: User clicks Pour. When: Execution starts. Then: Detail panel opens (if closed) showing log stream.
+- [ ] Given: Execution is running. When: Time passes. Then: Elapsed counter increments (format: "0:42" or "1:23:45").
+- [ ] Given: Execution is running. When: A step completes. Then: Step status icon changes from spinner to checkmark.
+- [ ] Given: Execution completes successfully. When: All steps done. Then: Sonner toast "Pour completed in X:XX" appears.
+- [ ] Given: Execution fails. When: Error occurs. Then: Sonner toast "Pour failed: [reason]" appears, log stream shows error.
+
+### Performance Budgets
+
+Target metrics for the design scale (50-100 formulas, 20-50 steps):
+
+| Operation | Target | Measurement |
+|-----------|--------|-------------|
+| Mode switch (text ↔ visual) | < 100ms | Time from click to render complete |
+| Node selection response | < 50ms | Time from click to visual feedback |
+| Step editor panel open | < 100ms | Time from double-click to panel visible |
+| Initial formula render (50 steps) | < 1s | Time from route load to interactive |
+| Save to disk | < 500ms | Time from Cmd+S to success toast |
+| Search/filter response | < 100ms | Time from keystroke to filtered results |
+
+These budgets apply to a typical development machine. Formulas exceeding the scale target (20-50 steps) may have degraded performance; this is acceptable for v2.
+
+### Accessibility Conformance
+
+**Target:** WCAG 2.1 Level AA
+
+This means:
+- **Contrast:** 4.5:1 for normal text, 3:1 for large text and UI components
+- **Focus indicators:** Visible focus ring on all interactive elements
+- **Keyboard access:** All functionality available via keyboard
+- **Screen reader:** Semantic structure, proper labels, live region announcements
+- **Motion:** Respect `prefers-reduced-motion` media query
+
+Level AAA conformance (e.g., 7:1 contrast, sign language) is not targeted for v2.
 
 ### Error Handling
 
@@ -251,8 +324,8 @@ Questions that emerged during brainstorming needing future resolution:
 
 Recommended path forward:
 
-1. [ ] Run multimodal spec review (Step 4 of pipeline) to catch gaps
-2. [ ] Address any findings from review
+1. [x] Run multimodal spec review (Step 4 of pipeline) to catch gaps
+2. [x] Address findings from review (Q31, Q35, acceptance criteria, performance budgets, WCAG level)
 3. [ ] Create implementation beads (design-to-beads)
 4. [ ] Prioritize: accessibility fixes first (quick wins), then unsaved changes, then visual polish
 
