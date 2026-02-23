@@ -373,8 +373,10 @@ export interface VisualBuilderProps {
   steps: ProtoBead[]
   /** Variable definitions (used to detect which vars are used in steps) */
   vars?: Record<string, FormulaVariable>
-  /** Callback when a step node is clicked */
+  /** Callback when a step node is clicked (single-click selects) */
   onStepSelect?: (stepId: string | null) => void
+  /** Callback when a step node is double-clicked (opens step editor panel) */
+  onStepOpen?: (stepId: string) => void
   /** ID of the currently selected step */
   selectedStepId?: string | null
 }
@@ -397,6 +399,7 @@ export function VisualBuilder({
   steps,
   vars: _vars,
   onStepSelect,
+  onStepOpen,
   selectedStepId,
 }: VisualBuilderProps) {
   // Convert steps to React Flow nodes and edges
@@ -556,16 +559,26 @@ export function VisualBuilder({
   // No-op for read-only mode
   const onConnect = useCallback(() => {}, [])
 
-  // Handle node click - toggle selection (only for step nodes)
+  // Handle single-click - select the step (only for step nodes)
   const handleNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
       if (node.type === 'group') return // Ignore group clicks
       if (onStepSelect) {
-        const newSelectedId = node.id === selectedStepId ? null : node.id
-        onStepSelect(newSelectedId)
+        onStepSelect(node.id)
       }
     },
-    [onStepSelect, selectedStepId]
+    [onStepSelect]
+  )
+
+  // Handle double-click - open step editor panel (only for step nodes)
+  const handleNodeDoubleClick = useCallback(
+    (_event: React.MouseEvent, node: Node) => {
+      if (node.type === 'group') return // Ignore group clicks
+      if (onStepOpen) {
+        onStepOpen(node.id)
+      }
+    },
+    [onStepOpen]
   )
 
   // Handle pane click - deselect
@@ -694,9 +707,11 @@ export function VisualBuilder({
           break
         }
         case 'Enter': {
-          // Enter confirms selection (opens panel) - already selected, no change needed
-          // The parent component handles panel display based on selectedStepId
+          // Enter opens the step editor panel for the selected step
           event.preventDefault()
+          if (onStepOpen && selectedStepId) {
+            onStepOpen(selectedStepId)
+          }
           return
         }
         case 'Escape': {
@@ -718,7 +733,7 @@ export function VisualBuilder({
         }
       }
     },
-    [dagAdjacency, selectedStepId, onStepSelect]
+    [dagAdjacency, selectedStepId, onStepSelect, onStepOpen]
   )
 
   // Attach keyboard listener to container
@@ -779,6 +794,7 @@ export function VisualBuilder({
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeClick={handleNodeClick}
+        onNodeDoubleClick={handleNodeDoubleClick}
         onPaneClick={handlePaneClick}
         fitView
         fitViewOptions={{ padding: 0.2 }}
