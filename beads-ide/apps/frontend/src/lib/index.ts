@@ -25,3 +25,5 @@ export {
 } from './formula-parser'
 
 export { updateVarDefault, updateVarDefaults } from './toml-updater'
+
+export { updateStepField, extractStepIds } from './toml-step-updater'

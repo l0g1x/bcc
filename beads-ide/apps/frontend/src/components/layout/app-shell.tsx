@@ -5,8 +5,8 @@ import { Sidebar } from './sidebar'
 
 const STORAGE_KEY = 'beads-ide-panel-sizes'
 const DEFAULT_SIDEBAR_SIZE = 20 // percentage
-const COLLAPSED_SIDEBAR_SIZE = 4 // percentage for icon rail
-const MIN_SIDEBAR_SIZE = 10
+const COLLAPSED_SIDEBAR_SIZE = 3 // percentage for icon rail
+const MIN_SIDEBAR_SIZE = 5 // Allow narrower sidebar
 const MIN_MAIN_SIZE = 30
 const MIN_DETAIL_SIZE = 15
 
@@ -124,6 +124,9 @@ export function AppShell({ sidebarContent, mainContent, detailContent }: AppShel
     }
   }, [collapsed])
 
+  // Only show detail panel if there's content
+  const showDetailPanel = detailContent != null
+
   return (
     <div style={shellStyle}>
       <PanelGroup direction="horizontal" style={panelGroupStyle} onLayout={handleLayout}>
@@ -132,7 +135,7 @@ export function AppShell({ sidebarContent, mainContent, detailContent }: AppShel
           minSize={collapsed ? COLLAPSED_SIDEBAR_SIZE : MIN_SIDEBAR_SIZE}
           maxSize={collapsed ? COLLAPSED_SIDEBAR_SIZE : 40}
         >
-          <nav aria-label="Formula explorer">
+          <nav aria-label="Formula explorer" style={{ height: '100%', overflow: 'hidden' }}>
             <Sidebar collapsed={collapsed} onToggleCollapse={handleToggleCollapse}>
               {sidebarContent}
             </Sidebar>
@@ -141,19 +144,22 @@ export function AppShell({ sidebarContent, mainContent, detailContent }: AppShel
 
         <PanelResizer orientation="horizontal" />
 
-        <Panel defaultSize={sizes.main} minSize={MIN_MAIN_SIZE}>
+        <Panel defaultSize={showDetailPanel ? sizes.main : sizes.main + sizes.detail} minSize={MIN_MAIN_SIZE}>
           <main style={mainPanelStyle} aria-label="Main content">
             {mainContent}
           </main>
         </Panel>
 
-        <PanelResizer orientation="horizontal" />
-
-        <Panel defaultSize={sizes.detail} minSize={MIN_DETAIL_SIZE}>
-          <aside style={detailPanelStyle} aria-label="Details panel">
-            {detailContent}
-          </aside>
-        </Panel>
+        {showDetailPanel && (
+          <>
+            <PanelResizer orientation="horizontal" />
+            <Panel defaultSize={sizes.detail} minSize={MIN_DETAIL_SIZE}>
+              <aside style={detailPanelStyle} aria-label="Details panel">
+                {detailContent}
+              </aside>
+            </Panel>
+          </>
+        )}
       </PanelGroup>
     </div>
   )

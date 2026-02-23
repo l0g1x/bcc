@@ -108,13 +108,17 @@ function RootLayoutInner() {
           </div>
         }
         detailContent={
-          <div style={{ padding: '16px', color: '#858585' }}>
-            {error ? (
-              <div style={{ color: '#f87171' }}>Error: {error.message}</div>
-            ) : (
-              'Select a bead to view details'
-            )}
-          </div>
+          selectedBeadId ? (
+            <div style={{ padding: '16px', color: '#858585' }}>
+              {error ? (
+                <div style={{ color: '#f87171' }}>Error: {error.message}</div>
+              ) : isLoading ? (
+                'Loading bead details...'
+              ) : (
+                'Bead details'
+              )}
+            </div>
+          ) : null
         }
       />
       {/* Bead detail overlay panel */}

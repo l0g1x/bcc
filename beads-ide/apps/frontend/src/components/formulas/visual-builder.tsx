@@ -16,8 +16,9 @@ import {
 } from '@xyflow/react'
 /**
  * Visual formula builder component.
- * Read-only DAG visualization of formula steps using React Flow.
- * TOML → visual (one-way sync); write-back is deferred to post-MVP.
+ * DAG visualization of formula steps using React Flow.
+ * Clicking on a step node opens the StepEditorPanel for editing.
+ * Steps from expansion formulas are grouped in container nodes.
  */
 import { type CSSProperties, useCallback, useMemo } from 'react'
 
@@ -31,17 +32,28 @@ interface StepNodeData extends Record<string, unknown> {
   description: string
   priority: number
   variables: string[]
+  isSelected?: boolean
+}
+
+interface GroupNodeData extends Record<string, unknown> {
+  label: string
+  stepCount: number
 }
 
 // --- Layout Utilities ---
 
 const NODE_WIDTH = 220
 const NODE_HEIGHT = 80
+const GROUP_PADDING = 20
+const GROUP_HEADER_HEIGHT = 36
 
 /**
  * Compute hierarchical layout using dagre.
  */
-function layoutNodes(nodes: Node<StepNodeData>[], edges: Edge[]): Node<StepNodeData>[] {
+function layoutNodes(
+  nodes: Node<StepNodeData>[],
+  edges: Edge[]
+): Node<StepNodeData>[] {
   const g = new dagre.graphlib.Graph()
   g.setDefaultEdgeLabel(() => ({}))
   g.setGraph({ rankdir: 'TB', nodesep: 60, ranksep: 80 })
@@ -68,16 +80,61 @@ function layoutNodes(nodes: Node<StepNodeData>[], edges: Edge[]): Node<StepNodeD
   })
 }
 
+/**
+ * Extract expansion group prefix from step ID.
+ * e.g., "step-1-beads-creation.load-inputs" → "step-1-beads-creation"
+ * Returns null if no prefix (no dot in ID).
+ */
+function getGroupPrefix(stepId: string): string | null {
+  const dotIndex = stepId.indexOf('.')
+  if (dotIndex === -1) return null
+  return stepId.substring(0, dotIndex)
+}
+
+/**
+ * Format group label from prefix.
+ * e.g., "step-1-beads-creation" → "Step 1: Beads Creation"
+ */
+function formatGroupLabel(prefix: string): string {
+  // Match pattern like "step-1-beads-creation" or "step-2-beads-review"
+  const match = prefix.match(/^step-(\d+)-(.+)$/)
+  if (match) {
+    const stepNum = match[1]
+    const name = match[2]
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+    return `Step ${stepNum}: ${name}`
+  }
+  // Fallback: just capitalize
+  return prefix
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
+// --- Group colors for visual distinction ---
+const GROUP_COLORS = [
+  { bg: 'rgba(99, 102, 241, 0.08)', border: '#6366f1' }, // Indigo
+  { bg: 'rgba(16, 185, 129, 0.08)', border: '#10b981' }, // Emerald
+  { bg: 'rgba(245, 158, 11, 0.08)', border: '#f59e0b' }, // Amber
+  { bg: 'rgba(239, 68, 68, 0.08)', border: '#ef4444' }, // Red
+  { bg: 'rgba(168, 85, 247, 0.08)', border: '#a855f7' }, // Purple
+  { bg: 'rgba(14, 165, 233, 0.08)', border: '#0ea5e9' }, // Sky
+]
+
 // --- Styles ---
 
-const nodeContainerStyle: CSSProperties = {
+const nodeContainerStyle = (isSelected: boolean): CSSProperties => ({
   backgroundColor: '#1e293b',
-  border: '1px solid #475569',
+  border: isSelected ? '2px solid #3b82f6' : '1px solid #475569',
   borderRadius: '8px',
-  padding: '12px 14px',
+  padding: isSelected ? '11px 13px' : '12px 14px',
   minWidth: `${NODE_WIDTH}px`,
-  cursor: 'default',
-}
+  cursor: 'pointer',
+  boxShadow: isSelected ? '0 0 0 2px rgba(59, 130, 246, 0.3)' : 'none',
+  transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
+})
 
 const nodeTitleStyle: CSSProperties = {
   fontSize: '13px',
@@ -125,11 +182,11 @@ const emptyStateStyle: CSSProperties = {
   fontStyle: 'italic',
 }
 
-// --- Custom Node Component ---
+// --- Custom Node Components ---
 
 function StepNode({ data }: NodeProps<Node<StepNodeData>>) {
   return (
-    <div style={nodeContainerStyle}>
+    <div style={nodeContainerStyle(data.isSelected ?? false)}>
       {/* Target handle (incoming edges) */}
       <Handle
         type="target"
@@ -164,7 +221,48 @@ function StepNode({ data }: NodeProps<Node<StepNodeData>>) {
   )
 }
 
-const nodeTypes = { step: StepNode }
+function GroupNode({ data }: NodeProps<Node<GroupNodeData & { colorIndex: number }>>) {
+  const color = GROUP_COLORS[data.colorIndex % GROUP_COLORS.length]
+
+  return (
+    <div
+      style={{
+        backgroundColor: color.bg,
+        border: `1px dashed ${color.border}`,
+        borderRadius: '12px',
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+      }}
+    >
+      <div
+        style={{
+          padding: '8px 12px',
+          fontSize: '12px',
+          fontWeight: 600,
+          color: color.border,
+          borderBottom: `1px dashed ${color.border}`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <span>{data.label}</span>
+        <span
+          style={{
+            fontSize: '10px',
+            fontWeight: 400,
+            color: '#94a3b8',
+          }}
+        >
+          {data.stepCount} steps
+        </span>
+      </div>
+    </div>
+  )
+}
+
+const nodeTypes = { step: StepNode, group: GroupNode }
 
 // --- Main Component ---
 
@@ -173,6 +271,10 @@ export interface VisualBuilderProps {
   steps: ProtoBead[]
   /** Variable definitions (used to detect which vars are used in steps) */
   vars?: Record<string, FormulaVariable>
+  /** Callback when a step node is clicked */
+  onStepSelect?: (stepId: string | null) => void
+  /** ID of the currently selected step */
+  selectedStepId?: string | null
 }
 
 /**
@@ -186,18 +288,33 @@ function extractVariables(text: string): string[] {
 
 /**
  * Visual formula builder displaying steps as a DAG.
- * Read-only: changes in TOML propagate to graph, not vice versa.
+ * Clicking a step opens the StepEditorPanel for editing.
+ * Steps from expansion formulas are grouped in container nodes.
  */
-export function VisualBuilder({ steps, vars: _vars }: VisualBuilderProps) {
+export function VisualBuilder({
+  steps,
+  vars: _vars,
+  onStepSelect,
+  selectedStepId,
+}: VisualBuilderProps) {
   // Convert steps to React Flow nodes and edges
   const { initialNodes, initialEdges } = useMemo(() => {
     if (!steps || steps.length === 0) {
       return { initialNodes: [], initialEdges: [] }
     }
 
-    // Create nodes
-    const nodes: Node<StepNodeData>[] = steps.map((step) => {
-      // Extract variable references from title and description
+    // First, identify expansion groups
+    const groupPrefixes = new Map<string, number>() // prefix -> color index
+    let colorIndex = 0
+    for (const step of steps) {
+      const prefix = getGroupPrefix(step.id)
+      if (prefix && !groupPrefixes.has(prefix)) {
+        groupPrefixes.set(prefix, colorIndex++)
+      }
+    }
+
+    // Create step nodes
+    const stepNodes: Node<StepNodeData>[] = steps.map((step) => {
       const titleVars = extractVariables(step.title)
       const descVars = extractVariables(step.description)
       const allVars = [...new Set([...titleVars, ...descVars])]
@@ -212,6 +329,7 @@ export function VisualBuilder({ steps, vars: _vars }: VisualBuilderProps) {
           description: step.description,
           priority: step.priority,
           variables: allVars,
+          isSelected: step.id === selectedStepId,
         },
       }
     })
@@ -221,28 +339,117 @@ export function VisualBuilder({ steps, vars: _vars }: VisualBuilderProps) {
     for (const step of steps) {
       if (step.needs && step.needs.length > 0) {
         for (const needId of step.needs) {
+          // Check if this is a cross-group edge
+          const sourceGroup = getGroupPrefix(needId)
+          const targetGroup = getGroupPrefix(step.id)
+          const isCrossGroup = sourceGroup !== targetGroup
+
           edges.push({
             id: `${needId}->${step.id}`,
             source: needId,
             target: step.id,
-            style: { stroke: '#6366f1', strokeWidth: 2 },
-            animated: false,
+            style: {
+              stroke: isCrossGroup ? '#f59e0b' : '#6366f1',
+              strokeWidth: isCrossGroup ? 3 : 2,
+              strokeDasharray: isCrossGroup ? '5,5' : undefined,
+            },
+            animated: isCrossGroup,
           })
         }
       }
     }
 
-    // Apply dagre layout
-    const layoutedNodes = layoutNodes(nodes, edges)
+    // Apply dagre layout to step nodes
+    const layoutedStepNodes = layoutNodes(stepNodes, edges)
 
-    return { initialNodes: layoutedNodes, initialEdges: edges }
-  }, [steps])
+    // If no groups, return step nodes directly
+    if (groupPrefixes.size === 0) {
+      return { initialNodes: layoutedStepNodes, initialEdges: edges }
+    }
+
+    // Calculate bounding boxes for each group
+    const groupBounds = new Map<
+      string,
+      { minX: number; minY: number; maxX: number; maxY: number; steps: number }
+    >()
+
+    for (const node of layoutedStepNodes) {
+      const prefix = getGroupPrefix(node.id)
+      if (!prefix) continue
+
+      const bounds = groupBounds.get(prefix) || {
+        minX: Infinity,
+        minY: Infinity,
+        maxX: -Infinity,
+        maxY: -Infinity,
+        steps: 0,
+      }
+
+      bounds.minX = Math.min(bounds.minX, node.position.x)
+      bounds.minY = Math.min(bounds.minY, node.position.y)
+      bounds.maxX = Math.max(bounds.maxX, node.position.x + NODE_WIDTH)
+      bounds.maxY = Math.max(bounds.maxY, node.position.y + NODE_HEIGHT)
+      bounds.steps++
+
+      groupBounds.set(prefix, bounds)
+    }
+
+    // Create group nodes
+    const groupNodes: Node<GroupNodeData & { colorIndex: number }>[] = []
+    for (const [prefix, bounds] of groupBounds) {
+      const groupColorIndex = groupPrefixes.get(prefix) ?? 0
+      groupNodes.push({
+        id: `group-${prefix}`,
+        type: 'group',
+        position: {
+          x: bounds.minX - GROUP_PADDING,
+          y: bounds.minY - GROUP_PADDING - GROUP_HEADER_HEIGHT,
+        },
+        style: {
+          width: bounds.maxX - bounds.minX + GROUP_PADDING * 2,
+          height: bounds.maxY - bounds.minY + GROUP_PADDING * 2 + GROUP_HEADER_HEIGHT,
+          zIndex: -1,
+        },
+        data: {
+          label: formatGroupLabel(prefix),
+          stepCount: bounds.steps,
+          colorIndex: groupColorIndex,
+        },
+        selectable: false,
+        draggable: false,
+      })
+    }
+
+    // Combine group nodes (first, so they're behind) and step nodes
+    const allNodes = [...groupNodes, ...layoutedStepNodes] as Node[]
+
+    return { initialNodes: allNodes, initialEdges: edges }
+  }, [steps, selectedStepId])
 
   const [nodes, , onNodesChange] = useNodesState(initialNodes)
   const [edges, , onEdgesChange] = useEdgesState(initialEdges)
 
   // No-op for read-only mode
   const onConnect = useCallback(() => {}, [])
+
+  // Handle node click - toggle selection (only for step nodes)
+  const handleNodeClick = useCallback(
+    (_event: React.MouseEvent, node: Node) => {
+      if (node.type === 'group') return // Ignore group clicks
+      if (onStepSelect) {
+        const newSelectedId = node.id === selectedStepId ? null : node.id
+        onStepSelect(newSelectedId)
+      }
+    },
+    [onStepSelect, selectedStepId]
+  )
+
+  // Handle pane click - deselect
+  const handlePaneClick = useCallback(() => {
+    if (onStepSelect && selectedStepId) {
+      onStepSelect(null)
+    }
+  }, [onStepSelect, selectedStepId])
 
   if (!steps || steps.length === 0) {
     return <div style={emptyStateStyle}>No steps to display</div>
@@ -257,6 +464,8 @@ export function VisualBuilder({ steps, vars: _vars }: VisualBuilderProps) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onNodeClick={handleNodeClick}
+        onPaneClick={handlePaneClick}
         fitView
         fitViewOptions={{ padding: 0.2 }}
         proOptions={{ hideAttribution: true }}
@@ -277,7 +486,10 @@ export function VisualBuilder({ steps, vars: _vars }: VisualBuilderProps) {
         />
         <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="#334155" />
         <MiniMap
-          nodeColor="#1e293b"
+          nodeColor={(node) => {
+            if (node.type === 'group') return 'transparent'
+            return '#1e293b'
+          }}
           maskColor="rgba(15, 23, 42, 0.8)"
           style={{ backgroundColor: '#1e293b' }}
         />

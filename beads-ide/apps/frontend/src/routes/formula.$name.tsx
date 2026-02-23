@@ -1,19 +1,35 @@
-import type { PourResult, SlingRequest } from '@beads-ide/shared'
+import type { PourResult, ProtoBead, SlingRequest } from '@beads-ide/shared'
 /**
  * Formula editor route with text/visual view toggle and sling workflow.
  * Displays formula TOML in text mode or as a DAG in visual mode.
  * Visual view updates automatically when TOML changes (one-way sync).
  * Includes Cook preview, Sling dispatch, and Pour (local execution) functionality.
+ * Step nodes in Visual view can be clicked to edit in the StepEditorPanel.
  */
 import { createFileRoute } from '@tanstack/react-router'
-import { type CSSProperties, useCallback, useEffect, useState } from 'react'
-import { PourDialog, SlingDialog, TextEditor, VarsPanel, VisualBuilder } from '../components/formulas'
+import { type CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  FormulaFlowView,
+  FormulaOutlineView,
+  PourDialog,
+  SlingDialog,
+  StepEditorPanel,
+  TextEditor,
+  VarsPanel,
+  VisualBuilder,
+} from '../components/formulas'
 import { useCook, useFormulaContent, useSling } from '../hooks'
-import { type FormulaParseError, parseAndValidateFormula, updateVarDefault } from '../lib'
+import {
+  type FormulaParseError,
+  extractStepIds,
+  parseAndValidateFormula,
+  updateStepField,
+  updateVarDefault,
+} from '../lib'
 
 // --- Types ---
 
-type ViewMode = 'text' | 'visual'
+type ViewMode = 'text' | 'outline' | 'flow' | 'visual'
 
 // --- Styles ---
 
@@ -112,11 +128,14 @@ const mainPanelStyle: CSSProperties = {
 }
 
 const sidePanelStyle: CSSProperties = {
-  width: '280px',
+  width: '420px',
+  minWidth: '380px',
   borderLeft: '1px solid #334155',
-  backgroundColor: '#1e293b',
-  overflowY: 'auto',
-  padding: '16px',
+  backgroundColor: '#0f172a',
+  height: '100%',
+  overflow: 'hidden',
+  display: 'flex',
+  flexDirection: 'column',
 }
 
 const visualContainerStyle: CSSProperties = {
@@ -169,6 +188,7 @@ function FormulaPage() {
   const [varValues, setVarValues] = useState<Record<string, string>>({})
   const [slingDialogOpen, setSlingDialogOpen] = useState(false)
   const [pourDialogOpen, setPourDialogOpen] = useState(false)
+  const [selectedStepId, setSelectedStepId] = useState<string | null>(null)
 
   // Load formula content from disk
   const {
@@ -178,22 +198,33 @@ function FormulaPage() {
     error: contentError,
   } = useFormulaContent(name ?? null)
 
+  // Reset state when formula name changes
+  useEffect(() => {
+    setTomlContent('')
+    setParseErrors([])
+    setVarValues({})
+    setSelectedStepId(null)
+  }, [name])
+
   // Set content when loaded from disk
   useEffect(() => {
-    if (loadedContent && !tomlContent) {
+    if (loadedContent) {
       setTomlContent(loadedContent)
       // Parse initial content
       const result = parseAndValidateFormula(loadedContent)
       if (!result.ok) {
         setParseErrors(result.errors)
+      } else {
+        setParseErrors([])
       }
     }
-  }, [loadedContent, tomlContent])
+  }, [loadedContent])
 
   // Cook the formula to get steps and vars
+  // In compile mode, don't pass vars - we want to see placeholders, not substituted values.
+  // Passing partial vars causes the cook to fail if required vars are missing.
   const { result, isLoading, error, cook } = useCook(formulaPath, {
     mode: 'compile',
-    vars: varValues,
     debounceMs: 300,
   })
 
@@ -202,7 +233,52 @@ function FormulaPage() {
 
   const handleToggleMode = useCallback((mode: ViewMode) => {
     setViewMode(mode)
+    // Clear step selection when switching to text mode
+    if (mode === 'text') {
+      setSelectedStepId(null)
+    }
   }, [])
+
+  // Handle step selection in visual mode
+  const handleStepSelect = useCallback((stepId: string | null) => {
+    setSelectedStepId(stepId)
+  }, [])
+
+  // Handle step field changes from the StepEditorPanel
+  // NOTE: Editing only works for steps defined directly in the source TOML.
+  // Expanded steps (from expansion formulas) cannot be edited here - they
+  // would require modifying the expansion formula file.
+  const handleStepFieldChange = useCallback(
+    (stepId: string, field: string, value: string | number | string[]) => {
+      setTomlContent((prev) => {
+        const updated = updateStepField(prev, stepId, field, value)
+        // Re-parse to update errors and trigger re-cook
+        const parseResult = parseAndValidateFormula(updated)
+        if (!parseResult.ok) {
+          setParseErrors(parseResult.errors)
+        } else {
+          setParseErrors([])
+        }
+        return updated
+      })
+    },
+    []
+  )
+
+  // Get the currently selected step from cook result
+  const selectedStep = useMemo((): ProtoBead | null => {
+    if (!selectedStepId || !result?.steps) return null
+    return result.steps.find((s) => s.id === selectedStepId) ?? null
+  }, [selectedStepId, result?.steps])
+
+  // Get all step IDs for dependency selection
+  const availableStepIds = useMemo((): string[] => {
+    return extractStepIds(tomlContent)
+  }, [tomlContent])
+
+  // Determine if side panel should show (for visual/flow modes with selected step)
+  // Outline mode uses inline editing, so no side panel needed
+  const showSidePanel = (viewMode === 'visual' || viewMode === 'flow') && selectedStep
 
   const handleVarChange = useCallback((key: string, value: string) => {
     setVarValues((prev) => ({ ...prev, [key]: value }))
@@ -314,6 +390,22 @@ function FormulaPage() {
             </button>
             <button
               type="button"
+              style={toggleButtonStyle(viewMode === 'outline')}
+              onClick={() => handleToggleMode('outline')}
+              aria-pressed={viewMode === 'outline'}
+            >
+              Outline
+            </button>
+            <button
+              type="button"
+              style={toggleButtonStyle(viewMode === 'flow')}
+              onClick={() => handleToggleMode('flow')}
+              aria-pressed={viewMode === 'flow'}
+            >
+              Flow
+            </button>
+            <button
+              type="button"
               style={toggleButtonStyle(viewMode === 'visual')}
               onClick={() => handleToggleMode('visual')}
               aria-pressed={viewMode === 'visual'}
@@ -341,10 +433,43 @@ function FormulaPage() {
             <TextEditor value={tomlContent} onChange={handleTomlChange} errors={parseErrors} />
           )}
 
+          {!isLoading && !contentLoading && !error && !contentError && viewMode === 'outline' && (
+            result ? (
+              <FormulaOutlineView
+                result={result}
+                varValues={varValues}
+                onVarChange={handleVarChange}
+                selectedStepId={selectedStepId}
+                onStepSelect={handleStepSelect}
+                availableStepIds={availableStepIds}
+                onStepFieldChange={handleStepFieldChange}
+              />
+            ) : (
+              <div style={loadingStyle}>No formula data to display</div>
+            )
+          )}
+
+          {!isLoading && !contentLoading && !error && !contentError && viewMode === 'flow' && (
+            result ? (
+              <FormulaFlowView
+                result={result}
+                selectedStepId={selectedStepId}
+                onStepSelect={handleStepSelect}
+              />
+            ) : (
+              <div style={loadingStyle}>No formula data to display</div>
+            )
+          )}
+
           {!isLoading && !contentLoading && !error && !contentError && viewMode === 'visual' && (
             <div style={visualContainerStyle}>
               {result?.steps ? (
-                <VisualBuilder steps={result.steps} vars={result.vars} />
+                <VisualBuilder
+                  steps={result.steps}
+                  vars={result.vars}
+                  onStepSelect={handleStepSelect}
+                  selectedStepId={selectedStepId}
+                />
               ) : (
                 <div style={loadingStyle}>No steps to visualize</div>
               )}
@@ -352,8 +477,18 @@ function FormulaPage() {
           )}
         </div>
 
-        {/* Side panel with variables */}
-        {result?.vars && Object.keys(result.vars).length > 0 && (
+        {/* Side panel - shows StepEditorPanel when step selected (visual/outline mode), otherwise VarsPanel */}
+        {showSidePanel && (
+          <div style={sidePanelStyle}>
+            <StepEditorPanel
+              step={selectedStep}
+              availableStepIds={availableStepIds}
+              onFieldChange={handleStepFieldChange}
+              onClose={() => setSelectedStepId(null)}
+            />
+          </div>
+        )}
+        {!showSidePanel && viewMode === 'text' && result?.vars && Object.keys(result.vars).length > 0 && (
           <div style={sidePanelStyle}>
             <VarsPanel
               vars={result.vars}
