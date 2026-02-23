@@ -23,7 +23,7 @@ bcc/
 │   │   └── backend/    # Hono API server
 │   └── packages/
 │       └── shared/     # Shared types and utilities
-├── formulas/           # BCC workflow formulas
+├── formulas/           # BCC workflow formulas (WIP)
 ├── plans/              # Design documents and specs
 └── docs/               # Documentation
 ```
@@ -81,26 +81,6 @@ The frontend runs on http://localhost:5173 and the backend on http://localhost:3
 - **Terminal**: xterm.js with OpenCode SDK
 - **Testing**: Vitest, Playwright
 - **Linting**: Biome
-
-## Formulas
-
-BCC formulas define multi-step workflows for codebase analysis:
-
-| Formula | Description |
-|---------|-------------|
-| `explore-module` | Deep-dive into a module's structure |
-| `analyze-api-boundary` | Map API surface and dependencies |
-| `discover-and-dive` | Autonomous codebase exploration |
-| `future-work-scaffold` | Generate future work beads |
-
-## BCC Skill
-
-The BCC skill (`SKILL.md`) documents the methodology for compiling codebases into bead graphs. Key concepts:
-
-- **4-Phase Architecture**: SCAN → CONNECT → ENRICH → VALIDATE
-- **Module-level Granularity**: 15-20 beads with 14-16 edges for optimal metrics
-- **9 Graph Metrics**: PageRank, betweenness, HITS, critical path, eigenvector, degree, density, cycles, topo sort
-- **Empirically Validated**: 96 experiments on a 3,753-file TypeScript monorepo
 
 ## Requirements
 
