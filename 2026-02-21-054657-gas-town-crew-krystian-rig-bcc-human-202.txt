@@ -1,0 +1,1496 @@
+
+╭─── Claude Code v2.1.50 ──────────────────────────────────────────────────────╮
+│                                  │ Tips for getting started                  │
+│      Welcome back Krystian!      │ Run /init to create a CLAUDE.md file wit… │
+│                                  │ ───────────────────────────────────────── │
+│                                  │ Recent activity                           │
+│                 ✻                │ No recent activity                        │
+│                 |                │                                           │
+│                ▟█▙               │                                           │
+│              ▐▛███▜▌             │                                           │
+│             ▝▜█████▛▘            │                                           │
+│               ▘▘ ▝▝              │                                           │
+│                                  │                                           │
+│   claude-opus-4-5 · Claude Max   │                                           │
+│      ~/gt/bcc/crew/krystian      │                                           │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+❯ [GAS TOWN] crew krystian (rig: bcc) <- human • 2026-02-21T03:10 • start 
+
+● Bash(gt prime)
+  ⎿  [GAS TOWN] role:bcc/crew/krystian pid:2713129 session:a153afb6-274c-4a
+     02-9cdd-afb293a6f3cd
+     # Crew Worker Context
+     … +330 lines (ctrl+o to expand)
+
+❯ Formula spec-workflow slung. Run `gt hook` to see your hook, then execute 
+   the steps.                                                               
+
+● bcc Crew krystian, checking in.
+
+● Bash(bd show bcc-wisp-im9)
+  ⎿  ? bcc-wisp-im9 [EPIC] · spec-workflow   [● P2 · HOOKED]
+     Assignee: bcc/crew/krystian · Type: epic
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +38 lines (ctrl+o to expand)
+
+● Bash(bd mol current bcc-wisp-im9)
+  ⎿  You're working on molecule bcc-wisp-im9
+       spec-workflow
+       Assigned to: bcc/crew/krystian
+     … +20 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-0qg)
+  ⎿  ○ bcc-wisp-0qg · Gather codebase context   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +31 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-alb)
+  ⎿  ○ bcc-wisp-alb · Gather codebase context   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +43 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-eau)
+  ⎿  ○ bcc-wisp-eau · Initialize brainstorming session   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +42 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-xp7)
+  ⎿  ○ bcc-wisp-xp7 · Load spec and assess completeness   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +64 lines (ctrl+o to expand)
+
+● Read 2 files (ctrl+o to expand)
+
+● Starting spec-workflow for beads-ide. No prior files exist - beginning from
+  scratch.
+
+  Starting with Step 1 (Multimodal Scope Questions) - gathering codebase context
+   first.
+
+● Bash(bd update bcc-wisp-alb --status in_progress)
+  ⎿  ✓ Updated issue: bcc-wisp-alb
+
+● Bash(mkdir -p plans/beads-ide/01-scope)
+  ⎿  Done
+
+● Explore(Gather codebase context for beads-ide) Haiku 4.5
+  ⎿  Done (29 tool uses · 53.4k tokens · 57s)
+  (ctrl+o to expand)
+
+● Write(plans/beads-ide/01-scope/context.md)
+  ⎿  Wrote 208 lines to plans/beads-ide/01-scope/context.md
+       1 # Codebase Context: beads-ide
+       2 
+       3 ## Feature Brief
+       4 A web-based IDE for beads that replaces the markdown PRD workflo
+         w with direct bead graph authoring — rich-text editing of bead f
+         ields, interactive dependency graph visualization, a formula bui
+         lder for composing molecule workflows, and Dolt-powered branchin
+         g/diffing/merging of work graphs. The IDE sits on the dual-layer
+          git+Dolt foundation, provides multi-model convergence workflows
+          (branch-per-model, distill to canonical), and bridges beads to 
+         source code. Produces the work graph; a separate runtime execute
+         s it.
+       5 
+       6 ## App Structure
+       7 
+       8 **Current Project: BCC (Beads Compiler Collection)**
+       9 
+      10 The current codebase at `/home/krystian/gt/bcc/crew/krystian` is
+          a BCC compiler project (described in SKILL.md as "Bead Codebase
+          Compiler"), which specializes in compiling codebases into bead 
+         graphs. This project does NOT currently have a web UI.
+     … +198 lines (ctrl+o to expand)
+
+● Bash(bd close bcc-wisp-alb --reason "Context gathered and written to
+      plans/beads-ide/01-scope/context.md")
+  ⎿  ✓ Closed bcc-wisp-alb: Context gathered and written to plans/beads-ide
+     /01-scope/context.md
+
+● Bash(bd mol current bcc-wisp-im9)
+  ⎿  You're working on molecule bcc-wisp-im9
+       spec-workflow
+       Assigned to: bcc/crew/krystian
+     … +19 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-5nm)
+  ⎿  ○ bcc-wisp-5nm · Gemini 3 Pro: Generate questions   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +92 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-amx)
+  ⎿  ○ bcc-wisp-amx · Opus 4.6: Generate questions   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +96 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-gyf)
+  ⎿  ○ bcc-wisp-gyf · GPT 5.3: Generate questions   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +90 lines (ctrl+o to expand)
+
+● Dispatching 3 models in parallel (Opus tasks + Gemini/GPT CLI checks).
+
+● Bash(bd update bcc-wisp-amx --status in_progress && bd update bcc-wisp-5nm
+      --status in_progress && bd update bcc-wisp-gyf --status in_progress)
+  ⎿  ✓ Updated issue: bcc-wisp-amx
+     ✓ Updated issue: bcc-wisp-5nm
+     ✓ Updated issue: bcc-wisp-gyf
+
+● Bash(command -v gemini >/dev/null 2>&1 && echo "Gemini CLI available" || echo
+      "SKIP: Gemini CLI not installed")
+  ⎿  SKIP: Gemini CLI not installed
+
+● Bash(command -v codex >/dev/null 2>&1 && echo "Codex CLI available" || echo
+      "SKIP: Codex CLI not installed")
+  ⎿  Codex CLI available
+
+● 3 Task agents launched (ctrl+o to expand)
+   ├─ Opus User Advocate
+   │  ⎿  Running in the background (↓ to manage)
+   ├─ Opus Product Designer
+   │  ⎿  Running in the background (↓ to manage)
+   └─ Opus Domain Expert
+      ⎿  Running in the background (↓ to manage)
+
+● Gemini CLI not installed - writing skip file. Launching GPT/Codex tasks in
+  parallel.
+
+● Write(plans/beads-ide/01-scope/gemini-questions.md)
+  ⎿  Wrote 3 lines to plans/beads-ide/01-scope/gemini-questions.md
+      1 # Gemini 3 Pro: Skipped
+      2 
+      3 Gemini CLI not installed. Gemini analysis was not performed.
+
+● Bash(codex exec -m "gpt-5.3-codex" -c reasoning_effort="high" -o
+      plans/beads-ide/01-scope/gpt-user-advocate.tmp "$(cat <<'PROMPT'
+      You are a User Advocate analyzing a…)
+  ⎿  Running in the background (↓ to manage)
+
+● Bash(codex exec -m "gpt-5.3-codex" -c reasoning_effort="high" -o
+      plans/beads-ide/01-scope/gpt-product-designer.tmp "$(cat <<'PROMPT'
+      You are a Product Designer analy…)
+  ⎿  Running in the background (↓ to manage)
+
+● Bash(codex exec -m "gpt-5.3-codex" -c reasoning_effort="high" -o
+      plans/beads-ide/01-scope/gpt-domain-expert.tmp "$(cat <<'PROMPT'
+      You are a Domain Expert analyzing a…)
+  ⎿  Running in the background (↓ to manage)
+
+● Running 6 background tasks (3 Opus + 3 GPT). Gemini skipped. Closing Gemini
+  step and waiting for tasks to complete.
+
+● Bash(bd close bcc-wisp-5nm --reason "Gemini CLI not installed - skipped")
+  ⎿  ✓ Closed bcc-wisp-5nm: Gemini CLI not installed - skipped
+
+● Task Output a1114ea81e6b76851
+  ⎿  Read output (ctrl+o to expand)
+
+● Task Output a1186b39c84378e44
+  ⎿  Read output (ctrl+o to expand)
+
+● Task Output aea10f4dd508f5ba6
+  ⎿  Read output (ctrl+o to expand)
+
+● Task Output b6c5c0e
+  ⎿  2026-02-21T03:14:50.924256Z ERROR codex_core::codex: failed to load sk
+     ill /home/krystian/.agents/skills/loop-prd-stories/SKILL.md: invalid Y
+     AML: mapping values are not allowed in this context at line 2 column 1
+     … +307 lines (ctrl+o to expand)
+
+● Task Output bc10763
+  ⎿  2026-02-21T03:14:56.620519Z ERROR codex_core::codex: failed to load sk
+     ill /home/krystian/.agents/skills/loop-prd-stories/SKILL.md: invalid Y
+     AML: mapping values are not allowed in this context at line 2 column 1
+     … +343 lines (ctrl+o to expand)
+
+● Task Output b3fba50
+  ⎿  2026-02-21T03:15:02.429401Z ERROR codex_core::codex: failed to load sk
+     ill /home/krystian/.agents/skills/loop-prd-stories/SKILL.md: invalid Y
+     AML: mapping values are not allowed in this context at line 2 column 1
+     … +319 lines (ctrl+o to expand)
+
+● All 6 question generation tasks completed. Checking output files.
+
+● Read 1 file (ctrl+o to expand)
+
+● All 6 question files generated. Closing Opus and GPT steps.
+
+● Bash(bd close bcc-wisp-amx --reason "3 Opus analysts completed - 187 questions
+       total")
+  ⎿  ✓ Closed bcc-wisp-amx: 3 Opus analysts completed - 187 questions total
+
+● Bash(bd close bcc-wisp-gyf --reason "3 GPT analysts completed")
+  ⎿  ✓ Closed bcc-wisp-gyf: 3 GPT analysts completed
+
+● Bash(bd mol current bcc-wisp-im9)
+  ⎿  You're working on molecule bcc-wisp-im9
+       spec-workflow
+       Assigned to: bcc/crew/krystian
+     … +19 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-182)
+  ⎿  ○ bcc-wisp-182 · Opus 4.6: Consolidate   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +29 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-6pl)
+  ⎿  ○ bcc-wisp-6pl · Gemini 3 Pro: Consolidate   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +26 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-89d)
+  ⎿  ○ bcc-wisp-89d · GPT 5.3: Consolidate   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +28 lines (ctrl+o to expand)
+
+● Read 1 file (ctrl+o to expand)
+
+● Bash(bd update bcc-wisp-182 --status in_progress && bd update bcc-wisp-89d
+      --status in_progress)
+  ⎿  ✓ Updated issue: bcc-wisp-182
+     ✓ Updated issue: bcc-wisp-89d
+
+● Bash(bd close bcc-wisp-6pl --reason "Gemini was skipped - CLI not installed")
+  ⎿  ✓ Closed bcc-wisp-6pl: Gemini was skipped - CLI not installed
+
+● 2 Task agents launched (ctrl+o to expand)
+   ├─ Consolidate Opus questions
+   │  ⎿  Running in the background (↓ to manage)
+   └─ Consolidate GPT questions
+      ⎿  Running in the background (↓ to manage)
+
+● Waiting for consolidation tasks to complete.
+
+● Task Output a6413cbad1b7e03fc
+  ⎿  Task is still running…
+
+● Task Output aaa6b22ced769039b
+  ⎿  Read output (ctrl+o to expand)
+
+● GPT consolidation done. Waiting for Opus consolidation to complete.
+
+● Task Output a6413cbad1b7e03fc
+  ⎿  Read output (ctrl+o to expand)
+
+● Bash(bd close bcc-wisp-182 --reason "Opus questions consolidated - 757 lines,
+      5 cross-perspective themes")
+  ⎿  ✓ Closed bcc-wisp-182: Opus questions consolidated - 757 lines, 5 cros
+     s-perspective themes
+
+● Bash(bd close bcc-wisp-89d --reason "GPT questions consolidated - 158
+      questions, 5 themes")
+  ⎿  ✓ Closed bcc-wisp-89d: GPT questions consolidated - 158 questions, 5 t
+     hemes
+
+● Bash(bd mol current bcc-wisp-im9)
+  ⎿  You're working on molecule bcc-wisp-im9
+       spec-workflow
+       Assigned to: bcc/crew/krystian
+     … +19 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-sfv)
+  ⎿  ○ bcc-wisp-sfv · Synthesize 3x3 matrix into question backlog   [● P2 ·
+      OPEN]
+     Type: task
+     … +39 lines (ctrl+o to expand)
+
+● Bash(bd update bcc-wisp-sfv --status in_progress)
+  ⎿  ✓ Updated issue: bcc-wisp-sfv
+
+● Task(Synthesize 3x3 questions matrix) Opus 4.6
+  ⎿  Done (14 tool uses · 58.2k tokens · 5m 54s)
+  (ctrl+o to expand)
+
+● Bash(bd close bcc-wisp-sfv --reason "Synthesized 357 raw questions to 187
+      unique: P0=32, P1=62, P2=58, P3=35")
+  ⎿  ✓ Closed bcc-wisp-sfv: Synthesized 357 raw questions to 187 unique: P0
+     =32, P1=62, P2=58, P3=35
+
+● Bash(bd mol current bcc-wisp-im9)
+  ⎿  You're working on molecule bcc-wisp-im9
+       spec-workflow
+       Assigned to: bcc/crew/krystian
+     … +19 lines (ctrl+o to expand)
+
+● Phase 1 complete (8/24 steps). Moving to Phase 2: Brainstorming.
+
+● Bash(bd show bcc-wisp-eau)
+  ⎿  ○ bcc-wisp-eau · Initialize brainstorming session   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +42 lines (ctrl+o to expand)
+
+● Bash(bd update bcc-wisp-eau --status in_progress)
+  ⎿  ✓ Updated issue: bcc-wisp-eau
+
+● Read 1 file (ctrl+o to expand)
+
+● Scope Questions Found
+
+  I found a questions file from a previous multimodal scope analysis.
+
+  Feature: beads-ide
+
+  Brief: A web-based IDE for beads that replaces the markdown PRD workflow with
+  direct bead graph authoring — rich-text editing of bead fields, interactive
+  dependency graph visualization, a formula builder for composing molecule
+  workflows, and Dolt-powered branching/diffing/merging of work graphs.
+
+  Question Summary
+
+  ┌──────────┬───────┬───────────────────────────┐
+  │ Priority │ Count │        Description        │
+  ├──────────┼───────┼───────────────────────────┤
+  │ P0       │ 32    │ Must answer before spec   │
+  ├──────────┼───────┼───────────────────────────┤
+  │ P1       │ 62    │ Should answer during spec │
+  ├──────────┼───────┼───────────────────────────┤
+  │ P2       │ 58    │ Good to have              │
+  ├──────────┼───────┼───────────────────────────┤
+  │ P3       │ 35    │ Parking lot / deferred    │
+  ├──────────┼───────┼───────────────────────────┤
+  │ Total    │ 187   │                           │
+  └──────────┴───────┴───────────────────────────┘
+
+  Cross-Model Consensus Themes
+
+  1. Terminology and cognitive overload — single largest adoption risk
+  2. Undo/rollback as trust infrastructure — architecturally non-trivial
+  3. Graph vs. list identity question — defines every downstream design choice
+  4. Merge conflicts in structured data — unsolved UX requiring novel design
+  5. Speculative features need validation — multi-model convergence, formula
+  authoring, Dolt branching
+
+  ---
+  How would you like to proceed?
+
+● User answered Claude's questions:
+  ⎿  · Which questions should we address in this brainstorming session? → 
+     High priority (P0 + P1) (Recommended)
+
+● Selected: P0 + P1 (94 questions). Recording selection and proceeding to
+  triage.
+
+● Write(plans/beads-ide/01-scope/question-triage.md)
+  ⎿  Wrote 26 lines to plans/beads-ide/01-scope/question-triage.md
+      1 # Question Triage: beads-ide
+      2 
+      3 **Scope selected:** P0+P1
+      4 **Questions in scope:** 94
+      5 **Date:** 2026-02-21
+      6 
+      7 ## Selected Scope
+      8 
+      9 The user selected **High priority (P0 + P1)** for this brainstorm
+        ing session.
+     … +16 lines (ctrl+o to expand)
+
+● Bash(bd close bcc-wisp-eau --reason "Session initialized - P0+P1 scope (94
+      questions) selected")
+  ⎿  ✓ Closed bcc-wisp-eau: Session initialized - P0+P1 scope (94 questions
+     ) selected
+
+● Bash(bd mol current bcc-wisp-im9)
+  ⎿  You're working on molecule bcc-wisp-im9
+       spec-workflow
+       Assigned to: bcc/crew/krystian
+     … +19 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-bne)
+  ⎿  ○ bcc-wisp-bne · Triage scope questions   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +80 lines (ctrl+o to expand)
+
+● Bash(bd update bcc-wisp-bne --status in_progress)
+  ⎿  ✓ Updated issue: bcc-wisp-bne
+
+● Task(Triage 94 scope questions) Opus 4.6
+  ⎿  Done (8 tool uses · 40.9k tokens · 4m 38s)
+  (ctrl+o to expand)
+
+● Bash(bd close bcc-wisp-bne --reason "Triaged 94 questions: 51 auto-answerable,
+       43 branch points for human")
+  ⎿  ✓ Closed bcc-wisp-bne: Triaged 94 questions: 51 auto-answerable, 43 br
+     anch points for human
+
+● Bash(bd mol current bcc-wisp-im9)
+  ⎿  You're working on molecule bcc-wisp-im9
+       spec-workflow
+       Assigned to: bcc/crew/krystian
+     … +19 lines (ctrl+o to expand)
+
+● Bash(bd show bcc-wisp-dcn)
+  ⎿  ○ bcc-wisp-dcn · Brainstorming dialogue   [● P2 · OPEN]
+     Type: task
+     Created: 2026-02-21 · Updated: 2026-02-21
+     … +89 lines (ctrl+o to expand)
+
+● Bash(bd update bcc-wisp-dcn --status in_progress)
+  ⎿  ✓ Updated issue: bcc-wisp-dcn
+
+● Read 1 file (ctrl+o to expand)
+
+● Pre-filled Answers (Best Practices)
+
+  Based on industry standards and your codebase context, I've noted these
+  answers for 51 questions. Here are the highlights:
+
+  Undo/Redo (Q11-13): Full undo support across all operations. Formula pour is
+  transactional with one-click rollback. Cascade-delete beads show confirmation
+  with affected dependencies.
+
+  Graph Scale (Q15-16): Semantic zoom, clustering, collapse/expand, focus mode.
+  Faceted filtering + saved views + "My Work" filter.
+
+  Accessibility (Q23-26): Screen reader tree/list alternative, colorblind-safe
+  encoding (shape+icon primary), keyboard navigation, command palette, 13"
+  laptop support minimum.
+
+  Schema/Fields (Q21, Q29): Progressive disclosure (start minimal, reveal fields
+   via "Add field"). Schema-driven rendering for future evolution.
+
+  Editing (Q35, Q37-38, Q53-55, Q57-60, Q62-63): Rich-text via
+  TipTap/ProseMirror. Auto-save with debounce. Shortcuts + command palette
+  (Cmd+K). Drag-from-handle for edges. Side panel detail editor.
+
+  Formula/Pour (Q40, Q70, Q75, Q92): Dry-run preview mandatory (like terraform
+  plan). Unbound variables caught at cook time. Split view showing proto
+  generation.
+
+  Graph Quality (Q60, Q69): Ambient metrics (always visible health panel).
+  Density warnings at >0.10, red at >0.12.
+
+  Visual Encoding (Q46-47, Q72-73, Q75-79): Shape+icon for types, line-style
+  groups for edges. Skeleton loading. Git-style ahead/behind indicators.
+
+  Collaboration (Q33): Not in phase one - single-user with async branches.
+
+  Terminology (Q5, Q84, Q86): UI uses "dependency" consistently. Show top-4
+  types (blocks, parent-child, related, discovered-from), hide rest under
+  "More."
+
+  ---
+  These are noted in the spec. Let me know if any need discussion, otherwise
+  we'll proceed to the 43 branch points that need your input.
+
+  The interview is structured in 4 rounds (~43 questions, but Round 1 answers
+  will cascade and reduce actual questions to ~33-38).
+
+  Ready to begin Round 1: Core Identity & Vision (8 root questions)?
+
+✻ Churned for 22m 52s
+
+● Background command "GPT User Advocate analysis" completed (exit code 0)
+
+● (Background task notification acknowledged - this was the GPT analysis already
+   processed earlier.)
+
+  Awaiting your response to proceed with Round 1, or if you have questions about
+   any of the auto-filled answers.
+
+● Background command "GPT Product Designer analysis" completed (exit code 0)
+
+● (Delayed notification - already processed.)
+
+  Ready when you are to start Round 1, or let me know if you'd like to discuss
+  any auto-filled answers first.
+
+● Background command "GPT Domain Expert analysis" completed (exit code 0)
+
+● (Delayed notification - already processed.)
+
+  Standing by. When ready, say "go" and I'll start with Round 1 Question 1.
+
+● Agent "Opus User Advocate" completed
+
+● (Delayed notification - already consolidated into questions.md.)
+
+● Agent "Opus Product Designer" completed
+
+● (Delayed notification - already consolidated.)
+
+● Agent "Opus Domain Expert" completed
+
+● (All background tasks from earlier phases are complete and consolidated.)
+
+  Status: Brainstorming dialogue ready. 51 questions auto-answered, 43 branch
+  points queued for you.
+
+  Say "go" to start Round 1.
+
+● Agent "Consolidate GPT questions" completed
+
+● (Consolidation was processed earlier.)
+
+  Awaiting your signal to begin Round 1.
+
+● Agent "Consolidate Opus questions" completed
+
+● (All notifications cleared - earlier work already processed.)
+
+  Ready for Round 1 when you are.
+
+❯ go 
+
+● Round 1: Core Identity & Vision
+
+  Question 1 of 8 (Q10)
+
+  Is this IDE for a single operator or a collaborative team platform?
+
+  Option: A. Single operator
+  Description: One person (you) using it as a personal planning/analysis tool.
+  No
+    auth, no permissions, no real-time sync needed. Simpler, faster to build.
+  ────────────────────────────────────────
+  Option: B. Team platform
+  Description: Multiple people collaborating on the same work graphs. Requires
+    auth, permissions, notifications, branch ownership, conflict handling. 10x
+    scope increase.
+  ────────────────────────────────────────
+  Option: C. Single first, team later
+  Description: Build for single operator in v1, architect for team expansion in
+    v2. Middle path - some complexity now for future flexibility.
+
+  My recommendation: A (Single operator) for phase 1. The codebase currently
+  serves a single operator. Dolt branching already provides async collaboration
+  without real-time complexity. Team features can come later if needed.
+
+  Which direction?
+
+❯ A 
+
+● Single operator - noted. This simplifies: no auth/permissions, no real-time
+  sync, no review/approval workflows in v1.
+
+  ---
+  Question 2 of 8 (Q1)
+
+  Should this feel like a project management tool or a code IDE?
+
+  Option: A. PM tool (Linear/Notion)
+  Description: List-first, status boards, clean minimalism. Graph is a secondary
+
+    view. Familiar to PMs and non-technical users.
+  ────────────────────────────────────────
+  Option: B. Code IDE (VS Code)
+  Description: Multi-panel workspace, file tree, editor panes, terminal. Graph
+  is
+    central. Familiar to developers.
+  ────────────────────────────────────────
+  Option: C. Canvas tool (Figma/Miro)
+  Description: Infinite canvas primary, spatial thinking first. Panels for
+    detail. Graph IS the interface.
+  ────────────────────────────────────────
+  Option: D. Hybrid
+  Description: Switchable modes - list view for daily work, graph view for
+    planning/analysis. User chooses primary.
+
+  My recommendation: D (Hybrid) - Given the "IDE" name sets expectations, but
+  the target user (you) does both planning and analysis. Let the user switch
+  modes based on task.
+
+  Which direction?
+
+❯ D 
+
+● Hybrid - noted. List view for daily work, graph view for planning/analysis.
+  Both first-class, user switches based on task.
+
+  ---
+  Question 3 of 8 (Q6)
+
+  What is the primary job users are trying to accomplish?
+
+  Option: A. Planning
+  Description: Decomposing ideas into structured work, wiring dependencies,
+    designing before execution. Output: a ready-to-execute work graph.
+  ────────────────────────────────────────
+  Option: B. Tracking
+  Description: Monitoring progress, updating statuses, seeing what's blocked,
+    daily standup view. Output: current state visibility.
+  ────────────────────────────────────────
+  Option: C. Analyzing
+  Description: Understanding codebase structure, finding bottlenecks, evaluating
+
+    graph health metrics. Output: insights and decisions.
+  ────────────────────────────────────────
+  Option: D. All three equally
+  Description: Different modes for different moments. No single primary - the
+    tool flexes to the task.
+
+  My recommendation: A (Planning) as primary, with B and C as secondary. The
+  brief emphasizes "replaces markdown PRD workflow" - that's planning. Tracking
+  and analysis support it.
+
+  Which is the center of gravity?
+
+❯ designing the formulas we're using right now, using the formulas, and     
+  then tracking the progress of the beads produced as a result of running   
+  these formulas                                                            
+
+● Got it - formula-centric workflow:
+  1. Design formulas (authoring workflow templates)
+  2. Execute formulas (cook/pour to create beads)
+  3. Track execution (monitor molecule progress, bead status)
+
+  This is more specific than my options. The IDE is primarily a formula 
+  authoring and execution tracking tool, not a general project manager. Noted.
+
+  ---
+  Question 4 of 8 (Q8)
+
+  How do users author work graphs - direct manipulation or natural language?
+
+  Option: A. Direct authoring
+  Description: Users manually create beads, wire dependencies, build formulas by
+
+    hand. Graph editor is primary.
+  ────────────────────────────────────────
+  Option: B. NL-first
+  Description: Users describe work in natural language, AI derives the graph
+    structure. User reviews/corrects.
+  ────────────────────────────────────────
+  Option: C. Formula-first
+  Description: Users select/customize formulas (templates), pour them, then
+    refine the output. Formulas are the primary authoring unit.
+
+  Based on your previous answer, C (Formula-first) seems to match - you design
+  formulas, execute them, track results. Direct bead editing is for refinement,
+  not primary authoring.
+
+  Is that right, or do you also do significant direct bead creation outside of
+  formulas?
+
+❯ C and B 
+
+● Formula-first + NL-assisted - noted. The workflow is:
+  1. Describe intent in natural language
+  2. AI helps generate/refine formulas
+  3. Pour formulas to create beads
+  4. Track and refine results
+
+  This validates that multi-model input is core to the workflow, not
+  speculative.
+
+  ---
+  Question 5 of 8 (Q28)
+
+  What's the core pain point - humans can't author graphs, or AI produces graphs
+   that humans can't review?
+
+  Option: A. Authoring is hard
+  Description: The main problem is getting from idea to structured graph. AI
+    helps author, human approves.
+  ────────────────────────────────────────
+  Option: B. Review is hard
+  Description: AI produces graphs fine, but humans can't understand/correct
+  them.
+    IDE is primarily a review/correction tool.
+  ────────────────────────────────────────
+  Option: C. Both equally
+  Description: Sometimes authoring is the bottleneck, sometimes review. IDE must
+
+    serve both.
+
+  Based on your NL + Formula workflow, this sounds like A (Authoring is hard) -
+  you're using AI to help author formulas, then pouring them. The IDE helps you
+  design and execute, not primarily review AI output.
+
+  Confirm or correct?
+
+❯ C 
+
+● Both equally - noted. IDE serves:
+  - Authoring mode: NL → formula design → pour
+  - Review mode: Understanding AI output, correcting structure, validating
+  graphs
+
+  Both are first-class workflows.
+
+  ---
+  Question 6 of 8 (Q27)
+
+  What's the IDE's unique value over the CLI?
+
+  The bd CLI already does bead CRUD, formula cooking/pouring, and bv does
+  visualization. What does the IDE add?
+
+  Option: A. Visualization
+  Description: Seeing the graph structure that's hard to grasp from CLI output.
+    Interactive exploration.
+  ────────────────────────────────────────
+  Option: B. Discoverability
+  Description: Surfacing what's possible (formula templates, field options,
+    dependency types) without memorizing commands.
+  ────────────────────────────────────────
+  Option: C. Speed
+  Description: Faster iteration - click instead of type, drag instead of specify
+
+    IDs, visual feedback.
+  ────────────────────────────────────────
+  Option: D. Integration
+  Description: Unified workspace - formula editing, graph viz, bead detail,
+    metrics all in one place vs. switching tools.
+  ────────────────────────────────────────
+  Option: E. All of the above
+  Description: Each adds value; the combination is the point.
+
+  Which is the primary driver, or is it the combination?
+
+❯ E 
+
+● All of the above - noted. The IDE's value is the unified combination:
+  visualization + discoverability + speed + integration in one workspace.
+
+  This implies the IDE subsumes bv rather than wrapping it.
+
+  ---
+  Question 7 of 8 (Q9)
+
+  Is multi-model convergence a validated need?
+
+  You're literally running this workflow right now - Opus, GPT, and Gemini
+  generating scope questions, then synthesizing to canonical. So I suspect the
+  answer is yes, but let me confirm:
+
+  Option: A. Yes, core workflow
+  Description: Branch-per-model, compare outputs, distill to canonical is how
+  you
+    actually work. Must be in v1.
+  ────────────────────────────────────────
+  Option: B. Yes, but v2
+  Description: Validated but can defer. Single-model workflows are fine for v1,
+    convergence comes later.
+  ────────────────────────────────────────
+  Option: C. Uncertain
+  Description: Haven't used it enough to know. Build minimal support, validate
+    with real usage.
+
+  Based on this session, this looks like A - you're literally doing multi-model
+  convergence right now.
+
+  Confirm?
+
+❯ A 
+
+● Multi-model convergence is core - confirmed. Branch-per-model → compare →
+  distill to canonical is v1 scope.
+
+  This keeps Q19 (canonical definition), Q66 (convergence flow), Q78 (comparison
+   UI) in scope.
+
+  ---
+  Question 8 of 8 (Q30)
+
+  What's explicitly OUT of scope for phase 1?
+
+  Given what we've established:
+  - Single operator (no team features)
+  - Hybrid list/graph views
+  - Formula-centric workflow
+  - NL + formula authoring
+  - Multi-model convergence IN scope
+
+  What should be CUT from v1?
+
+  Option: A. Import from external tools
+  Description: No Jira/Linear/GitHub import. Start fresh or use existing beads
+    CLI.
+  ────────────────────────────────────────
+  Option: B. Real-time collaboration
+  Description: Already established - single operator.
+  ────────────────────────────────────────
+  Option: C. Runtime execution visibility
+  Description: IDE is authoring/review only. Molecule execution status viewed
+    elsewhere.
+  ────────────────────────────────────────
+  Option: D. Source code bridging
+  Description: Bead-to-code links deferred. Focus on formula/graph authoring
+    first.
+  ────────────────────────────────────────
+  Option: E. Custom field/type creation
+  Description: Use built-in schema only. Custom types via CLI if needed.
+
+  Select all that apply, or specify your own cuts:
+
+❯ We want to read/write from dolt via the dolt-server and/or dolt remotes   
+  (like dolthub)                                                            
+                                                                            
+  No real-time collaboration - cut                                          
+                                                                            
+  Runtime execution visibility - keep - its just reading bead status of the 
+   beads that where created as a result of our formulas.                    
+                                                                            
+  Source code bridging - keep for now - but we should discuss it further    
+  and i may drop it later                                                   
+                                                                            
+  Custom field/type creation - use built in schema for now                  
+
+● Got it. Phase 1 scope clarified:
+
+  IN:
+  - Dolt integration (dolt-server / DoltHub remotes) as data layer
+  - Runtime visibility (read bead status from formula execution)
+  - Source code bridging (tentative - revisit later)
+
+  OUT:
+  - Real-time collaboration
+  - Custom field/type creation (use built-in schema)
+  - Import from external tools (implicit)
+
+  ---
+  Round 1 Complete
+
+  Summary of core decisions:
+
+  ┌─────────────────────────┬──────────────────────────────────────────┐
+  │        Question         │                  Answer                  │
+  ├─────────────────────────┼──────────────────────────────────────────┤
+  │ Single vs Team          │ Single operator (v1)                     │
+  ├─────────────────────────┼──────────────────────────────────────────┤
+  │ PM vs IDE feel          │ Hybrid - list + graph, user switches     │
+  ├─────────────────────────┼──────────────────────────────────────────┤
+  │ Primary job             │ Formula-centric - design, execute, track │
+  ├─────────────────────────┼──────────────────────────────────────────┤
+  │ Authoring model         │ NL + Formula-first                       │
+  ├─────────────────────────┼──────────────────────────────────────────┤
+  │ Core pain               │ Both authoring AND review                │
+  ├─────────────────────────┼──────────────────────────────────────────┤
+  │ IDE value over CLI      │ All - viz, discovery, speed, integration │
+  ├─────────────────────────┼──────────────────────────────────────────┤
+  │ Multi-model convergence │ Core workflow - v1 scope                 │
+  ├─────────────────────────┼──────────────────────────────────────────┤
+  │ Data layer              │ Dolt via dolt-server/remotes             │
+  └─────────────────────────┴──────────────────────────────────────────┘
+
+  Cascaded resolutions from Round 1:
+  - Q33 (real-time collab): N/A - cut
+  - Q39 (notifications): Simplified - no team, just agent activity
+  - Q71 (review/approval): N/A - single user
+  - Q14/Q48 (graph primary): Neither - hybrid with user choice
+  - Q32 (bv relationship): IDE subsumes bv
+
+  ---
+  Ready for Round 2: Cascaded Confirmations (~15 questions)?
+
+  These will go faster since Round 1 constrains them.
+
+❯ yes 
+
+● Round 2: Cascaded Confirmations
+
+  Question 9 (Q14/Q48) - Confirm
+
+  Given Hybrid mode: Should the default landing view be list or graph?
+
+  Option: A. List default
+  Description: Opens to "My Work" list view. Graph is one click away. Faster
+    daily workflow.
+  ────────────────────────────────────────
+  Option: B. Graph default
+  Description: Opens to graph canvas. List is one click away. Emphasizes spatial
+
+    thinking.
+  ────────────────────────────────────────
+  Option: C. Remember last
+  Description: Opens to whatever view user was in last session. Respects user
+    preference.
+
+  Recommendation: C (Remember last) - since both are first-class, let the user's
+   habit determine default.
+
+❯ C 
+
+● Remember last - noted. IDE restores previous view mode on launch.
+
+  ---
+  Question 10 (Q7)
+
+  Is markdown the problem, or is the translation from intent to structure the 
+  problem?
+
+  Option: A. Markdown is the problem
+  Description: The format itself is limiting. A better structured editor solves
+    it.
+  ────────────────────────────────────────
+  Option: B. Translation is the problem
+  Description: The format is fine, but decomposing intent into work items is
+  hard
+    regardless of format. AI helps here.
+  ────────────────────────────────────────
+  Option: C. Both
+  Description: Markdown is limiting AND translation is hard. Need better format
+  +
+    AI assistance.
+
+  Given your NL + Formula workflow, this sounds like B - you're using AI to help
+   with the translation, not just escaping markdown.
+
+  Confirm?
+
+❯ Reframe the question 
+
+● Let me reframe.
+
+  Question 10 (Q7) - Reframed
+
+  What workflow is the IDE replacing, and what's broken about it?
+
+  Option: A. Replacing manual bead CLI work
+  Description: Currently you run bd commands by hand. IDE makes this
+    visual/faster. The CLI workflow works, just slow.
+  ────────────────────────────────────────
+  Option: B. Replacing prose-to-structure translation
+  Description: Currently you write prose (markdown, notes, conversation) and
+    manually translate to beads. AI + formulas automate this translation.
+  ────────────────────────────────────────
+  Option: C. Replacing nothing - new capability
+  Description: There's no current workflow for what this enables. Multi-model
+    formula authoring + convergence is net-new.
+  ────────────────────────────────────────
+  Option: D. Replacing scattered tools
+  Description: Currently you use multiple tools (CLI, text editor, manual
+    tracking). IDE unifies them.
+
+  Which best describes what's broken today?
+
+❯ A, B, C, D 
+
+● All four - noted. The IDE is:
+  - Faster than CLI (A)
+  - Automates prose→structure via AI+formulas (B)
+  - Enables net-new multi-model convergence (C)
+  - Unifies scattered tools into one workspace (D)
+
+  It's a full platform shift, not a single fix.
+
+  ---
+  Question 11 (Q31)
+
+  Runtime visibility - what level?
+
+  You said "keep" for reading bead status. How deep?
+
+  Option: A. Status only
+  Description: See bead status (open/in_progress/blocked/closed). No execution
+    details.
+  ────────────────────────────────────────
+  Option: B. Status + history
+  Description: See status plus when it changed, by whom/what agent.
+  ────────────────────────────────────────
+  Option: C. Full molecule tracking
+  Description: See which molecule spawned which beads, step progress, what's
+    currently executing.
+  ────────────────────────────────────────
+  Option: D. Live agent activity
+  Description: See agents working in real-time - which bead they're touching,
+    what they're doing.
+
+  Given formula-centric workflow (pour → track), C seems right - you want to see
+   the molecule's progress through its steps.
+
+❯ C 
+
+● Full molecule tracking - noted. IDE shows: which molecule spawned which beads,
+   step progress, current execution state.
+
+  ---
+  Question 12 (Q32)
+
+  What's the relationship between the IDE and bv (Beads Viewer)?
+
+  Option: A. IDE replaces bv
+  Description: All 9 graph metrics, visualization, export - everything bv does
+  is
+    in the IDE. bv becomes obsolete.
+  ────────────────────────────────────────
+  Option: B. IDE wraps bv
+  Description: IDE shells out to bv for visualization/metrics. bv remains the
+    engine, IDE is the UI.
+  ────────────────────────────────────────
+  Option: C. They coexist
+  Description: IDE for authoring/tracking, bv for deep analysis. Different tools
+
+    for different jobs.
+
+  Given "all of the above" for IDE value (viz, discovery, speed, integration), A
+   (replaces) seems implied - the IDE becomes the single interface.
+
+  Confirm?
+
+❯ A 
+
+● IDE replaces bv - noted. All 9 graph metrics and visualization built into IDE.
+   Single interface for everything.
+
+  ---
+  Question 13 (Q17)
+
+  How should merge conflicts be resolved?
+
+  This is novel UX territory - no established pattern for work graph merges.
+  When two Dolt branches modify the same beads differently:
+
+  Option: A. Per-field resolution
+  Description: Conflict shown field-by-field. "Branch A set status to 'closed',
+    Branch B set it to 'blocked' - pick one." Fine-grained but tedious.
+  ────────────────────────────────────────
+  Option: B. Per-bead resolution
+  Description: Conflict shown at bead level. "Bead X differs - accept left,
+    accept right, or merge manually." Simpler but coarser.
+  ────────────────────────────────────────
+  Option: C. Side-by-side graph diff
+  Description: Show both branch graphs visually. User drags/selects which
+    beads/edges to keep. Spatial but complex.
+  ────────────────────────────────────────
+  Option: D. Three-way merge view
+  Description: Base + Branch A + Branch B shown together (like git merge tools).
+
+    Familiar to developers.
+  ────────────────────────────────────────
+  Option: E. Accept-theirs/mine only
+  Description: No granular merge. Pick one branch wholesale or the other.
+    Simplest but lossy.
+
+  Recommendation: B (Per-bead) with option to drill into A (Per-field) for
+  complex beads. Balance of usability and control.
+
+❯ lets discuss this. i envisioned each dolt branch would be the 'staging'   
+  area for one of the models (GPT, Gemini, Claude) to write their beads     
+  too. Its not exactly clear yet how the 'merge' should look yet, but the   
+  idea is that we get the opportunity to combine a variety of prospectives  
+  all the way at the bead level. I was thinking that there would be a step  
+  where after all 3 models have finished whatever beads they were asked to  
+  create, we'd figure out which beads across the branches are similar,      
+  possibly establish relationships between the beads, and once they're      
+  established figure out overlaps, differences, gaps, and then either       
+  create new beads and archive the old ones, or combine (not sure how, as   
+  garbage will be left either way).                                         
+
+● This is really helpful - you're describing convergence synthesis, not
+  traditional merge conflict resolution. Let me make sure I understand:
+
+  Your mental model:
+  1. Same prompt → 3 Dolt branches (GPT, Gemini, Claude)
+  2. Each model writes beads independently to their branch
+  3. Synthesis step (this is the novel part):
+    - Cluster similar beads across branches (semantic matching)
+    - Visualize: "These 3 beads from 3 models address the same concept"
+    - Identify overlaps, differences, gaps
+    - Create canonical beads from the best parts
+    - Archive or link source beads
+
+  Key insight: This isn't merge conflict (same bead edited differently). It's
+  multi-perspective fusion - different beads about the same concepts,
+  synthesized into one canonical set.
+
+  Questions to clarify:
+
+  1. Clustering: How do we know beads are "similar"?
+    - Same title/description keywords?
+    - AI-assisted semantic similarity?
+    - User manually groups them?
+  2. Synthesis output: What happens to the 3 source branches after synthesis?
+    - Archived (kept for provenance)?
+    - Deleted (garbage collected)?
+    - Kept with derived-from links to canonical?
+  3. Canonical creation: When you "combine" similar beads, is it:
+    - Pick the best one as-is?
+    - Merge fields from multiple (e.g., GPT's title + Claude's description)?
+    - Write a new bead informed by all three?
+
+❯ 1. We feed the entire bead schema data from both beads and investigate    
+  the best combined version                                                 
+                                                                            
+  2. derived-from seems like a decent solution                              
+                                                                            
+  3. Write a new bead informed by all three                                 
+
+● Got it. Convergence synthesis workflow:
+
+  1. Cluster: AI analyzes full bead schema data across branches, identifies
+  semantically similar beads
+  2. Synthesize: AI proposes a new canonical bead informed by all perspectives
+  in the cluster
+  3. Review: User reviews/edits the proposed canonical
+  4. Link: Canonical bead gets derived-from edges to source beads
+  5. Preserve: Source beads remain (not deleted) - provenance is maintained
+
+  This is NOT merge conflict resolution - it's a creative synthesis step. The UI
+   should:
+  - Show clusters of related beads from each model
+  - Show AI-proposed canonical for each cluster
+  - Let user accept/edit/reject each canonical
+  - Visualize the derived-from provenance graph
+
+  Noted. This changes Q66 (convergence flow) and Q78 (comparison UI)
+  significantly - they're synthesis UIs, not merge UIs.
+
+  ---
+  Question 14 (Q19)
+
+  Who/what decides "canonical"?
+
+  Given the synthesis workflow above:
+
+  Option: A. AI proposes, human approves
+  Description: AI synthesizes best version, user has final say on each canonical
+
+    bead.
+  ────────────────────────────────────────
+  Option: B. AI decides, human reviews
+  Description: AI auto-creates canonical, user reviews the result and can
+    override.
+  ────────────────────────────────────────
+  Option: C. Human decides, AI assists
+  Description: User manually picks/writes canonicals, AI just highlights
+    similarities.
+
+  Based on what you described, this sounds like A - AI proposes the synthesis,
+  you approve each one.
+
+  Confirm?
+
+❯ Honestly this feels like it should be a configurable default option,      
+  because i wont really know which one is better until i try them out for a 
+   while                                                                    
+
+● Configurable - noted. Support all three modes:
+  - AI proposes, human approves (most control)
+  - AI decides, human reviews (faster, trust AI)
+  - Human decides, AI assists (most manual)
+
+  User sets preferred default, can switch per-session. Learn what works through
+  usage.
+
+  ---
+  Question 15 (Q82)
+
+  How to present Git branches vs Dolt branches to users?
+
+  You have two version control layers:
+  - Git: Source code, formulas, config files
+  - Dolt: Bead data, work graphs, molecule state
+
+  When user says "create a branch" or "view branches":
+
+  Option: A. Unified
+  Description: One "branch" concept in UI. Behind the scenes, creating a branch
+    creates both Git + Dolt branches in sync. User doesn't think about layers.
+  ────────────────────────────────────────
+  Option: B. Separate but linked
+  Description: Two branch lists (Code Branches, Data Branches) but UI keeps them
+
+    in sync by default. User can desync if needed.
+  ────────────────────────────────────────
+  Option: C. Dolt-only in IDE
+  Description: IDE only manages Dolt branches (data). Git branches managed
+    externally (CLI, GitHub). IDE is data-focused.
+  ────────────────────────────────────────
+  Option: D. Explicit dual
+  Description: User explicitly manages both. Full control, full complexity.
+
+  Recommendation: C (Dolt-only in IDE) - IDE is for bead/formula work. Git is
+  source code, managed separately. Keeps mental model clean.
+
+❯ C 
+
+● Dolt-only in IDE - noted. IDE manages data branches (beads, molecules). Git
+  branches managed externally. Clean separation.
+
+  ---
+  Question 16 (Q36)
+
+  Formula builder: visual or text?
+
+  Formula authoring is central to your workflow. How should the builder work?
+
+  Option: A. Visual node-based (Zapier/n8n)
+  Description: Drag-drop nodes, connect with wires. Low-code feel. Approachable
+    but may limit power users.
+  ────────────────────────────────────────
+  Option: B. Text editor (TOML/JSON)
+  Description: Syntax-highlighted code editor. Full control, but requires
+    learning the schema.
+  ────────────────────────────────────────
+  Option: C. Hybrid: visual + text
+  Description: Visual builder for structure, with "view source" toggle to
+    see/edit raw TOML. Best of both.
+  ────────────────────────────────────────
+  Option: D. Form-based
+  Description: Structured forms for each formula field. Guided but can feel
+    tedious for complex formulas.
+
+  Recommendation: C (Hybrid) - visual for structure/overview, text for
+  precision. Matches how developers work (GUI for exploration, code for
+  control).
+
+❯ C 
+
+● Hybrid formula builder - noted. Visual node-based for structure, "view source"
+   toggle for raw TOML. Both modes stay in sync.
+
+  ---
+  Question 17 (Q34)
+
+  Import from external tools in v1?
+
+  Option: A. No import
+  Description: Start fresh in IDE. Existing beads accessible via Dolt. No
+    Jira/Linear/markdown import.
+  ────────────────────────────────────────
+  Option: B. Markdown import
+  Description: Import markdown PRDs → convert to beads (AI-assisted). No
+  external
+    tools.
+  ────────────────────────────────────────
+  Option: C. Full import pipeline
+  Description: Jira, Linear, GitHub Issues, markdown all importable. Migration
+    story.
+
+  Given formula-centric workflow (formulas create beads), import seems less
+  critical - you're generating beads from formulas, not migrating legacy issues.
+
+  Recommendation: A (No import) for v1. Existing beads already in Dolt are
+  accessible.
+
+❯ A 
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ A 
+
+● No import - noted. Beads come from formulas or direct creation. No migration
+  from external tools in v1.
+
+  ---
+  Question 18 (Q42)
+
+  Does the IDE replace approval rituals, or just authoring?
+
+  Option: A. Authoring only
+  Description: IDE is for creating/editing beads and formulas. Approval/sign-off
+
+    happens elsewhere (conversation, email, etc).
+  ────────────────────────────────────────
+  Option: B. Built-in approval
+  Description: IDE has approve/reject workflow for proposed changes. Formal
+  gates
+    before changes go canonical.
+  ────────────────────────────────────────
+  Option: C. Convergence IS approval
+  Description: The multi-model synthesis step serves as the quality gate. No
+    separate approval - synthesis = approval.
+
+  Given single-operator and convergence workflow, C seems right - the synthesis
+  step where you review and approve canonicals IS your approval process.
+
+❯ C 
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ actually, what are we doing right now? would that be option B or C? where 
+   im answering these questions                                             
+
+● Great meta-question. What we're doing right now:
+
+  - This brainstorming dialogue = collaborative creation. You're not "approving"
+   my proposals - we're building understanding together through Q&A.
+  - The spec we'll write = the artifact produced from this dialogue.
+  - Later review phase (Phase 3-4 in this workflow) = spec completeness check +
+  multimodal review.
+
+  So it's neither B nor C exactly. It's more like:
+  - Authoring: Interactive dialogue (now)
+  - Quality gate: Built into the workflow (review phases), not a separate
+  approval ritual
+
+  For the IDE's bead/formula workflow:
+
+  Option: A. Authoring only
+  Description: IDE creates beads. Quality control is external (conversation,
+    review sessions like this one).
+  ────────────────────────────────────────
+  Option: B. Built-in approval gates
+  Description: IDE has explicit "submit for approval" → "approved/rejected"
+    workflow.
+  ────────────────────────────────────────
+  Option: C. Convergence = approval
+  Description: The synthesis step (review AI proposals, accept canonicals)
+  serves
+    as the gate.
+
+  Given you're single-operator, A or C make sense. Formal B-style approval gates
+   are more for teams.
+
+  Which fits how you want to work?
+
+❯ sorry, please the question to me differently 
+
+● Question 18 (Q42) - Reframed
+
+  After you create or edit beads in the IDE, what happens next?
+
+  Option: A. They're immediately live
+  Description: Save = done. No review step. You trust yourself.
+  ────────────────────────────────────────
+  Option: B. They go to a staging area
+  Description: Changes are "proposed" until you explicitly commit them to the
+    canonical branch.
+  ────────────────────────────────────────
+  Option: C. They trigger a review workflow
+  Description: After editing, there's a step where you (or AI) reviews changes
+    before they're final.
+
+  Simpler: Do you want a "commit" moment, or is saving enough?
+
+❯ there should be a review workflow, however there should always be a final 
+   final final manual approval required to merge the final staged beads     
+  into the main dolt branch. This part still feels like it really needs the 
+   details ironed out of it, so i wouldn't give a for sure answer just yet  
+
+● Review workflow with manual final merge - noted, but details TBD.
+
+  Key constraint captured: No auto-merge to main. Always requires explicit human
+   approval before staged beads become canonical.
+
+  This is a design area to flesh out later - we'll flag it in the spec as "needs
+   detailed workflow design."
+
+  ---
+  Question 19 (Q52)
+
+  Which reference UI patterns should the IDE follow?
+
+  Given Hybrid (list + graph) and formula-centric workflow:
+
+  Option: A. VS Code
+  Description: Panels, tabs, file tree, command palette. Developer-centric.
+  ────────────────────────────────────────
+  Option: B. Figma
+  Description: Infinite canvas, properties panel, layers. Designer-centric.
+  ────────────────────────────────────────
+  Option: C. Linear
+  Description: Clean list view, minimal chrome, keyboard-first. PM-centric.
+  ────────────────────────────────────────
+  Option: D. n8n/Node-RED
+  Description: Node-based workflow canvas, execution visualization.
+    Automation-centric.
+  ────────────────────────────────────────
+  Option: E. Blend
+  Description: Cherry-pick: Linear's list view + n8n's formula canvas + VS
+  Code's
+    panels/command palette.
+
+  Recommendation: E (Blend) - Linear for list mode, n8n for formula builder, VS
+  Code for panels/shortcuts.
+
+❯ E. Also, this is the hardest question thus far 😅  i feel like i need to  
+  be able to kind of 'sidecar' explore, iterate somewhere with an LLM to    
+  the side, and then bring it back in with all the sidecar chat history. We 
+   should consider that in our feature set. as it will be valueable         
+
+● Blend - noted. Linear (list) + n8n (formula canvas) + VS Code
+  (panels/palette).
+
+  New feature captured: Sidecar LLM exploration
+
+  This is valuable - you want:
+  - LLM chat panel alongside the main workspace
+  - Explore/iterate on ideas conversationally
+  - "Import" results back into IDE with chat history preserved
+  - Provenance: see the reasoning that led to beads/formulas
+
+  This connects to your NL-first authoring model. The sidecar is where NL →
+  structure happens, then you pull structured output into the main graph.
+
+  Added to feature set. Will include in spec.
+
+  ---
+  Question 20 (Q87)
+
+  What must match or explicitly reject vs Linear/Jira?
+
+  Competitors set expectations. What's table stakes vs deliberate omissions?
+
+  ┌───────────────────────┬────────┬─────────┬───────┐
+  │        Feature        │ Match? │ Reject? │ Notes │
+  ├───────────────────────┼────────┼─────────┼───────┤
+  │ Keyboard shortcuts    │ ?      │         │       │
+  ├───────────────────────┼────────┼─────────┼───────┤
+  │ Status board (kanban) │ ?      │         │       │
+  ├───────────────────────┼────────┼─────────┼───────┤
+  │ Sprint/cycle planning │ ?      │         │       │
+  ├───────────────────────┼────────┼─────────┼───────┤
+  │ Time tracking         │ ?      │         │       │
+  ├───────────────────────┼────────┼─────────┼───────┤
+  │ Notifications         │ ?      │         │       │
+  ├───────────────────────┼────────┼─────────┼───────┤
+  │ Comments/threads      │ ?      │         │       │
+  └───────────────────────┴────────┴─────────┴───────┘
+
+  Which of these (if any) are must have vs explicitly NOT doing?
+
+❯ Must haves:                                                               
+  - beads are files/folders in a left side file browser just like in        
+  vscode/cursor                                                             
+  - comments/threads                                                        
+  - tanstack hotkeys (https://tanstack.com/hotkeys/latest)                  
+                                                                            
+  Reject:                                                                   
+  - no kanban                                                               
+  - sprint/cycle planning                                                   
+  - notifications                                                           
+  - time tracking                                                           
+
+● Concrete requirements captured:
+
+  Must have:
+  - File tree navigation - beads as files/folders in left sidebar (VS
+  Code/Cursor pattern)
+  - Comments/threads - discussion on beads
+  - TanStack Hotkeys - keyboard shortcut library
+
+  Explicitly rejected:
+  - No kanban board
+  - No sprint/cycle planning
+  - No notifications
+  - No time tracking
+
+  This sharpens the identity: It's a work graph IDE, not a project management 
+  tool.
+
+  ---
+  Question 21 (Q81)
+
+  How to position "work graph" to users?
+
+  When someone asks "what is this?", what's the one-liner?
+
+  Option: A. "A graph database for planning work"
+  Description: Technical, accurate, but abstract.
+  ────────────────────────────────────────
+  Option: B. "An IDE for designing workflows"
+  Description: Emphasizes formulas/automation.
+  ────────────────────────────────────────
+  Option: C. "A tool for turning ideas into structured work"
+  Description: Emphasizes NL→structure translation.
+  ────────────────────────────────────────
+  Option: D. "A multi-model collaboration workspace"
+  Description: Emphasizes AI convergence.
+  ────────────────────────────────────────
+  Option: E. Your own
+  Description: Something else?
+
+  What's the core identity in one sentence?

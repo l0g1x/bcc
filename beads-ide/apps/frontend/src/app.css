@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand colors */
   --color-brand-50: #f0f9ff;
   --color-brand-100: #e0f2fe;
   --color-brand-200: #bae6fd;
@@ -14,23 +13,29 @@
   --color-brand-900: #0c4a6e;
   --color-brand-950: #082f49;
 
-  /* Typography */
   --font-sans: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Menlo", monospace;
 
-  /* Sidebar */
   --color-sidebar: var(--color-zinc-900);
   --color-sidebar-foreground: var(--color-zinc-100);
   --color-sidebar-accent: var(--color-zinc-800);
 }
 
-/* Dark mode support via class on html */
-html.dark {
-  color-scheme: dark;
+/* Dark mode support */
+:root {
+  color-scheme: light dark;
 }
 
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Default to dark mode for IDE aesthetic */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: var(--color-zinc-950);
+    --color-foreground: var(--color-zinc-100);
+  }
 }

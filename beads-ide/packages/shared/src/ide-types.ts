@@ -1,338 +1,478 @@
 /**
- * IDE-specific types for the Beads IDE.
- * These types are used by the frontend and backend for wave computation,
- * graph analysis, API responses, and application state.
+ * Types for Beads IDE graph visualization and metrics.
+ * These types map to bv CLI robot command outputs.
  */
 
-import type { Bead, BeadListItem, Formula } from './types.js';
-
-// =============================================================================
-// Wave Computation
-// =============================================================================
-
 /**
- * A wave is a group of beads that can be executed in parallel.
- * Beads in the same wave have no dependencies on each other.
- */
-export interface Wave {
-  /** Wave index (0-based, lower waves execute first) */
-  index: number;
-  /** Bead IDs in this wave */
-  beadIds: string[];
-}
-
-/**
- * Result of wave computation (topological sort with level assignment).
- */
-export interface WaveResult {
-  /** Ordered waves from first to last */
-  waves: Wave[];
-  /** Cycles detected in the dependency graph */
-  cycles: string[][];
-  /** Whether cycles were detected */
-  hasCycles: boolean;
-}
-
-// =============================================================================
-// Graph Analysis
-// =============================================================================
-
-/**
- * Node in the dependency graph.
+ * A bead node in the graph.
  */
 export interface GraphNode {
-  /** Bead ID */
-  id: string;
-  /** Display label */
-  label: string;
-  /** Node type (maps to bead issue_type) */
-  type: string;
-  /** Priority level */
-  priority: number;
-  /** Current status */
-  status: string;
-  /** IDs of beads this node depends on */
-  dependsOn: string[];
-  /** IDs of beads that depend on this node */
-  dependents: string[];
+  id: string
+  title: string
+  status: string
+  priority?: number
+  labels?: string[]
+  type?: string
 }
 
 /**
- * The 9 graph metrics from bv analysis.
+ * A dependency edge in the graph.
  */
-export interface GraphMetrics {
-  /** PageRank score per node */
-  pageRank: Record<string, number>;
-  /** Betweenness centrality per node */
-  betweenness: Record<string, number>;
-  /** HITS authority score per node */
-  hitsAuthority: Record<string, number>;
-  /** HITS hub score per node */
-  hitsHub: Record<string, number>;
-  /** Critical path length from each node */
-  criticalPath: Record<string, number>;
-  /** Eigenvector centrality per node */
-  eigenvector: Record<string, number>;
-  /** In-degree per node */
-  degreeIn: Record<string, number>;
-  /** Out-degree per node */
-  degreeOut: Record<string, number>;
-  /** Graph density (edge count / possible edges) */
-  density: number;
-  /** Number of cycles in the graph */
-  cycleCount: number;
-  /** Topological sort order (IDs in execution order) */
-  topoSort: string[];
+export interface GraphEdge {
+  from: string
+  to: string
+  type: string
 }
 
 /**
- * Summary statistics for the graph.
+ * Graph statistics from bv.
  */
 export interface GraphStats {
-  /** Total number of nodes */
-  nodeCount: number;
-  /** Total number of edges */
-  edgeCount: number;
-  /** Number of connected components */
-  componentCount: number;
-  /** Length of the longest path */
-  longestPath: number;
-  /** Number of root nodes (no incoming edges) */
-  rootCount: number;
-  /** Number of leaf nodes (no outgoing edges) */
-  leafCount: number;
-  /** Average degree */
-  avgDegree: number;
-}
-
-// =============================================================================
-// Formula Files
-// =============================================================================
-
-/**
- * Formula file metadata from disk scan.
- */
-export interface FormulaFile {
-  /** Formula name (without .formula.toml extension) */
-  name: string;
-  /** Full file path */
-  path: string;
-  /** Directory containing the formula */
-  directory: string;
-  /** Search path level: project, user, or orchestrator */
-  level: 'project' | 'user' | 'orchestrator';
+  nodes: number
+  edges: number
+  density: number
+  avgDegree?: number
 }
 
 /**
- * Result of cooking a formula.
+ * Graph export from bv --robot-graph.
  */
+export interface GraphExport {
+  generated_at: string
+  data_hash: string
+  format: 'json' | 'dot' | 'mermaid'
+  nodes: GraphNode[]
+  edges: GraphEdge[]
+  stats: GraphStats
+}
+
+/**
+ * A ranked metric entry (used for PageRank, betweenness, etc.)
+ */
+export interface RankedMetric {
+  id: string
+  title: string
+  score: number
+  rank?: number
+}
+
+/**
+ * HITS scores (authorities and hubs).
+ */
+export interface HITSScores {
+  authorities: RankedMetric[]
+  hubs: RankedMetric[]
+}
+
+/**
+ * Cycle information from graph analysis.
+ */
+export interface CycleInfo {
+  count: number
+  cycles: string[][]
+}
+
+/**
+ * Degree metrics for a node.
+ */
+export interface DegreeMetrics {
+  id: string
+  title: string
+  inDegree: number
+  outDegree: number
+  totalDegree: number
+}
+
+/**
+ * Critical path information.
+ */
+export interface CriticalPath {
+  length: number
+  path: string[]
+  slack: Record<string, number>
+}
+
+/**
+ * Topological sort order.
+ */
+export interface TopoSort {
+  order: string[]
+  levels: Record<string, number>
+}
+
+/**
+ * The 9 graph metrics exposed by the backend.
+ * Maps bv robot-insights output to a normalized structure.
+ */
+export interface GraphMetrics {
+  /** ISO timestamp when metrics were generated */
+  generated_at: string
+  /** Hash of source data for cache validation */
+  data_hash: string
+
+  /** 1. PageRank - influence scores */
+  pagerank: RankedMetric[]
+
+  /** 2. Betweenness centrality - bottleneck nodes */
+  betweenness: RankedMetric[]
+
+  /** 3. HITS scores - authorities and hubs */
+  hits: HITSScores
+
+  /** 4. Critical path length and slack */
+  criticalPath: CriticalPath
+
+  /** 5. Eigenvector centrality - keystone nodes */
+  eigenvector: RankedMetric[]
+
+  /** 6. Degree metrics (in/out degree) */
+  degree: DegreeMetrics[]
+
+  /** 7. Graph density (edges / max possible edges) */
+  density: number
+
+  /** 8. Cycle count and cycle details */
+  cycles: CycleInfo
+
+  /** 9. Topological sort order */
+  topoSort: TopoSort
+
+  /** Graph statistics summary */
+  stats: GraphStats
+
+  /** Raw status from bv */
+  status?: Record<string, unknown>
+
+  /** Usage hints for agents */
+  usageHints?: string[]
+}
+
+/**
+ * Error response when bv is unavailable or fails.
+ */
+export interface GraphError {
+  ok: false
+  error: string
+  code: 'BV_NOT_FOUND' | 'BV_ERROR' | 'PARSE_ERROR' | 'NO_BEADS'
+}
+
+/**
+ * Successful graph metrics response.
+ */
+export interface GraphMetricsResponse {
+  ok: true
+  metrics: GraphMetrics
+}
+
+/**
+ * Successful graph export response.
+ */
+export interface GraphExportResponse {
+  ok: true
+  graph: GraphExport
+}
+
+/** Union type for graph metrics endpoint */
+export type GraphMetricsResult = GraphMetricsResponse | GraphError
+
+/** Union type for graph export endpoint */
+export type GraphExportResult = GraphExportResponse | GraphError
+
+// ============================================================================
+// Cook API Types
+// ============================================================================
+
+/** A proto bead representing a step that will be created when poured */
+export interface ProtoBead {
+  /** Step ID within the formula */
+  id: string
+  /** Human-readable title */
+  title: string
+  /** Detailed description of what this step does */
+  description: string
+  /** Priority level (0 = highest) */
+  priority: number
+  /** IDs of steps this step depends on */
+  needs?: string[]
+}
+
+/** Variable definition from a formula */
+export interface FormulaVariable {
+  /** Human-readable description of the variable */
+  description: string
+  /** Default value if not provided */
+  default?: string
+  /** Whether this variable must be provided */
+  required?: boolean
+  /** Allowed values (renders as dropdown) */
+  enum?: string[]
+  /** Expected type: string (default), int, or bool */
+  type?: 'string' | 'int' | 'bool'
+  /** Regex pattern the value must match */
+  pattern?: string
+}
+
+/** Result of cooking a formula */
 export interface CookResult {
-  /** Whether cooking succeeded */
-  success: boolean;
-  /** Proto beads (if successful) */
-  proto?: Bead[];
-  /** Error message (if failed) */
-  error?: string;
-  /** Stderr output */
-  stderr?: string;
-  /** Parsed formula (for editor display) */
-  formula?: Formula;
+  /** Whether the cook succeeded */
+  ok: boolean
+  /** Formula name */
+  formula?: string
+  /** Formula version */
+  version?: number
+  /** Formula type (e.g., "workflow") */
+  type?: string
+  /** Formula phase (e.g., "liquid") */
+  phase?: string
+  /** Variable definitions from the formula */
+  vars?: Record<string, FormulaVariable>
+  /** Steps that will be created (proto beads) */
+  steps?: ProtoBead[]
+  /** Source file path */
+  source?: string
+  /** Variables that are required but not provided (for runtime mode) */
+  unbound_vars?: string[]
+  /** Error message if cook failed */
+  error?: string
+  /** Stderr output from cook command */
+  stderr?: string
+  /** Exit code from cook command */
+  exit_code?: number
 }
 
-// =============================================================================
-// API Responses
-// =============================================================================
-
-/**
- * Standard API response wrapper.
- */
-export interface ApiResponse<T> {
-  /** Whether the request succeeded */
-  success: boolean;
-  /** Response data (if successful) */
-  data?: T;
-  /** Error message (if failed) */
-  error?: string;
-  /** Additional error details */
-  details?: string;
+/** Request payload for cook API */
+export interface CookRequest {
+  /** Path to the formula file */
+  formula_path: string
+  /** Variable substitutions (key=value pairs) */
+  vars?: Record<string, string>
+  /** Cooking mode: compile (keep placeholders) or runtime (substitute vars) */
+  mode?: 'compile' | 'runtime'
 }
 
-/**
- * Paginated list response.
- */
-export interface PaginatedResponse<T> {
-  /** Items in this page */
-  items: T[];
-  /** Total count across all pages */
-  total: number;
-  /** Current page (0-based) */
-  page: number;
-  /** Items per page */
-  pageSize: number;
-  /** Whether there are more pages */
-  hasMore: boolean;
+// ============================================================================
+// Formula List API Types
+// ============================================================================
+
+/** A formula file discovered in a search path */
+export interface Formula {
+  /** Formula name (without extension) */
+  name: string
+  /** Full path to the formula file */
+  path: string
+  /** Search path this formula was found in */
+  searchPath: string
+  /** Human-readable search path label */
+  searchPathLabel: string
 }
 
-// =============================================================================
-// CLI Invocation
-// =============================================================================
+/** Alias for Formula used in list API responses */
+export type FormulaListItem = Formula
 
-/**
- * Record of a CLI invocation for debugging/logging.
- */
-export interface CliInvocation {
-  /** CLI binary used */
-  binary: 'bd' | 'gt' | 'bv';
-  /** Arguments passed */
-  args: string[];
-  /** Working directory */
-  cwd: string;
-  /** Start timestamp */
-  startedAt: string;
-  /** End timestamp */
-  endedAt?: string;
-  /** Duration in milliseconds */
-  durationMs?: number;
-  /** Exit code */
-  exitCode?: number;
-  /** Whether it succeeded */
-  success?: boolean;
+/** Successful formula list response */
+export interface FormulaListResponse {
+  ok: true
+  /** Formulas grouped by search path */
+  formulas: Formula[]
+  /** Total count of formulas */
+  count: number
+  /** Search paths that were checked */
+  searchPaths: string[]
 }
 
-// =============================================================================
-// Session State
-// =============================================================================
-
-/**
- * Current session state for the IDE.
- */
-export interface SessionState {
-  /** Currently hooked bead ID (if any) */
-  hookedBead?: string;
-  /** Current agent role (if applicable) */
-  role?: string;
-  /** Current rig */
-  rig?: string;
-  /** Working directory */
-  workdir: string;
-  /** Last activity timestamp */
-  lastActivity: string;
+/** Error response for formula list */
+export interface FormulaListError {
+  ok: false
+  error: string
 }
 
-// =============================================================================
-// Configuration
-// =============================================================================
+// ============================================================================
+// Sling API Types
+// ============================================================================
 
-/**
- * Beads IDE configuration.
- */
-export interface BeadsIDEConfig {
-  /** Backend API base URL */
-  apiBaseUrl: string;
-  /** Auto-refresh interval in milliseconds (0 to disable) */
-  autoRefreshInterval: number;
-  /** Default formula search paths */
-  formulaPaths: string[];
-  /** Theme preference */
-  theme: 'light' | 'dark' | 'system';
-  /** Editor settings */
-  editor: EditorConfig;
-  /** Graph visualization settings */
-  graph: GraphConfig;
+/** Request payload for sling API */
+export interface SlingRequest {
+  /** Path to the formula file */
+  formula_path: string
+  /** Target agent or crew (e.g., "bcc/polecats/fury" or "bcc/crew/main") */
+  target: string
+  /** Variable substitutions (key=value pairs) */
+  vars?: Record<string, string>
 }
 
-/**
- * Editor configuration.
- */
-export interface EditorConfig {
-  /** Font size in pixels */
-  fontSize: number;
-  /** Tab size */
-  tabSize: number;
-  /** Word wrap mode */
-  wordWrap: 'off' | 'on' | 'wordWrapColumn' | 'bounded';
-  /** Auto-save delay in milliseconds (0 to disable) */
-  autoSaveDelay: number;
+/** Result of slinging a formula */
+export interface SlingResult {
+  /** Whether the sling succeeded */
+  ok: boolean
+  /** ID of the dispatched molecule/bead */
+  molecule_id?: string
+  /** Target that received the work */
+  target?: string
+  /** Formula that was slung */
+  formula?: string
+  /** Error message if sling failed */
+  error?: string
+  /** Stderr output from sling command */
+  stderr?: string
+  /** Exit code from sling command */
+  exit_code?: number
 }
 
-/**
- * Graph visualization configuration.
- */
-export interface GraphConfig {
-  /** Layout algorithm */
-  layout: 'dagre' | 'elk' | 'force' | 'tree';
-  /** Node spacing */
-  nodeSpacing: number;
-  /** Rank spacing */
-  rankSpacing: number;
-  /** Show labels */
-  showLabels: boolean;
-  /** Show metrics overlay */
-  showMetrics: boolean;
-  /** Highlight critical path */
-  highlightCriticalPath: boolean;
+/** Available sling target */
+export interface SlingTarget {
+  /** Target identifier (e.g., "bcc/polecats/fury") */
+  id: string
+  /** Human-readable name */
+  name: string
+  /** Target type */
+  type: 'polecat' | 'crew' | 'rig'
+  /** Current status (if available) */
+  status?: 'available' | 'busy' | 'offline'
 }
 
-// =============================================================================
-// UI State
-// =============================================================================
+// ============================================================================
+// Pour API Types
+// ============================================================================
 
-/**
- * Filter state for bead list views.
- */
-export interface BeadFilters {
-  /** Filter by status */
-  status?: string[];
-  /** Filter by type */
-  type?: string[];
-  /** Filter by priority */
-  priority?: number[];
-  /** Filter by assignee */
-  assignee?: string;
-  /** Filter by labels */
-  labels?: string[];
-  /** Search text */
-  search?: string;
+/** Request payload for pour API */
+export interface PourRequest {
+  /** Proto ID to instantiate (e.g., formula name or proto-id) */
+  proto_id: string
+  /** Variable substitutions (key=value pairs) */
+  vars?: Record<string, string>
+  /** Assignee for the root issue */
+  assignee?: string
+  /** Whether to perform a dry run (preview only) */
+  dry_run?: boolean
 }
 
-/**
- * Sort state for list views.
- */
-export interface SortState {
-  /** Field to sort by */
-  field: string;
-  /** Sort direction */
-  direction: 'asc' | 'desc';
+/** A created bead from pour operation */
+export interface CreatedBead {
+  /** Bead ID */
+  id: string
+  /** Bead title */
+  title: string
+  /** Bead type (task, bug, epic, etc.) */
+  type: string
+  /** Bead priority */
+  priority: number
 }
 
-/**
- * Selection state for multi-select views.
- */
-export interface SelectionState {
-  /** Selected item IDs */
-  selectedIds: Set<string>;
-  /** Last selected ID (for shift-click range selection) */
-  lastSelectedId?: string;
+/** Result of pouring a formula */
+export interface PourResult {
+  /** Whether the pour succeeded */
+  ok: boolean
+  /** Molecule ID created from the pour */
+  molecule_id?: string
+  /** List of beads created */
+  created_beads?: CreatedBead[]
+  /** Total count of beads created */
+  bead_count?: number
+  /** Error message if pour failed */
+  error?: string
+  /** Stderr output from pour command */
+  stderr?: string
+  /** Exit code from pour command */
+  exit_code?: number
+  /** Whether this was a dry run */
+  dry_run?: boolean
 }
 
-// =============================================================================
-// Event Types
-// =============================================================================
+// ============================================================================
+// Burn API Types (rollback/undo pour)
+// ============================================================================
 
-/**
- * Bead change event (for real-time updates).
- */
-export interface BeadChangeEvent {
-  type: 'created' | 'updated' | 'deleted';
-  bead: BeadListItem;
-  timestamp: string;
+/** Request payload for burn API */
+export interface BurnRequest {
+  /** Molecule ID to burn/delete */
+  molecule_id: string
+  /** Whether to force deletion without confirmation */
+  force?: boolean
+  /** Whether to perform a dry run (preview only) */
+  dry_run?: boolean
 }
 
-/**
- * Formula change event.
- */
-export interface FormulaChangeEvent {
-  type: 'created' | 'updated' | 'deleted';
-  formula: FormulaFile;
-  timestamp: string;
+/** Result of burning a molecule */
+export interface BurnResult {
+  /** Whether the burn succeeded */
+  ok: boolean
+  /** Number of beads deleted */
+  deleted_count?: number
+  /** Error message if burn failed */
+  error?: string
+  /** Stderr output from burn command */
+  stderr?: string
+  /** Exit code from burn command */
+  exit_code?: number
+  /** Whether this was a dry run */
+  dry_run?: boolean
+}
+
+// ============================================================================
+// Formula Detail API Types (GET/PUT :name, cook, sling)
+// ============================================================================
+
+/** Parsed formula structure returned with formula content */
+export interface ParsedFormula {
+  /** Formula name */
+  name: string
+  /** Formula version */
+  version?: number
+  /** Formula type */
+  type?: string
+  /** Formula phase */
+  phase?: string
+  /** Variable definitions */
+  vars?: Record<string, FormulaVariable>
+  /** Steps defined in formula */
+  steps?: ProtoBead[]
+}
+
+/** Successful formula read response */
+export interface FormulaReadResponse {
+  ok: true
+  /** Formula name */
+  name: string
+  /** Full path to the formula file */
+  path: string
+  /** Raw TOML/JSON content of the formula */
+  content: string
+  /** Parsed formula structure (from bd cook --compile) */
+  parsed?: ParsedFormula
+}
+
+/** Error response for formula operations */
+export interface FormulaApiError {
+  ok: false
+  error: string
+  code: 'NOT_FOUND' | 'INVALID_NAME' | 'VALIDATION_ERROR' | 'WRITE_ERROR' | 'PARSE_ERROR'
+}
+
+/** Request payload for PUT /api/formulas/:name */
+export interface FormulaWriteRequest {
+  /** TOML/JSON content to write */
+  content: string
+}
+
+/** Successful formula write response */
+export interface FormulaWriteResponse {
+  ok: true
+  /** Formula name */
+  name: string
+  /** Path where the formula was written */
+  path: string
+}
+
+/** Request payload for POST /api/formulas/:name/cook */
+export interface FormulaCookRequest {
+  /** Variable substitutions */
+  vars?: Record<string, string>
+}
+
+/** Request payload for POST /api/formulas/:name/sling */
+export interface FormulaSlingRequest {
+  /** Target agent or crew (e.g., "bcc/polecats/fury") */
+  target: string
+  /** Variable substitutions */
+  vars?: Record<string, string>
 }

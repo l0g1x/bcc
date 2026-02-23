@@ -1,7 +1,8 @@
+import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { Toaster } from 'sonner'
+import { ConnectionGate } from './components/ui'
 import { routeTree } from './routeTree.gen'
 import './app.css'
 
@@ -18,7 +19,9 @@ if (!rootElement) throw new Error('Root element not found')
 
 createRoot(rootElement).render(
   <StrictMode>
-    <RouterProvider router={router} />
-    <Toaster position="top-right" richColors />
+    <ConnectionGate>
+      <RouterProvider router={router} />
+      <Toaster position="bottom-right" theme="dark" richColors />
+    </ConnectionGate>
   </StrictMode>
 )

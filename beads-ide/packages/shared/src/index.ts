@@ -1,81 +1,88 @@
-/**
- * @beads-ide/shared
- * Shared types for the Beads IDE frontend and backend.
- */
+// Shared types for beads-ide
+export interface Placeholder {
+  id: string
+}
 
-// Core domain types
+// Formula parser
+export {
+  parseFormula,
+  parseAndValidateFormula,
+  validateDependencies,
+  type ParsedFormula as ParserParsedFormula,
+  type FormulaParseError,
+  type FormulaParseResult,
+} from './formula-parser.js'
+
+// Wave computation
+export {
+  computeWaves,
+  isWorkflowDep,
+  WORKFLOW_DEP_TYPES,
+  type Bead,
+  type Dependency,
+  type Wave,
+  type WaveResult,
+  type WorkflowDepType,
+} from './wave.js'
+
+// Bead API types
 export type {
-  // Status & Type Enums
   BeadStatus,
   BeadType,
   DependencyType,
-  AgentState,
-  RoleType,
-  AwaitType,
-  MolType,
-  WorkType,
-  WispType,
-  BondType,
-  // Dependency & Relations
-  Dependency,
-  DependentBead,
-  BondRef,
-  EntityRef,
-  Validation,
-  Comment,
-  // Bead (Issue)
-  Bead,
-  BeadListItem,
-  // Formula Types
-  FormulaType,
-  FormulaPhase,
-  VarDef,
-  Gate,
-  LoopSpec,
-  OnCompleteSpec,
-  Step,
-  BondPoint,
-  Hook,
-  ExpandRule,
-  MapRule,
-  BranchRule,
-  GateRule,
-  ComposeRules,
-  AdviceStep,
-  AroundAdvice,
-  AdviceRule,
-  Pointcut,
-  Formula,
-} from './types.js';
+  BeadDependency,
+  BeadDependent,
+  BeadFull,
+  BeadApiError,
+  BeadsListResponse,
+  BeadShowResponse,
+} from './types.js'
 
-// IDE-specific types
+// Graph metrics and visualization types
 export type {
-  // Wave Computation
-  Wave,
-  WaveResult,
-  // Graph Analysis
   GraphNode,
-  GraphMetrics,
+  GraphEdge,
   GraphStats,
-  // Formula Files
-  FormulaFile,
+  GraphExport,
+  RankedMetric,
+  HITSScores,
+  CycleInfo,
+  DegreeMetrics,
+  CriticalPath,
+  TopoSort,
+  GraphMetrics,
+  GraphError,
+  GraphMetricsResponse,
+  GraphExportResponse,
+  GraphMetricsResult,
+  GraphExportResult,
+  // Cook API types
+  ProtoBead,
+  FormulaVariable,
   CookResult,
-  // API Responses
-  ApiResponse,
-  PaginatedResponse,
-  // CLI Invocation
-  CliInvocation,
-  // Session State
-  SessionState,
-  // Configuration
-  BeadsIDEConfig,
-  EditorConfig,
-  GraphConfig,
-  // UI State
-  BeadFilters,
-  SortState,
-  SelectionState,
-  // Events
-  BeadChangeEvent,
-  FormulaChangeEvent,
-} from './ide-types.js';
+  CookRequest,
+  // Formula list API types
+  Formula,
+  FormulaListItem,
+  FormulaListResponse,
+  FormulaListError,
+  // Sling API types
+  SlingRequest,
+  SlingResult,
+  SlingTarget,
+  // Pour API types
+  PourRequest,
+  CreatedBead,
+  PourResult,
+  // Burn API types (rollback)
+  BurnRequest,
+  BurnResult,
+  // Formula detail API types
+  ParsedFormula,
+  FormulaReadResponse,
+  FormulaApiError,
+  FormulaWriteRequest,
+  FormulaWriteResponse,
+  FormulaCookRequest,
+  FormulaSlingRequest,
+} from './ide-types.js'

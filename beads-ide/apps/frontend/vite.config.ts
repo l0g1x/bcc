@@ -1,10 +1,11 @@
+import { resolve } from 'node:path'
+import tailwindcss from '@tailwindcss/vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
-import { resolve } from 'node:path'
 
-export const config = defineConfig({
+// biome-ignore lint/style/noDefaultExport: Vite config requires default export
+export default defineConfig({
   plugins: [
     TanStackRouterVite({
       routesDirectory: './src/routes',
@@ -28,5 +29,3 @@ export const config = defineConfig({
     },
   },
 })
-
-export default config

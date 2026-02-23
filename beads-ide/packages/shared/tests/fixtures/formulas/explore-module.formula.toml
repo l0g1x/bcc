@@ -1,0 +1,87 @@
+formula = "explore-module"
+type = "workflow"
+phase = "liquid"
+version = 1
+
+[vars]
+module_name = { description = "Name of the module to explore", required = true }
+module_path = { description = "Filesystem path to the module", required = true }
+depth = { description = "Exploration depth: shallow (structure only), medium (structure + imports), deep (full analysis)", default = "medium" }
+
+[[steps]]
+id = "scan-structure"
+title = "Scan {{module_name}} structure"
+description = """Enumerate all files in {{module_path}}.
+- Count files by extension/language
+- Measure total LOC
+- Identify sub-directories that may be sub-modules
+- Note any README, config, or schema files
+Output: file manifest with counts"""
+priority = 0
+
+[[steps]]
+id = "identify-public-api"
+title = "Map {{module_name}} public API"
+description = """Find all exported/public symbols in {{module_path}}:
+- Exported functions, classes, interfaces, types
+- Re-exports / barrel files (index.ts, __init__.py, mod.rs)
+- HTTP endpoints if this is a route module
+- Database tables/models if this is a data module
+Output: API surface inventory"""
+needs = ["scan-structure"]
+priority = 0
+
+[[steps]]
+id = "trace-imports"
+title = "Trace {{module_name}} import graph"
+description = """Find all import/require/use statements in {{module_path}}:
+- Internal imports (within the module) -> inform child bead structure
+- External imports (from other modules) -> create blocking deps
+- Stdlib/vendor imports -> note but don't create beads
+Output: import map with dep creation commands"""
+needs = ["scan-structure"]
+priority = 0
+
+[[steps]]
+id = "detect-patterns"
+title = "Detect patterns in {{module_name}}"
+description = """Analyze {{module_path}} for:
+- Design patterns: MVC, repository, factory, observer, middleware chain
+- Anti-patterns: god objects, circular imports, deep nesting, feature envy
+- Tech debt signals: TODO/FIXME/HACK comments, disabled tests, large files (>500 LOC)
+- Cohesion: do files in this module belong together?
+For each significant finding, create a related dep or update bead labels."""
+needs = ["identify-public-api", "trace-imports"]
+priority = 1
+
+[[steps]]
+id = "create-child-beads"
+title = "Create child beads for {{module_name}} sub-components"
+description = """For each significant sub-component discovered in scan-structure:
+1. If sub-component has >5 files or >500 LOC: create a feature bead
+2. If sub-component has 2-5 files: create a task bead with description
+3. If sub-component is a single significant file (>200 LOC): create a task bead
+4. Wire parent-child deps to the {{module_name}} bead"""
+needs = ["detect-patterns"]
+priority = 1
+
+[[steps]]
+id = "wire-dependencies"
+title = "Wire {{module_name}} dependencies"
+description = """Create all dependency edges:
+1. Blocking deps: from child beads to external module beads (based on trace-imports)
+2. Related deps: between sibling beads that share common patterns or co-change
+3. Parent-child deps: from this module's bead to child beads"""
+needs = ["create-child-beads"]
+priority = 1
+
+[[steps]]
+id = "enrich-metadata"
+title = "Enrich {{module_name}} bead metadata"
+description = """Update the {{module_name}} bead with:
+- description: Purpose, key files, public API summary
+- design: Architecture notes, data flow, why it exists
+- acceptance: What an agent must understand to work in this module
+- labels: domain label, layer label, quality label"""
+needs = ["wire-dependencies"]
+priority = 2
