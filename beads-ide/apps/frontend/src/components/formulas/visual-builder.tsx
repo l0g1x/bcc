@@ -122,15 +122,16 @@ function formatGroupLabel(prefix: string): string {
     .join(' ')
 }
 
-// --- Group colors for visual distinction ---
+// --- Group colors and border styles for visual distinction ---
+// Border styles cycle for color-blind accessibility
 const GROUP_COLORS = [
-  { bg: 'rgba(99, 102, 241, 0.08)', border: '#6366f1' }, // Indigo
-  { bg: 'rgba(16, 185, 129, 0.08)', border: '#10b981' }, // Emerald
-  { bg: 'rgba(245, 158, 11, 0.08)', border: '#f59e0b' }, // Amber
-  { bg: 'rgba(239, 68, 68, 0.08)', border: '#ef4444' }, // Red
-  { bg: 'rgba(168, 85, 247, 0.08)', border: '#a855f7' }, // Purple
-  { bg: 'rgba(14, 165, 233, 0.08)', border: '#0ea5e9' }, // Sky
-]
+  { bg: 'rgba(99, 102, 241, 0.08)', border: '#6366f1', borderStyle: 'dashed' }, // Indigo
+  { bg: 'rgba(16, 185, 129, 0.08)', border: '#10b981', borderStyle: 'solid' }, // Emerald
+  { bg: 'rgba(245, 158, 11, 0.08)', border: '#f59e0b', borderStyle: 'dotted' }, // Amber
+  { bg: 'rgba(239, 68, 68, 0.08)', border: '#ef4444', borderStyle: 'double' }, // Red
+  { bg: 'rgba(168, 85, 247, 0.08)', border: '#a855f7', borderStyle: 'solid' }, // Purple (thicker)
+  { bg: 'rgba(14, 165, 233, 0.08)', border: '#0ea5e9', borderStyle: 'dashed' }, // Sky
+] as const
 
 // --- Styles ---
 
@@ -325,12 +326,14 @@ function StepNode({ data }: NodeProps<Node<StepNodeData>>) {
 
 function GroupNode({ data }: NodeProps<Node<GroupNodeData & { colorIndex: number }>>) {
   const color = GROUP_COLORS[data.colorIndex % GROUP_COLORS.length]
+  // Vary border width for additional distinction (double style needs 3px minimum)
+  const borderWidth = color.borderStyle === 'double' ? '3px' : color.borderStyle === 'dotted' ? '2px' : '1px'
 
   return (
     <div
       style={{
         backgroundColor: color.bg,
-        border: `1px dashed ${color.border}`,
+        border: `${borderWidth} ${color.borderStyle} ${color.border}`,
         borderRadius: '12px',
         width: '100%',
         height: '100%',
@@ -343,7 +346,7 @@ function GroupNode({ data }: NodeProps<Node<GroupNodeData & { colorIndex: number
           fontSize: '12px',
           fontWeight: 600,
           color: color.border,
-          borderBottom: `1px dashed ${color.border}`,
+          borderBottom: `${borderWidth} ${color.borderStyle} ${color.border}`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
