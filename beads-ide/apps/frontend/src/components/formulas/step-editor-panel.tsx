@@ -255,13 +255,13 @@ export function StepEditorPanel({
       <div style={contentStyle}>
         {/* Title */}
         <div style={sectionStyle}>
-          <label style={labelStyle}>Title</label>
+          <label htmlFor="step-editor-title" style={labelStyle}>Title</label>
           <input
+            id="step-editor-title"
             type="text"
             value={step.title}
             onChange={handleTitleChange}
             style={inputStyle}
-            aria-label="Step title"
             placeholder="Enter step title..."
             onFocus={(e) => {
               e.currentTarget.style.borderColor = '#3b82f6'
@@ -274,16 +274,16 @@ export function StepEditorPanel({
 
         {/* Priority */}
         <div style={sectionStyle}>
-          <label style={labelStyle}>Priority</label>
+          <label htmlFor="step-editor-priority" style={labelStyle}>Priority</label>
           <div style={priorityContainerStyle}>
             <input
+              id="step-editor-priority"
               type="number"
               min={0}
               max={10}
               value={step.priority}
               onChange={handlePriorityChange}
               style={priorityInputStyle}
-              aria-label="Step priority"
             />
             <div style={priorityDotsStyle}>
               {[...Array(10)].map((_, i) => (
@@ -343,12 +343,13 @@ export function StepEditorPanel({
 
         {/* Description - Takes remaining space */}
         <div style={descriptionSectionStyle}>
-          <label style={labelStyle}>Description</label>
+          <label id="step-editor-description-label" style={labelStyle}>Description</label>
           <MarkdownEditor
             value={step.description}
             onChange={handleDescriptionChange}
             placeholder="Describe what this step does..."
             minHeight="250px"
+            aria-labelledby="step-editor-description-label"
           />
         </div>
       </div>
