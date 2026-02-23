@@ -1,0 +1,19 @@
+/* OpenCode Panel Styles */
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.opencode-streaming-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #3b82f6;
+  border-radius: 50%;
+  animation: pulse 1s infinite;
+}

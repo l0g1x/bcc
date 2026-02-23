@@ -72,6 +72,7 @@ const stepsRowStyle: CSSProperties = {
   display: 'flex',
   flexWrap: 'wrap',
   gap: '12px',
+  justifyContent: 'center',
 }
 
 const stepCardStyle = (

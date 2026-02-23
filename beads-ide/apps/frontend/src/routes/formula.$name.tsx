@@ -18,6 +18,7 @@ import {
   VarsPanel,
   VisualBuilder,
 } from '../components/formulas'
+import { OpenCodeTerminal } from '../components/opencode'
 import { useCook, useFormulaContent, useSling } from '../hooks'
 import {
   type FormulaParseError,
@@ -114,9 +115,16 @@ const pourButtonStyle: CSSProperties = {
   color: '#fff',
 }
 
+const aiButtonStyle = (isActive: boolean): CSSProperties => ({
+  ...buttonBaseStyle,
+  background: isActive ? '#8b5cf6' : '#6b21a8',
+  color: '#fff',
+})
+
 const contentStyle: CSSProperties = {
   display: 'flex',
   flex: 1,
+  minHeight: 0, // Critical for nested flex to work
   overflow: 'hidden',
 }
 
@@ -132,10 +140,10 @@ const sidePanelStyle: CSSProperties = {
   minWidth: '380px',
   borderLeft: '1px solid #334155',
   backgroundColor: '#0f172a',
-  height: '100%',
   overflow: 'hidden',
   display: 'flex',
   flexDirection: 'column',
+  alignSelf: 'stretch', // Fill parent height in flex
 }
 
 const visualContainerStyle: CSSProperties = {
@@ -189,6 +197,7 @@ function FormulaPage() {
   const [slingDialogOpen, setSlingDialogOpen] = useState(false)
   const [pourDialogOpen, setPourDialogOpen] = useState(false)
   const [selectedStepId, setSelectedStepId] = useState<string | null>(null)
+  const [showAiPanel, setShowAiPanel] = useState(false)
 
   // Load formula content from disk
   const {
@@ -324,6 +333,10 @@ function FormulaPage() {
     setPourDialogOpen(true)
   }, [])
 
+  const handleToggleAi = useCallback(() => {
+    setShowAiPanel((prev) => !prev)
+  }, [])
+
   const handlePourClose = useCallback(() => {
     setPourDialogOpen(false)
   }, [])
@@ -378,6 +391,14 @@ function FormulaPage() {
             title="Dispatch to agent (Cmd+Shift+S)"
           >
             Sling
+          </button>
+          <button
+            type="button"
+            onClick={handleToggleAi}
+            style={aiButtonStyle(showAiPanel)}
+            title="AI Assistant"
+          >
+            AI
           </button>
           <div style={toggleContainerStyle}>
             <button
@@ -488,13 +509,20 @@ function FormulaPage() {
             />
           </div>
         )}
-        {!showSidePanel && viewMode === 'text' && result?.vars && Object.keys(result.vars).length > 0 && (
+        {!showSidePanel && !showAiPanel && viewMode === 'text' && result?.vars && Object.keys(result.vars).length > 0 && (
           <div style={sidePanelStyle}>
             <VarsPanel
               vars={result.vars}
               values={varValues}
               onValueChange={handleVarChange}
               unboundVars={result.unbound_vars}
+            />
+          </div>
+        )}
+        {showAiPanel && (
+          <div style={{ ...sidePanelStyle, width: '700px', minWidth: '600px' }}>
+            <OpenCodeTerminal
+              onClose={() => setShowAiPanel(false)}
             />
           </div>
         )}

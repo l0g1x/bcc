@@ -5,3 +5,10 @@ export { useFormulaContent, type UseFormulaContentReturn } from './use-formula-c
 export { useGraph, type UseGraphReturn, type GraphData } from './use-graph'
 export { useSling, type UseSlingReturn } from './use-sling'
 export { usePour, type UsePourReturn } from './use-pour'
+export {
+  useOpenCode,
+  type UseOpenCodeOptions,
+  type UseOpenCodeReturn,
+  type OpenCodeMessage,
+  type OpenCodeSession,
+} from './use-opencode'

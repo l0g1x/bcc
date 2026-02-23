@@ -1,0 +1,37 @@
+/* Make xterm fill its container using absolute positioning */
+.opencode-terminal-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.opencode-terminal-container .xterm {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.opencode-terminal-container .xterm-viewport {
+  width: 100% !important;
+  height: 100% !important;
+  overflow-y: auto !important;
+}
+
+.opencode-terminal-container .xterm-screen {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Ensure xterm-rows fills the screen */
+.opencode-terminal-container .xterm-rows {
+  height: 100% !important;
+}
+
+/* Force canvas to fill available space */
+.opencode-terminal-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}

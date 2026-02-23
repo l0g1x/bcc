@@ -33,6 +33,10 @@ interface StepNodeData extends Record<string, unknown> {
   priority: number
   variables: string[]
   isSelected?: boolean
+  isBottleneck: boolean // Blocks 2+ downstream steps
+  isGate: boolean // Needs 2+ upstream steps
+  needsCount: number
+  blocksCount: number
 }
 
 interface GroupNodeData extends Record<string, unknown> {
@@ -125,14 +129,36 @@ const GROUP_COLORS = [
 
 // --- Styles ---
 
-const nodeContainerStyle = (isSelected: boolean): CSSProperties => ({
-  backgroundColor: '#1e293b',
-  border: isSelected ? '2px solid #3b82f6' : '1px solid #475569',
+const nodeContainerStyle = (
+  isSelected: boolean,
+  isBottleneck: boolean,
+  isGate: boolean
+): CSSProperties => ({
+  backgroundColor: isSelected
+    ? 'rgba(59, 130, 246, 0.15)'
+    : isBottleneck
+      ? 'rgba(239, 68, 68, 0.1)'
+      : isGate
+        ? 'rgba(245, 158, 11, 0.1)'
+        : '#1e293b',
+  border: isSelected
+    ? '2px solid #3b82f6'
+    : isBottleneck
+      ? '2px solid #ef4444'
+      : isGate
+        ? '2px solid #f59e0b'
+        : '1px solid #475569',
   borderRadius: '8px',
-  padding: isSelected ? '11px 13px' : '12px 14px',
+  padding: isSelected || isBottleneck || isGate ? '11px 13px' : '12px 14px',
   minWidth: `${NODE_WIDTH}px`,
   cursor: 'pointer',
-  boxShadow: isSelected ? '0 0 0 2px rgba(59, 130, 246, 0.3)' : 'none',
+  boxShadow: isSelected
+    ? '0 0 0 2px rgba(59, 130, 246, 0.3)'
+    : isBottleneck
+      ? '0 0 0 2px rgba(239, 68, 68, 0.2)'
+      : isGate
+        ? '0 0 0 2px rgba(245, 158, 11, 0.2)'
+        : 'none',
   transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
 })
 
@@ -182,16 +208,67 @@ const emptyStateStyle: CSSProperties = {
   fontStyle: 'italic',
 }
 
+const badgeRowStyle: CSSProperties = {
+  display: 'flex',
+  gap: '4px',
+  flexWrap: 'wrap',
+  marginTop: '6px',
+}
+
+const badgeStyle = (type: 'blocks' | 'needs' | 'gate'): CSSProperties => ({
+  fontSize: '9px',
+  fontFamily: 'monospace',
+  padding: '2px 5px',
+  borderRadius: '4px',
+  backgroundColor:
+    type === 'blocks'
+      ? 'rgba(239, 68, 68, 0.2)'
+      : type === 'gate'
+        ? 'rgba(245, 158, 11, 0.2)'
+        : 'rgba(107, 114, 128, 0.2)',
+  color: type === 'blocks' ? '#fca5a5' : type === 'gate' ? '#fcd34d' : '#9ca3af',
+})
+
+const legendOverlayStyle: CSSProperties = {
+  position: 'absolute',
+  top: '12px',
+  right: '12px',
+  display: 'flex',
+  gap: '12px',
+  backgroundColor: 'rgba(15, 23, 42, 0.9)',
+  padding: '8px 12px',
+  borderRadius: '6px',
+  border: '1px solid #334155',
+  zIndex: 10,
+}
+
+const legendItemStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '6px',
+  fontSize: '11px',
+  color: '#9ca3af',
+}
+
+const legendDotStyle = (color: string): CSSProperties => ({
+  width: '8px',
+  height: '8px',
+  borderRadius: '50%',
+  backgroundColor: color,
+})
+
 // --- Custom Node Components ---
 
 function StepNode({ data }: NodeProps<Node<StepNodeData>>) {
+  const handleColor = data.isBottleneck ? '#ef4444' : data.isGate ? '#f59e0b' : '#6366f1'
+
   return (
-    <div style={nodeContainerStyle(data.isSelected ?? false)}>
+    <div style={nodeContainerStyle(data.isSelected ?? false, data.isBottleneck, data.isGate)}>
       {/* Target handle (incoming edges) */}
       <Handle
         type="target"
         position={Position.Top}
-        style={{ background: '#6366f1', border: 'none', width: 8, height: 8 }}
+        style={{ background: handleColor, border: 'none', width: 8, height: 8 }}
       />
 
       {/* Variable input ports */}
@@ -211,11 +288,31 @@ function StepNode({ data }: NodeProps<Node<StepNodeData>>) {
       </div>
       <div style={nodeIdStyle}>{data.id}</div>
 
+      {/* Badges showing input/output relationships */}
+      <div style={badgeRowStyle}>
+        {data.isGate && (
+          <span style={badgeStyle('gate')}>
+            {data.needsCount} inputs
+          </span>
+        )}
+        {data.isBottleneck && (
+          <span style={badgeStyle('blocks')}>
+            blocks {data.blocksCount}
+          </span>
+        )}
+        {!data.isGate && !data.isBottleneck && data.needsCount > 0 && (
+          <span style={badgeStyle('needs')}>1 input</span>
+        )}
+        {!data.isGate && !data.isBottleneck && data.blocksCount === 1 && (
+          <span style={badgeStyle('needs')}>1 output</span>
+        )}
+      </div>
+
       {/* Source handle (outgoing edges) */}
       <Handle
         type="source"
         position={Position.Bottom}
-        style={{ background: '#6366f1', border: 'none', width: 8, height: 8 }}
+        style={{ background: handleColor, border: 'none', width: 8, height: 8 }}
       />
     </div>
   )
@@ -313,11 +410,29 @@ export function VisualBuilder({
       }
     }
 
-    // Create step nodes
+    // Build reverse dependency map (what does each step block?)
+    const blocksMap = new Map<string, string[]>()
+    for (const step of steps) {
+      blocksMap.set(step.id, [])
+    }
+    for (const step of steps) {
+      if (step.needs) {
+        for (const needId of step.needs) {
+          const blocks = blocksMap.get(needId)
+          if (blocks) {
+            blocks.push(step.id)
+          }
+        }
+      }
+    }
+
+    // Create step nodes with bottleneck/gate detection
     const stepNodes: Node<StepNodeData>[] = steps.map((step) => {
       const titleVars = extractVariables(step.title)
       const descVars = extractVariables(step.description)
       const allVars = [...new Set([...titleVars, ...descVars])]
+      const blocks = blocksMap.get(step.id) ?? []
+      const needsCount = step.needs?.length ?? 0
 
       return {
         id: step.id,
@@ -330,6 +445,10 @@ export function VisualBuilder({
           priority: step.priority,
           variables: allVars,
           isSelected: step.id === selectedStepId,
+          isBottleneck: blocks.length >= 2,
+          isGate: needsCount >= 2,
+          needsCount,
+          blocksCount: blocks.length,
         },
       }
     })
@@ -451,12 +570,33 @@ export function VisualBuilder({
     }
   }, [onStepSelect, selectedStepId])
 
+  // Count bottlenecks and gates for legend
+  const bottleneckCount = useMemo(() => {
+    return nodes.filter((n) => n.type === 'step' && (n.data as StepNodeData)?.isBottleneck).length
+  }, [nodes])
+
+  const gateCount = useMemo(() => {
+    return nodes.filter((n) => n.type === 'step' && (n.data as StepNodeData)?.isGate).length
+  }, [nodes])
+
   if (!steps || steps.length === 0) {
     return <div style={emptyStateStyle}>No steps to display</div>
   }
 
   return (
-    <div style={{ width: '100%', height: '100%', minHeight: '400px' }}>
+    <div style={{ width: '100%', height: '100%', minHeight: '400px', position: 'relative' }}>
+      {/* Legend overlay */}
+      <div style={legendOverlayStyle}>
+        <div style={legendItemStyle}>
+          <div style={legendDotStyle('#ef4444')} />
+          <span>Bottleneck ({bottleneckCount})</span>
+        </div>
+        <div style={legendItemStyle}>
+          <div style={legendDotStyle('#f59e0b')} />
+          <span>Gate ({gateCount})</span>
+        </div>
+      </div>
+
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -488,6 +628,9 @@ export function VisualBuilder({
         <MiniMap
           nodeColor={(node) => {
             if (node.type === 'group') return 'transparent'
+            const data = node.data as StepNodeData | undefined
+            if (data?.isBottleneck) return '#ef4444'
+            if (data?.isGate) return '#f59e0b'
             return '#1e293b'
           }}
           maskColor="rgba(15, 23, 42, 0.8)"
