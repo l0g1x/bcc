@@ -194,6 +194,7 @@ function FormulaPage() {
   const announce = useAnnounce()
   const [viewMode, setViewMode] = useState<ViewMode>('text')
   const [tomlContent, setTomlContent] = useState('')
+  const [savedContent, setSavedContent] = useState('')
   const [parseErrors, setParseErrors] = useState<FormulaParseError[]>([])
   const [varValues, setVarValues] = useState<Record<string, string>>({})
   const [slingDialogOpen, setSlingDialogOpen] = useState(false)
@@ -203,7 +204,9 @@ function FormulaPage() {
 
   // Track when unsaved changes are first detected
   const hasAnnouncedUnsavedRef = useRef(false)
-  const lastSavedContentRef = useRef('')
+
+  // Compute isDirty from current content vs saved content
+  const isDirty = tomlContent !== savedContent
 
   // Load formula content from disk
   const {
@@ -225,7 +228,7 @@ function FormulaPage() {
   useEffect(() => {
     if (loadedContent) {
       setTomlContent(loadedContent)
-      lastSavedContentRef.current = loadedContent
+      setSavedContent(loadedContent)
       hasAnnouncedUnsavedRef.current = false
       // Parse initial content
       const result = parseAndValidateFormula(loadedContent)
@@ -319,7 +322,7 @@ function FormulaPage() {
   const handleTomlChange = useCallback((content: string) => {
     setTomlContent(content)
     // Announce unsaved changes on first divergence
-    if (content !== lastSavedContentRef.current && !hasAnnouncedUnsavedRef.current) {
+    if (content !== savedContent && !hasAnnouncedUnsavedRef.current) {
       hasAnnouncedUnsavedRef.current = true
       announce('Unsaved changes')
     }
@@ -330,7 +333,7 @@ function FormulaPage() {
     } else {
       setParseErrors([])
     }
-  }, [announce])
+  }, [announce, savedContent])
 
   const handleCook = useCallback(() => {
     cook()
