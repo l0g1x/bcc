@@ -489,10 +489,16 @@ export function VisualBuilder({
           const targetGroup = getGroupPrefix(step.id)
           const isCrossGroup = sourceGroup !== targetGroup
 
+          // Hide cross-group edges by default, reveal when selected step is involved
+          const isSelectedInvolved =
+            selectedStepId === needId || selectedStepId === step.id
+          const hideCrossGroup = isCrossGroup && !isSelectedInvolved
+
           edges.push({
             id: `${needId}->${step.id}`,
             source: needId,
             target: step.id,
+            hidden: hideCrossGroup,
             style: {
               stroke: isCrossGroup ? '#f59e0b' : '#6366f1',
               strokeWidth: isCrossGroup ? 3 : 2,
