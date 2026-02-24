@@ -260,13 +260,13 @@ function FormulaPage() {
     error: contentError,
   } = useFormulaContent(name ?? null)
 
-  // Reset state when formula name changes
+  // Reset state when formula name changes (runs on mount only, loadedContent effect handles navigation)
   useEffect(() => {
     setTomlContent('')
     setParseErrors([])
     setVarValues({})
     setSelectedStepId(null)
-  }, [name])
+  }, [])
 
   // Set content when loaded from disk
   useEffect(() => {
@@ -310,7 +310,7 @@ function FormulaPage() {
     } catch {
       // Error toast is already shown by useSave hook
     }
-  }, [name, tomlContent, isSaving, save, announce, setSavedContent])
+  }, [name, tomlContent, isSaving, save, announce])
 
   // Mod+S to save (enable on form tags so it works in the text editor)
   useHotkey('Mod+S', handleSave, { enableOnFormTags: true })
