@@ -352,7 +352,22 @@ function GroupNode({ data }: NodeProps<Node<GroupNodeData & { colorIndex: number
           justifyContent: 'space-between',
         }}
       >
-        <span>{data.label}</span>
+        <span>
+          <span
+            style={{
+              backgroundColor: color.border,
+              color: '#0f172a',
+              padding: '1px 5px',
+              borderRadius: '4px',
+              fontSize: '10px',
+              fontWeight: 700,
+              marginRight: '8px',
+            }}
+          >
+            #{data.colorIndex + 1}
+          </span>
+          {data.label}
+        </span>
         <span
           style={{
             fontSize: '10px',
