@@ -15,6 +15,16 @@ export interface UnsavedChangesModalProps {
   onDiscard: () => void
   /** Callback to cancel and stay on current content */
   onCancel: () => void
+  /** Custom title (default: "Unsaved Changes") */
+  title?: string
+  /** Custom message (default: "You have unsaved changes. Do you want to save them before leaving?") */
+  message?: string
+  /** Custom label for save button (default: "Save") */
+  saveLabel?: string
+  /** Custom label for discard button (default: "Discard") */
+  discardLabel?: string
+  /** Custom label for cancel button (default: "Cancel") */
+  cancelLabel?: string
 }
 
 const overlayStyle: CSSProperties = {
@@ -118,6 +128,11 @@ export function UnsavedChangesModal({
   onSave,
   onDiscard,
   onCancel,
+  title = 'Unsaved Changes',
+  message = 'You have unsaved changes. Do you want to save them before leaving?',
+  saveLabel = 'Save',
+  discardLabel = 'Discard',
+  cancelLabel = 'Cancel',
 }: UnsavedChangesModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
 
@@ -191,7 +206,7 @@ export function UnsavedChangesModal({
       >
         <div style={headerStyle}>
           <h2 id="unsaved-changes-title" style={titleStyle}>
-            Unsaved Changes
+            {title}
           </h2>
           <button
             type="button"
@@ -205,19 +220,19 @@ export function UnsavedChangesModal({
 
         <div style={contentStyle}>
           <p id="unsaved-changes-message" style={messageStyle}>
-            You have unsaved changes. Do you want to save them before leaving?
+            {message}
           </p>
         </div>
 
         <div style={footerStyle}>
           <button type="button" style={cancelButtonStyle} onClick={onCancel}>
-            Cancel
+            {cancelLabel}
           </button>
           <button type="button" style={discardButtonStyle} onClick={onDiscard}>
-            Discard
+            {discardLabel}
           </button>
           <button type="button" style={saveButtonStyle} onClick={onSave}>
-            Save
+            {saveLabel}
           </button>
         </div>
       </div>

@@ -19,6 +19,7 @@ import {
   VarsPanel,
   VisualBuilder,
 } from '../components/formulas'
+import { UnsavedChangesModal } from '../components/ui/unsaved-changes-modal'
 import { OpenCodeTerminal } from '../components/opencode'
 import { useAnnounce, useFormulaDirty } from '../contexts'
 import { useCook, useFormulaContent, useSave, useSling } from '../hooks'
@@ -219,6 +220,8 @@ function FormulaPage() {
   const [pourDialogOpen, setPourDialogOpen] = useState(false)
   const [selectedStepId, setSelectedStepId] = useState<string | null>(null)
   const [showAiPanel, setShowAiPanel] = useState(false)
+  // Track pending execution action when there are unsaved changes
+  const [pendingAction, setPendingAction] = useState<'pour' | 'sling' | null>(null)
 
   // Track when unsaved changes are first detected
   const hasAnnouncedUnsavedRef = useRef(false)
@@ -406,16 +409,67 @@ function FormulaPage() {
   }, [cook])
 
   const handleOpenSling = useCallback(() => {
-    resetSling()
-    setSlingDialogOpen(true)
-  }, [resetSling])
+    if (isDirty) {
+      setPendingAction('sling')
+    } else {
+      resetSling()
+      setSlingDialogOpen(true)
+    }
+  }, [isDirty, resetSling])
 
   const handleSlingClose = useCallback(() => {
     setSlingDialogOpen(false)
   }, [])
 
   const handleOpenPour = useCallback(() => {
-    setPourDialogOpen(true)
+    if (isDirty) {
+      setPendingAction('pour')
+    } else {
+      setPourDialogOpen(true)
+    }
+  }, [isDirty])
+
+  // Handle save and execute from unsaved changes modal
+  const handleSaveAndExecute = useCallback(async () => {
+    const action = pendingAction
+    setPendingAction(null)
+    if (!name || !tomlContent) return
+
+    try {
+      await save(name, tomlContent)
+      setSavedContent(tomlContent)
+      hasAnnouncedUnsavedRef.current = false
+      toast.success('Formula saved')
+      announce('Formula saved')
+
+      // Now proceed with the action
+      if (action === 'pour') {
+        setPourDialogOpen(true)
+      } else if (action === 'sling') {
+        resetSling()
+        setSlingDialogOpen(true)
+      }
+    } catch {
+      // Error toast is already shown by useSave hook
+    }
+  }, [pendingAction, name, tomlContent, save, announce, resetSling])
+
+  // Handle execute without saving from unsaved changes modal
+  const handleExecuteWithoutSaving = useCallback(() => {
+    const action = pendingAction
+    setPendingAction(null)
+
+    if (action === 'pour') {
+      setPourDialogOpen(true)
+    } else if (action === 'sling') {
+      resetSling()
+      setSlingDialogOpen(true)
+    }
+  }, [pendingAction, resetSling])
+
+  // Handle cancel from unsaved changes modal
+  const handleCancelExecute = useCallback(() => {
+    setPendingAction(null)
   }, [])
 
   const handleToggleAi = useCallback(() => {
@@ -645,6 +699,19 @@ function FormulaPage() {
           {result?.vars && ` · ${Object.keys(result.vars).length} variables`}
         </span>
       </div>
+
+      {/* Unsaved changes modal for Pour/Sling */}
+      <UnsavedChangesModal
+        isOpen={pendingAction !== null}
+        onSave={handleSaveAndExecute}
+        onDiscard={handleExecuteWithoutSaving}
+        onCancel={handleCancelExecute}
+        title="Unsaved Changes"
+        message="You have unsaved changes. Do you want to save them before executing?"
+        saveLabel="Save and Execute"
+        discardLabel="Execute Without Saving"
+        cancelLabel="Cancel"
+      />
 
       <SlingDialog
         isOpen={slingDialogOpen}
