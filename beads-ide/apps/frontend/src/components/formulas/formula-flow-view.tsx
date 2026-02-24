@@ -306,24 +306,17 @@ export function FormulaFlowView({
 
             <div style={stepsRowStyle}>
               {waveSteps.map((step) => (
-                <div
+                <button
+                  type="button"
                   key={step.id}
-                  style={stepCardStyle(
+                  style={{ ...stepCardStyle(
                     selectedStepId === step.id,
                     step.isBottleneck,
                     step.isGate
-                  )}
+                  ), textAlign: 'left' }}
                   onClick={() =>
                     onStepSelect(selectedStepId === step.id ? null : step.id)
                   }
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      onStepSelect(selectedStepId === step.id ? null : step.id)
-                    }
-                  }}
                 >
                   <div style={stepTitleStyle} title={step.title}>
                     {step.title}
@@ -347,7 +340,7 @@ export function FormulaFlowView({
                       <span style={badgeStyle('needs')}>→ 1 output</span>
                     )}
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>

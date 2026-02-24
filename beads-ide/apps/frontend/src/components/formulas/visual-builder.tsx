@@ -760,17 +760,6 @@ export function VisualBuilder({
     [dagAdjacency, selectedStepId, onStepSelect, onStepOpen]
   )
 
-  // Attach keyboard listener to container
-  useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
-
-    container.addEventListener('keydown', handleKeyDown)
-    return () => {
-      container.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [handleKeyDown])
-
   // Count bottlenecks and gates for legend
   const bottleneckCount = useMemo(() => {
     return nodes.filter((n) => n.type === 'step' && (n.data as StepNodeData)?.isBottleneck).length
@@ -787,6 +776,7 @@ export function VisualBuilder({
   return (
     <div
       ref={containerRef}
+      // biome-ignore lint/a11y/noNoninteractiveTabindex: role="application" is interactive with keyboard handlers
       tabIndex={0}
       style={{
         width: '100%',
@@ -797,6 +787,7 @@ export function VisualBuilder({
       }}
       role="application"
       aria-label="Formula steps DAG. Use arrow keys to navigate, Enter to select, Escape to deselect."
+      onKeyDown={handleKeyDown as unknown as React.KeyboardEventHandler<HTMLDivElement>}
     >
       {/* Legend overlay */}
       <div style={legendOverlayStyle}>

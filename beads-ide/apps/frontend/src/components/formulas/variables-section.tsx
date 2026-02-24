@@ -136,24 +136,21 @@ export function VariablesSection({
       aria-label={`Variables, ${entries.length} items`}
     >
       {/* Header */}
-      <div
-        style={headerStyle(isExpanded)}
+      <button
+        type="button"
+        style={{ ...headerStyle(isExpanded), border: 'none', width: '100%', textAlign: 'left' }}
         onClick={toggleExpanded}
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            toggleExpanded()
-          }
-        }}
       >
         <span style={chevronStyle(isExpanded)} aria-hidden="true">▶</span>
         <span style={labelStyle}>Variables</span>
         <span style={countBadgeStyle} aria-hidden="true">{entries.length}</span>
-      </div>
+      </button>
 
       {/* Variables */}
-      <div style={varsContainerStyle(isExpanded)} role="group">
+      <fieldset style={{ ...varsContainerStyle(isExpanded), margin: 0, padding: '8px 0', border: 'none' }}>
+        <legend style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0 }}>
+          Variables
+        </legend>
         {entries.map(([key, def]) => (
           <div key={key} role="treeitem" aria-level={2}>
             <div style={varRowStyle}>
@@ -173,7 +170,7 @@ export function VariablesSection({
             )}
           </div>
         ))}
-      </div>
+      </fieldset>
     </div>
   )
 }

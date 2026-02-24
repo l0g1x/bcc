@@ -294,9 +294,9 @@ export function StepEditorPanel({
     <div ref={panelRef} style={{ ...panelStyle, position: 'relative' }}>
       {/* Loading overlay */}
       {isLoading && (
-        <div style={loadingOverlayStyle} role="status" aria-live="polite">
+        <output style={loadingOverlayStyle} aria-live="polite">
           <div style={spinnerStyle} aria-label="Loading" />
-        </div>
+        </output>
       )}
 
       {/* Header */}
@@ -445,7 +445,7 @@ export function StepEditorPanel({
 
         {/* Description - Takes remaining space */}
         <div style={descriptionSectionStyle}>
-          <label id="step-editor-description-label" style={labelStyle}>Description</label>
+          <span id="step-editor-description-label" style={labelStyle}>Description</span>
           <MarkdownEditor
             value={step.description}
             onChange={handleDescriptionChange}

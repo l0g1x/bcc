@@ -65,14 +65,13 @@ export function AnnouncementProvider({ children }: AnnouncementProviderProps) {
   return (
     <AnnouncementContext.Provider value={{ announce }}>
       {children}
-      <div
-        role="status"
+      <output
         aria-live="polite"
         aria-atomic="true"
         style={liveRegionStyle}
       >
         {message}
-      </div>
+      </output>
     </AnnouncementContext.Provider>
   )
 }

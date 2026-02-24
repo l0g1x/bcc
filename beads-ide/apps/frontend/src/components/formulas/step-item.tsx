@@ -272,16 +272,10 @@ export function StepItem({
       aria-label={`Step ${number}: ${step.title}`}
     >
       {/* Header row - always visible */}
-      <div
-        style={headerStyle(isSelected)}
+      <button
+        type="button"
+        style={{ ...headerStyle(isSelected), border: 'none', width: '100%', textAlign: 'left', background: 'transparent' }}
         onClick={onClick}
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            onClick()
-          }
-        }}
       >
         <span style={numberStyle}>
           <span style={statusStyle}>●</span>
@@ -313,7 +307,7 @@ export function StepItem({
             )}
           </div>
         )}
-      </div>
+      </button>
 
       {/* Inline edit fields - shown when selected */}
       {isSelected && onFieldChange && (
@@ -374,6 +368,7 @@ export function StepItem({
               style={textareaStyle}
               placeholder="Step description..."
               onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
             />
           </div>
         </div>
