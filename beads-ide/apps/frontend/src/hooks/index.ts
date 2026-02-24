@@ -19,3 +19,4 @@ export {
   type OpenCodeMessage,
   type OpenCodeSession,
 } from './use-opencode'
+export { useKeyboardTip } from './use-keyboard-tip'

@@ -7,7 +7,7 @@ import { AppShell, FormulaTree } from '../components/layout'
 import { CommandPalette, useDefaultActions } from '../components/layout/command-palette'
 import { GenericErrorPage, OfflineBanner } from '../components/ui'
 import { BeadSelectionProvider, useBeadSelection } from '../contexts'
-import { useBead } from '../hooks'
+import { useBead, useKeyboardTip } from '../hooks'
 
 type ViewMode = 'list' | 'wave' | 'graph'
 
@@ -69,6 +69,9 @@ function RootLayoutInner() {
   const { selectedBeadId, clearSelection } = useBeadSelection()
   const { bead, isLoading, error } = useBead(selectedBeadId)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
+
+  // Show one-time keyboard shortcut tip
+  useKeyboardTip()
 
   const handleOpenFormula = useCallback(() => {
     // Navigate to first formula or show formula picker
