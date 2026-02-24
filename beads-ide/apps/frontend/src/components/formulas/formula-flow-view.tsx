@@ -203,7 +203,7 @@ function computeFlowData(steps: ProtoBead[]): {
   // Compute waves (topological levels)
   const waveMap = new Map<string, number>()
   const computeWave = (stepId: string, visited: Set<string>): number => {
-    if (waveMap.has(stepId)) return waveMap.get(stepId)!
+    if (waveMap.has(stepId)) return waveMap.get(stepId) ?? 0
     if (visited.has(stepId)) return 0 // Cycle detected
 
     visited.add(stepId)

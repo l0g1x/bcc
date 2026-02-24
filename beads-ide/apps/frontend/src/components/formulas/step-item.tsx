@@ -296,14 +296,14 @@ export function StepItem({
 
         {!isSelected && hasNeeds && (
           <div style={depsContainerStyle}>
-            {isGate && <span style={gateBadgeStyle}>GATE ×{step.needs!.length}</span>}
-            {step.needs!.slice(0, isGate ? 2 : 1).map((depId) => (
+            {isGate && <span style={gateBadgeStyle}>GATE ×{step.needs?.length}</span>}
+            {step.needs?.slice(0, isGate ? 2 : 1).map((depId) => (
               <span key={depId} style={depBadgeStyle(isGate)}>
                 ← {formatDepId(depId, step.id)}
               </span>
             ))}
-            {isGate && step.needs!.length > 2 && (
-              <span style={depBadgeStyle(true)}>+{step.needs!.length - 2} more</span>
+            {isGate && (step.needs?.length ?? 0) > 2 && (
+              <span style={depBadgeStyle(true)}>+{(step.needs?.length ?? 0) - 2} more</span>
             )}
           </div>
         )}

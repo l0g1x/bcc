@@ -107,7 +107,7 @@ function groupSteps(steps: ProtoBead[]): { groups: StepGroup[]; ungrouped: Proto
         groupMap.set(prefix, [])
         groupOrder.push(prefix)
       }
-      groupMap.get(prefix)!.push(step)
+      groupMap.get(prefix)?.push(step)
     } else {
       ungrouped.push(step)
     }
@@ -118,7 +118,8 @@ function groupSteps(steps: ProtoBead[]): { groups: StepGroup[]; ungrouped: Proto
   const groupIds = new Set(groupOrder)
 
   for (const prefix of groupOrder) {
-    const groupSteps = groupMap.get(prefix)!
+    const groupSteps = groupMap.get(prefix)
+    if (!groupSteps) continue
 
     // Check if any step in this group depends on a step from a different group
     let dependsOnGroup: string | undefined
