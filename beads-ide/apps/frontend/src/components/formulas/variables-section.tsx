@@ -14,6 +14,10 @@ export interface VariablesSectionProps {
   onValueChange: (key: string, value: string) => void
   /** Initial expanded state */
   defaultExpanded?: boolean
+  /** Position in parent tree (1-indexed) for aria-posinset */
+  treePosition?: number
+  /** Total siblings in parent tree for aria-setsize */
+  treeSize?: number
 }
 
 const containerStyle: CSSProperties = {
@@ -106,6 +110,8 @@ export function VariablesSection({
   values,
   onValueChange,
   defaultExpanded = true,
+  treePosition,
+  treeSize,
 }: VariablesSectionProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
 
@@ -120,30 +126,33 @@ export function VariablesSection({
   }
 
   return (
-    <div style={containerStyle}>
+    <div
+      style={containerStyle}
+      role="treeitem"
+      aria-expanded={isExpanded}
+      aria-level={1}
+      aria-posinset={treePosition}
+      aria-setsize={treeSize}
+      aria-label={`Variables, ${entries.length} items`}
+    >
       {/* Header */}
-      <div
-        style={headerStyle(isExpanded)}
+      <button
+        type="button"
+        style={{ ...headerStyle(isExpanded), border: 'none', width: '100%', textAlign: 'left' }}
         onClick={toggleExpanded}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            toggleExpanded()
-          }
-        }}
-        aria-expanded={isExpanded}
       >
-        <span style={chevronStyle(isExpanded)}>▶</span>
+        <span style={chevronStyle(isExpanded)} aria-hidden="true">▶</span>
         <span style={labelStyle}>Variables</span>
-        <span style={countBadgeStyle}>{entries.length}</span>
-      </div>
+        <span style={countBadgeStyle} aria-hidden="true">{entries.length}</span>
+      </button>
 
       {/* Variables */}
-      <div style={varsContainerStyle(isExpanded)}>
+      <fieldset style={{ ...varsContainerStyle(isExpanded), margin: 0, padding: '8px 0', border: 'none' }}>
+        <legend style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0 }}>
+          Variables
+        </legend>
         {entries.map(([key, def]) => (
-          <div key={key}>
+          <div key={key} role="treeitem" aria-level={2}>
             <div style={varRowStyle}>
               <span style={varNameStyle}>{key}</span>
               <input
@@ -161,7 +170,7 @@ export function VariablesSection({
             )}
           </div>
         ))}
-      </div>
+      </fieldset>
     </div>
   )
 }

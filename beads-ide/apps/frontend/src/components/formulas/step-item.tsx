@@ -7,6 +7,9 @@ import type { ProtoBead } from '@beads-ide/shared'
 import { type CSSProperties, type ChangeEvent, useCallback } from 'react'
 import { NeedsSelector } from './needs-selector'
 
+/** Priority levels 0-9 for visual dot indicators */
+const PRIORITY_LEVELS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] as const
+
 export interface StepItemProps {
   /** The step data */
   step: ProtoBead
@@ -22,6 +25,12 @@ export interface StepItemProps {
   availableStepIds?: string[]
   /** Callback when a field is edited */
   onFieldChange?: (stepId: string, field: string, value: string | number | string[]) => void
+  /** Tree nesting level for aria-level */
+  treeLevel?: number
+  /** Position in parent group (1-indexed) for aria-posinset */
+  treePosition?: number
+  /** Total siblings in parent group for aria-setsize */
+  treeSize?: number
 }
 
 const containerStyle = (isSelected: boolean): CSSProperties => ({
@@ -203,6 +212,9 @@ export function StepItem({
   indent = 0,
   availableStepIds = [],
   onFieldChange,
+  treeLevel = 1,
+  treePosition,
+  treeSize,
 }: StepItemProps) {
   const hasNeeds = step.needs && step.needs.length > 0
   const isGate = step.needs && step.needs.length > 1
@@ -252,19 +264,18 @@ export function StepItem({
         ...containerStyle(isSelected),
         paddingLeft: `${indent * 16}px`,
       }}
+      role="treeitem"
+      aria-selected={isSelected}
+      aria-level={treeLevel}
+      aria-posinset={treePosition}
+      aria-setsize={treeSize}
+      aria-label={`Step ${number}: ${step.title}`}
     >
       {/* Header row - always visible */}
-      <div
-        style={headerStyle(isSelected)}
+      <button
+        type="button"
+        style={{ ...headerStyle(isSelected), border: 'none', width: '100%', textAlign: 'left', background: 'transparent' }}
         onClick={onClick}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            onClick()
-          }
-        }}
       >
         <span style={numberStyle}>
           <span style={statusStyle}>●</span>
@@ -285,18 +296,18 @@ export function StepItem({
 
         {!isSelected && hasNeeds && (
           <div style={depsContainerStyle}>
-            {isGate && <span style={gateBadgeStyle}>GATE ×{step.needs!.length}</span>}
-            {step.needs!.slice(0, isGate ? 2 : 1).map((depId) => (
+            {isGate && <span style={gateBadgeStyle}>GATE ×{step.needs?.length}</span>}
+            {step.needs?.slice(0, isGate ? 2 : 1).map((depId) => (
               <span key={depId} style={depBadgeStyle(isGate)}>
                 ← {formatDepId(depId, step.id)}
               </span>
             ))}
-            {isGate && step.needs!.length > 2 && (
-              <span style={depBadgeStyle(true)}>+{step.needs!.length - 2} more</span>
+            {isGate && (step.needs?.length ?? 0) > 2 && (
+              <span style={depBadgeStyle(true)}>+{(step.needs?.length ?? 0) - 2} more</span>
             )}
           </div>
         )}
-      </div>
+      </button>
 
       {/* Inline edit fields - shown when selected */}
       {isSelected && onFieldChange && (
@@ -328,8 +339,8 @@ export function StepItem({
                 onClick={(e) => e.stopPropagation()}
               />
               <div style={priorityDotsStyle}>
-                {[...Array(10)].map((_, i) => (
-                  <div key={i} style={priorityDotStyle(i < step.priority)} />
+                {PRIORITY_LEVELS.map((level) => (
+                  <div key={`priority-dot-${level}`} style={priorityDotStyle(level < step.priority)} />
                 ))}
               </div>
               <span style={{ fontSize: '11px', color: '#6b7280' }}>
@@ -357,6 +368,7 @@ export function StepItem({
               style={textareaStyle}
               placeholder="Step description..."
               onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
             />
           </div>
         </div>

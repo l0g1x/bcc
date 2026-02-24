@@ -203,7 +203,7 @@ function computeFlowData(steps: ProtoBead[]): {
   // Compute waves (topological levels)
   const waveMap = new Map<string, number>()
   const computeWave = (stepId: string, visited: Set<string>): number => {
-    if (waveMap.has(stepId)) return waveMap.get(stepId)!
+    if (waveMap.has(stepId)) return waveMap.get(stepId) ?? 0
     if (visited.has(stepId)) return 0 // Cycle detected
 
     visited.add(stepId)
@@ -294,7 +294,7 @@ export function FormulaFlowView({
       </div>
 
       {waves.map((waveSteps, waveIndex) => (
-        <div key={waveIndex}>
+        <div key={`wave-${waveSteps.map(s => s.id).join('-')}`}>
           <div style={waveContainerStyle}>
             <div style={waveLabelStyle}>
               <span>Wave {waveIndex + 1}</span>
@@ -306,24 +306,17 @@ export function FormulaFlowView({
 
             <div style={stepsRowStyle}>
               {waveSteps.map((step) => (
-                <div
+                <button
+                  type="button"
                   key={step.id}
-                  style={stepCardStyle(
+                  style={{ ...stepCardStyle(
                     selectedStepId === step.id,
                     step.isBottleneck,
                     step.isGate
-                  )}
+                  ), textAlign: 'left' }}
                   onClick={() =>
                     onStepSelect(selectedStepId === step.id ? null : step.id)
                   }
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      onStepSelect(selectedStepId === step.id ? null : step.id)
-                    }
-                  }}
                 >
                   <div style={stepTitleStyle} title={step.title}>
                     {step.title}
@@ -347,7 +340,7 @@ export function FormulaFlowView({
                       <span style={badgeStyle('needs')}>→ 1 output</span>
                     )}
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>

@@ -3,7 +3,7 @@
  * Provides real-time streaming of AI responses via SSE.
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { createOpencodeClient, type OpencodeClient } from '@opencode-ai/sdk'
+import { createOpencodeClient, type OpencodeClient } from '@opencode-ai/sdk/client'
 
 // --- Types ---
 

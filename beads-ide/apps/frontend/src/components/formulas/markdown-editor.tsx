@@ -21,6 +21,8 @@ export interface MarkdownEditorProps {
   minHeight?: string
   /** Whether the editor is read-only */
   readOnly?: boolean
+  /** ID of the element that labels this editor (for accessibility) */
+  'aria-labelledby'?: string
 }
 
 const editorContainerStyle: CSSProperties = {
@@ -94,6 +96,7 @@ export function MarkdownEditor({
   placeholder = 'Enter description...',
   minHeight = '200px',
   readOnly = false,
+  'aria-labelledby': ariaLabelledBy,
 }: MarkdownEditorProps) {
   // Create turndown service for HTML -> Markdown conversion
   const turndownService = useMemo(() => {
@@ -128,6 +131,13 @@ export function MarkdownEditor({
     ],
     content: markdownToHtml(value),
     editable: !readOnly,
+    editorProps: {
+      attributes: {
+        role: 'textbox',
+        'aria-multiline': 'true',
+        ...(ariaLabelledBy ? { 'aria-labelledby': ariaLabelledBy } : {}),
+      },
+    },
     onUpdate: ({ editor }) => {
       // Don't fire onChange if this update was from external value sync
       if (isExternalUpdate.current) {

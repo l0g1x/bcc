@@ -3,6 +3,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Toaster } from 'sonner'
 import { ConnectionGate } from './components/ui'
+import { AnnouncementProvider, FormulaDirtyProvider } from './contexts'
 import { routeTree } from './routeTree.gen'
 import './app.css'
 
@@ -19,9 +20,13 @@ if (!rootElement) throw new Error('Root element not found')
 
 createRoot(rootElement).render(
   <StrictMode>
-    <ConnectionGate>
-      <RouterProvider router={router} />
-      <Toaster position="bottom-right" theme="dark" richColors />
-    </ConnectionGate>
+    <AnnouncementProvider>
+      <FormulaDirtyProvider>
+        <ConnectionGate>
+          <RouterProvider router={router} />
+          <Toaster position="bottom-right" theme="dark" richColors />
+        </ConnectionGate>
+      </FormulaDirtyProvider>
+    </AnnouncementProvider>
   </StrictMode>
 )

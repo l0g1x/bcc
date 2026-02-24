@@ -267,6 +267,51 @@ export async function apiPost<T, B = unknown>(
 }
 
 /**
+ * Convenience method for PUT requests.
+ */
+export async function apiPut<T, B = unknown>(
+  endpoint: string,
+  body: B,
+  options: FetchOptions = {}
+): Promise<ApiResponse<T>> {
+  return apiFetch<T>(endpoint, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+    body: JSON.stringify(body),
+    ...options,
+  })
+}
+
+/** Response from formula save endpoint */
+export interface FormulaSaveResponse {
+  ok: boolean
+  name: string
+  path: string
+}
+
+/**
+ * Save formula content to disk.
+ * Calls PUT /api/formulas/:name with the content.
+ *
+ * @param name - Formula name (without extension)
+ * @param content - Formula TOML content
+ * @throws Error if save fails
+ */
+export async function saveFormula(name: string, content: string): Promise<void> {
+  const { error } = await apiPut<FormulaSaveResponse>(
+    `/api/formulas/${encodeURIComponent(name)}`,
+    { content }
+  )
+
+  if (error) {
+    throw new Error(error.details || error.message)
+  }
+}
+
+/**
  * Show a toast for sling failures with retry option.
  */
 export function showSlingError(error: ApiError, onRetry?: () => void): void {

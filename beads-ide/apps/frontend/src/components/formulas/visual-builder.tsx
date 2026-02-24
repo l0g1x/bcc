@@ -19,8 +19,13 @@ import {
  * DAG visualization of formula steps using React Flow.
  * Clicking on a step node opens the StepEditorPanel for editing.
  * Steps from expansion formulas are grouped in container nodes.
+ *
+ * Keyboard navigation:
+ * - Arrow keys: Navigate DAG (Up=parent, Down=child, Left/Right=siblings)
+ * - Enter: Open panel for selected step
+ * - Escape: Deselect current step
  */
-import { type CSSProperties, useCallback, useMemo } from 'react'
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef } from 'react'
 
 import '@xyflow/react/dist/style.css'
 
@@ -117,15 +122,16 @@ function formatGroupLabel(prefix: string): string {
     .join(' ')
 }
 
-// --- Group colors for visual distinction ---
+// --- Group colors and border styles for visual distinction ---
+// Border styles cycle for color-blind accessibility
 const GROUP_COLORS = [
-  { bg: 'rgba(99, 102, 241, 0.08)', border: '#6366f1' }, // Indigo
-  { bg: 'rgba(16, 185, 129, 0.08)', border: '#10b981' }, // Emerald
-  { bg: 'rgba(245, 158, 11, 0.08)', border: '#f59e0b' }, // Amber
-  { bg: 'rgba(239, 68, 68, 0.08)', border: '#ef4444' }, // Red
-  { bg: 'rgba(168, 85, 247, 0.08)', border: '#a855f7' }, // Purple
-  { bg: 'rgba(14, 165, 233, 0.08)', border: '#0ea5e9' }, // Sky
-]
+  { bg: 'rgba(99, 102, 241, 0.08)', border: '#6366f1', borderStyle: 'dashed' }, // Indigo
+  { bg: 'rgba(16, 185, 129, 0.08)', border: '#10b981', borderStyle: 'solid' }, // Emerald
+  { bg: 'rgba(245, 158, 11, 0.08)', border: '#f59e0b', borderStyle: 'dotted' }, // Amber
+  { bg: 'rgba(239, 68, 68, 0.08)', border: '#ef4444', borderStyle: 'double' }, // Red
+  { bg: 'rgba(168, 85, 247, 0.08)', border: '#a855f7', borderStyle: 'solid' }, // Purple (thicker)
+  { bg: 'rgba(14, 165, 233, 0.08)', border: '#0ea5e9', borderStyle: 'dashed' }, // Sky
+] as const
 
 // --- Styles ---
 
@@ -320,12 +326,14 @@ function StepNode({ data }: NodeProps<Node<StepNodeData>>) {
 
 function GroupNode({ data }: NodeProps<Node<GroupNodeData & { colorIndex: number }>>) {
   const color = GROUP_COLORS[data.colorIndex % GROUP_COLORS.length]
+  // Vary border width for additional distinction (double style needs 3px minimum)
+  const borderWidth = color.borderStyle === 'double' ? '3px' : color.borderStyle === 'dotted' ? '2px' : '1px'
 
   return (
     <div
       style={{
         backgroundColor: color.bg,
-        border: `1px dashed ${color.border}`,
+        border: `${borderWidth} ${color.borderStyle} ${color.border}`,
         borderRadius: '12px',
         width: '100%',
         height: '100%',
@@ -338,13 +346,28 @@ function GroupNode({ data }: NodeProps<Node<GroupNodeData & { colorIndex: number
           fontSize: '12px',
           fontWeight: 600,
           color: color.border,
-          borderBottom: `1px dashed ${color.border}`,
+          borderBottom: `${borderWidth} ${color.borderStyle} ${color.border}`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}
       >
-        <span>{data.label}</span>
+        <span>
+          <span
+            style={{
+              backgroundColor: color.border,
+              color: '#0f172a',
+              padding: '1px 5px',
+              borderRadius: '4px',
+              fontSize: '10px',
+              fontWeight: 700,
+              marginRight: '8px',
+            }}
+          >
+            #{data.colorIndex + 1}
+          </span>
+          {data.label}
+        </span>
         <span
           style={{
             fontSize: '10px',
@@ -368,8 +391,10 @@ export interface VisualBuilderProps {
   steps: ProtoBead[]
   /** Variable definitions (used to detect which vars are used in steps) */
   vars?: Record<string, FormulaVariable>
-  /** Callback when a step node is clicked */
+  /** Callback when a step node is clicked (single-click selects) */
   onStepSelect?: (stepId: string | null) => void
+  /** Callback when a step node is double-clicked (opens step editor panel) */
+  onStepOpen?: (stepId: string) => void
   /** ID of the currently selected step */
   selectedStepId?: string | null
 }
@@ -392,6 +417,7 @@ export function VisualBuilder({
   steps,
   vars: _vars,
   onStepSelect,
+  onStepOpen,
   selectedStepId,
 }: VisualBuilderProps) {
   // Convert steps to React Flow nodes and edges
@@ -463,10 +489,16 @@ export function VisualBuilder({
           const targetGroup = getGroupPrefix(step.id)
           const isCrossGroup = sourceGroup !== targetGroup
 
+          // Hide cross-group edges by default, reveal when selected step is involved
+          const isSelectedInvolved =
+            selectedStepId === needId || selectedStepId === step.id
+          const hideCrossGroup = isCrossGroup && !isSelectedInvolved
+
           edges.push({
             id: `${needId}->${step.id}`,
             source: needId,
             target: step.id,
+            hidden: hideCrossGroup,
             style: {
               stroke: isCrossGroup ? '#f59e0b' : '#6366f1',
               strokeWidth: isCrossGroup ? 3 : 2,
@@ -497,10 +529,10 @@ export function VisualBuilder({
       if (!prefix) continue
 
       const bounds = groupBounds.get(prefix) || {
-        minX: Infinity,
-        minY: Infinity,
-        maxX: -Infinity,
-        maxY: -Infinity,
+        minX: Number.POSITIVE_INFINITY,
+        minY: Number.POSITIVE_INFINITY,
+        maxX: Number.NEGATIVE_INFINITY,
+        maxY: Number.NEGATIVE_INFINITY,
         steps: 0,
       }
 
@@ -551,16 +583,26 @@ export function VisualBuilder({
   // No-op for read-only mode
   const onConnect = useCallback(() => {}, [])
 
-  // Handle node click - toggle selection (only for step nodes)
+  // Handle single-click - select the step (only for step nodes)
   const handleNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
       if (node.type === 'group') return // Ignore group clicks
       if (onStepSelect) {
-        const newSelectedId = node.id === selectedStepId ? null : node.id
-        onStepSelect(newSelectedId)
+        onStepSelect(node.id)
       }
     },
-    [onStepSelect, selectedStepId]
+    [onStepSelect]
+  )
+
+  // Handle double-click - open step editor panel (only for step nodes)
+  const handleNodeDoubleClick = useCallback(
+    (_event: React.MouseEvent, node: Node) => {
+      if (node.type === 'group') return // Ignore group clicks
+      if (onStepOpen) {
+        onStepOpen(node.id)
+      }
+    },
+    [onStepOpen]
   )
 
   // Handle pane click - deselect
@@ -569,6 +611,154 @@ export function VisualBuilder({
       onStepSelect(null)
     }
   }, [onStepSelect, selectedStepId])
+
+  // Container ref for keyboard focus
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Build adjacency maps for DAG navigation
+  const dagAdjacency = useMemo(() => {
+    const stepNodes = nodes.filter((n) => n.type === 'step')
+    const stepIds = stepNodes.map((n) => n.id)
+    const nodeById = new Map(stepNodes.map((n) => [n.id, n]))
+
+    // Parents: nodes that this node depends on (upstream)
+    const parents = new Map<string, string[]>()
+    // Children: nodes that depend on this node (downstream)
+    const children = new Map<string, string[]>()
+    // Siblings: nodes at similar Y position (same rank in layout)
+    const siblings = new Map<string, { left: string[]; right: string[] }>()
+
+    for (const id of stepIds) {
+      parents.set(id, [])
+      children.set(id, [])
+    }
+
+    // Build parent/child relationships from edges
+    for (const edge of edges) {
+      const parentList = parents.get(edge.target)
+      if (parentList) parentList.push(edge.source)
+      const childList = children.get(edge.source)
+      if (childList) childList.push(edge.target)
+    }
+
+    // Build sibling relationships based on Y position (within threshold)
+    const Y_THRESHOLD = NODE_HEIGHT * 0.5
+    for (const node of stepNodes) {
+      const nodeY = node.position.y
+      const nodeX = node.position.x
+      const leftSiblings: string[] = []
+      const rightSiblings: string[] = []
+
+      for (const other of stepNodes) {
+        if (other.id === node.id) continue
+        if (Math.abs(other.position.y - nodeY) <= Y_THRESHOLD) {
+          if (other.position.x < nodeX) {
+            leftSiblings.push(other.id)
+          } else {
+            rightSiblings.push(other.id)
+          }
+        }
+      }
+
+      // Sort by distance (closest first)
+      leftSiblings.sort((a, b) => {
+        const aX = nodeById.get(a)?.position.x ?? 0
+        const bX = nodeById.get(b)?.position.x ?? 0
+        return bX - aX // Closest left = largest X
+      })
+      rightSiblings.sort((a, b) => {
+        const aX = nodeById.get(a)?.position.x ?? 0
+        const bX = nodeById.get(b)?.position.x ?? 0
+        return aX - bX // Closest right = smallest X
+      })
+
+      siblings.set(node.id, { left: leftSiblings, right: rightSiblings })
+    }
+
+    return { parents, children, siblings, stepIds }
+  }, [nodes, edges])
+
+  // Keyboard navigation handler
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      const { parents, children, siblings, stepIds } = dagAdjacency
+      if (stepIds.length === 0) return
+
+      // If no selection, arrow keys select first node
+      if (!selectedStepId) {
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+          event.preventDefault()
+          if (onStepSelect) {
+            onStepSelect(stepIds[0])
+          }
+        }
+        return
+      }
+
+      let nextId: string | null = null
+
+      switch (event.key) {
+        case 'ArrowUp': {
+          // Navigate to parent (upstream dependency)
+          const parentIds = parents.get(selectedStepId) ?? []
+          if (parentIds.length > 0) {
+            nextId = parentIds[0]
+          }
+          break
+        }
+        case 'ArrowDown': {
+          // Navigate to child (downstream dependent)
+          const childIds = children.get(selectedStepId) ?? []
+          if (childIds.length > 0) {
+            nextId = childIds[0]
+          }
+          break
+        }
+        case 'ArrowLeft': {
+          // Navigate to left sibling
+          const sibs = siblings.get(selectedStepId)
+          if (sibs && sibs.left.length > 0) {
+            nextId = sibs.left[0]
+          }
+          break
+        }
+        case 'ArrowRight': {
+          // Navigate to right sibling
+          const sibs = siblings.get(selectedStepId)
+          if (sibs && sibs.right.length > 0) {
+            nextId = sibs.right[0]
+          }
+          break
+        }
+        case 'Enter': {
+          // Enter opens the step editor panel for the selected step
+          event.preventDefault()
+          if (onStepOpen && selectedStepId) {
+            onStepOpen(selectedStepId)
+          }
+          return
+        }
+        case 'Escape': {
+          // Deselect
+          event.preventDefault()
+          if (onStepSelect) {
+            onStepSelect(null)
+          }
+          return
+        }
+        default:
+          return
+      }
+
+      if (nextId && nextId !== selectedStepId) {
+        event.preventDefault()
+        if (onStepSelect) {
+          onStepSelect(nextId)
+        }
+      }
+    },
+    [dagAdjacency, selectedStepId, onStepSelect, onStepOpen]
+  )
 
   // Count bottlenecks and gates for legend
   const bottleneckCount = useMemo(() => {
@@ -584,7 +774,21 @@ export function VisualBuilder({
   }
 
   return (
-    <div style={{ width: '100%', height: '100%', minHeight: '400px', position: 'relative' }}>
+    <div
+      ref={containerRef}
+      // biome-ignore lint/a11y/noNoninteractiveTabindex: role="application" is interactive with keyboard handlers
+      tabIndex={0}
+      style={{
+        width: '100%',
+        height: '100%',
+        minHeight: '400px',
+        position: 'relative',
+        outline: 'none',
+      }}
+      role="application"
+      aria-label="Formula steps DAG. Use arrow keys to navigate, Enter to select, Escape to deselect."
+      onKeyDown={handleKeyDown as unknown as React.KeyboardEventHandler<HTMLDivElement>}
+    >
       {/* Legend overlay */}
       <div style={legendOverlayStyle}>
         <div style={legendItemStyle}>
@@ -605,6 +809,7 @@ export function VisualBuilder({
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeClick={handleNodeClick}
+        onNodeDoubleClick={handleNodeDoubleClick}
         onPaneClick={handlePaneClick}
         fitView
         fitViewOptions={{ padding: 0.2 }}

@@ -29,6 +29,10 @@ export interface ExpansionGroupProps {
   availableStepIds?: string[]
   /** Callback when a step field is edited */
   onStepFieldChange?: (stepId: string, field: string, value: string | number | string[]) => void
+  /** Position in parent tree (1-indexed) for aria-posinset */
+  treePosition?: number
+  /** Total siblings in parent tree for aria-setsize */
+  treeSize?: number
 }
 
 const containerStyle: CSSProperties = {
@@ -102,6 +106,8 @@ export function ExpansionGroup({
   defaultExpanded = true,
   availableStepIds = [],
   onStepFieldChange,
+  treePosition,
+  treeSize,
 }: ExpansionGroupProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
 
@@ -117,35 +123,38 @@ export function ExpansionGroup({
   )
 
   return (
-    <div style={containerStyle}>
+    <div
+      style={containerStyle}
+      role="treeitem"
+      aria-expanded={isExpanded}
+      aria-level={1}
+      aria-posinset={treePosition}
+      aria-setsize={treeSize}
+      aria-label={`${label}, ${steps.length} steps`}
+    >
       {/* Group Header */}
-      <div
-        style={headerStyle(color, isExpanded)}
+      <button
+        type="button"
+        style={{ ...headerStyle(color, isExpanded), border: 'none', width: '100%', textAlign: 'left' }}
         onClick={toggleExpanded}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            toggleExpanded()
-          }
-        }}
-        aria-expanded={isExpanded}
       >
-        <span style={chevronStyle(isExpanded)}>▶</span>
+        <span style={chevronStyle(isExpanded)} aria-hidden="true">▶</span>
         <span style={labelStyle}>{label}</span>
-        <span style={countBadgeStyle}>{steps.length}</span>
+        <span style={countBadgeStyle} aria-hidden="true">{steps.length}</span>
         {dependsOnGroup && (
-          <span style={crossGroupDepStyle}>
+          <span style={crossGroupDepStyle} aria-hidden="true">
             ⟵ {dependsOnGroup}
           </span>
         )}
-      </div>
+      </button>
 
       {/* Steps */}
-      <div style={stepsContainerStyle(isExpanded)}>
+      <fieldset style={{ ...stepsContainerStyle(isExpanded), margin: 0, padding: 0, border: 'none' }}>
+        <legend style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0 }}>
+          {label} steps
+        </legend>
         {/* Source expansion info */}
-        <div style={sourceStyle}>
+        <div style={sourceStyle} aria-hidden="true">
           expanded from: {groupId.replace(/^step-\d+-/, '')}
         </div>
 
@@ -160,9 +169,12 @@ export function ExpansionGroup({
             indent={1}
             availableStepIds={availableStepIds}
             onFieldChange={onStepFieldChange}
+            treeLevel={2}
+            treePosition={index + 1}
+            treeSize={steps.length}
           />
         ))}
-      </div>
+      </fieldset>
     </div>
   )
 }

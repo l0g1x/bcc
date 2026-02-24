@@ -6,8 +6,8 @@ import { BeadDetail } from '../components/beads/bead-detail'
 import { AppShell, FormulaTree } from '../components/layout'
 import { CommandPalette, useDefaultActions } from '../components/layout/command-palette'
 import { GenericErrorPage, OfflineBanner } from '../components/ui'
-import { BeadSelectionProvider, useBeadSelection } from '../contexts'
-import { useBead } from '../hooks'
+import { BeadSelectionProvider, FormulaSaveProvider, useBeadSelection } from '../contexts'
+import { useBead, useKeyboardTip } from '../hooks'
 
 type ViewMode = 'list' | 'wave' | 'graph'
 
@@ -70,6 +70,9 @@ function RootLayoutInner() {
   const { bead, isLoading, error } = useBead(selectedBeadId)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
 
+  // Show one-time keyboard shortcut tip
+  useKeyboardTip()
+
   const handleOpenFormula = useCallback(() => {
     // Navigate to first formula or show formula picker
     console.log('Open Formula triggered')
@@ -94,6 +97,41 @@ function RootLayoutInner() {
 
   return (
     <>
+      <a
+        href="#main-content"
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          top: 'auto',
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden',
+          zIndex: 9999,
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.left = '8px'
+          e.currentTarget.style.top = '8px'
+          e.currentTarget.style.width = 'auto'
+          e.currentTarget.style.height = 'auto'
+          e.currentTarget.style.overflow = 'visible'
+          e.currentTarget.style.padding = '8px 16px'
+          e.currentTarget.style.backgroundColor = '#1e1e1e'
+          e.currentTarget.style.color = '#fff'
+          e.currentTarget.style.border = '2px solid #007acc'
+          e.currentTarget.style.borderRadius = '4px'
+          e.currentTarget.style.textDecoration = 'none'
+          e.currentTarget.style.fontWeight = '500'
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.left = '-9999px'
+          e.currentTarget.style.top = 'auto'
+          e.currentTarget.style.width = '1px'
+          e.currentTarget.style.height = '1px'
+          e.currentTarget.style.overflow = 'hidden'
+        }}
+      >
+        Skip to main content
+      </a>
       <OfflineBanner />
       <AppShell
         sidebarContent={<FormulaTree />}
@@ -145,7 +183,9 @@ function RootLayout() {
   return (
     <ErrorBoundary>
       <BeadSelectionProvider>
-        <RootLayoutInner />
+        <FormulaSaveProvider>
+          <RootLayoutInner />
+        </FormulaSaveProvider>
       </BeadSelectionProvider>
     </ErrorBoundary>
   )

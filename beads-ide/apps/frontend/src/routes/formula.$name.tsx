@@ -7,7 +7,8 @@ import type { PourResult, ProtoBead, SlingRequest } from '@beads-ide/shared'
  * Step nodes in Visual view can be clicked to edit in the StepEditorPanel.
  */
 import { createFileRoute } from '@tanstack/react-router'
-import { type CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { toast } from 'sonner'
 import {
   FormulaFlowView,
   FormulaOutlineView,
@@ -18,8 +19,11 @@ import {
   VarsPanel,
   VisualBuilder,
 } from '../components/formulas'
+import { UnsavedChangesModal } from '../components/ui/unsaved-changes-modal'
 import { OpenCodeTerminal } from '../components/opencode'
-import { useCook, useFormulaContent, useSling } from '../hooks'
+import { useAnnounce, useFormulaDirty, useFormulaSave } from '../contexts'
+import { useCook, useFormulaContent, useSave, useSling } from '../hooks'
+import { useHotkey } from '../hooks/use-hotkeys'
 import {
   type FormulaParseError,
   extractStepIds,
@@ -50,11 +54,26 @@ const headerStyle: CSSProperties = {
   backgroundColor: '#1e293b',
 }
 
+const titleContainerStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+}
+
 const titleStyle: CSSProperties = {
   fontSize: '16px',
   fontWeight: 600,
   color: '#e2e8f0',
   fontFamily: 'monospace',
+}
+
+const dirtyBadgeStyle: CSSProperties = {
+  fontSize: '11px',
+  fontWeight: 500,
+  color: '#fbbf24',
+  backgroundColor: 'rgba(251, 191, 36, 0.15)',
+  padding: '2px 6px',
+  borderRadius: '4px',
 }
 
 const actionsStyle: CSSProperties = {
@@ -190,14 +209,48 @@ export const Route = createFileRoute('/formula/$name')({
 
 function FormulaPage() {
   const { name } = Route.useParams()
+  const announce = useAnnounce()
+  const { setDirty } = useFormulaDirty()
+  const { registerSaveHandler } = useFormulaSave()
   const [viewMode, setViewMode] = useState<ViewMode>('text')
   const [tomlContent, setTomlContent] = useState('')
+  const [savedContent, setSavedContent] = useState('')
   const [parseErrors, setParseErrors] = useState<FormulaParseError[]>([])
   const [varValues, setVarValues] = useState<Record<string, string>>({})
   const [slingDialogOpen, setSlingDialogOpen] = useState(false)
   const [pourDialogOpen, setPourDialogOpen] = useState(false)
   const [selectedStepId, setSelectedStepId] = useState<string | null>(null)
   const [showAiPanel, setShowAiPanel] = useState(false)
+  // Track pending execution action when there are unsaved changes
+  const [pendingAction, setPendingAction] = useState<'pour' | 'sling' | null>(null)
+
+  // Track when unsaved changes are first detected
+  const hasAnnouncedUnsavedRef = useRef(false)
+
+  // Compute isDirty from current content vs saved content
+  const isDirty = tomlContent !== savedContent
+
+  // Sync dirty state to context for sidebar indicator
+  useEffect(() => {
+    if (name) {
+      setDirty(name, isDirty)
+    }
+  }, [name, isDirty, setDirty])
+
+  // Warn user before leaving page with unsaved changes
+  useEffect(() => {
+    if (!isDirty) return
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      // Modern browsers ignore custom messages but still show a confirmation dialog
+      e.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
+      return e.returnValue
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [isDirty])
 
   // Load formula content from disk
   const {
@@ -207,18 +260,20 @@ function FormulaPage() {
     error: contentError,
   } = useFormulaContent(name ?? null)
 
-  // Reset state when formula name changes
+  // Reset state when formula name changes (runs on mount only, loadedContent effect handles navigation)
   useEffect(() => {
     setTomlContent('')
     setParseErrors([])
     setVarValues({})
     setSelectedStepId(null)
-  }, [name])
+  }, [])
 
   // Set content when loaded from disk
   useEffect(() => {
     if (loadedContent) {
       setTomlContent(loadedContent)
+      setSavedContent(loadedContent)
+      hasAnnouncedUnsavedRef.current = false
       // Parse initial content
       const result = parseAndValidateFormula(loadedContent)
       if (!result.ok) {
@@ -240,6 +295,32 @@ function FormulaPage() {
   // Sling hook
   const { result: slingResult, isLoading: isSlinging, sling, reset: resetSling } = useSling()
 
+  // Save hook
+  const { save, isLoading: isSaving } = useSave()
+
+  // Handle save with Mod+S hotkey
+  const handleSave = useCallback(async () => {
+    if (!name || !tomlContent || isSaving) return
+    try {
+      await save(name, tomlContent)
+      setSavedContent(tomlContent)
+      hasAnnouncedUnsavedRef.current = false
+      toast.success('Formula saved')
+      announce('Formula saved')
+    } catch {
+      // Error toast is already shown by useSave hook
+    }
+  }, [name, tomlContent, isSaving, save, announce])
+
+  // Mod+S to save (enable on form tags so it works in the text editor)
+  useHotkey('Mod+S', handleSave, { enableOnFormTags: true })
+
+  // Register save handler with context so sidebar can trigger save
+  useEffect(() => {
+    registerSaveHandler(handleSave)
+    return () => registerSaveHandler(null)
+  }, [registerSaveHandler, handleSave])
+
   const handleToggleMode = useCallback((mode: ViewMode) => {
     setViewMode(mode)
     // Clear step selection when switching to text mode
@@ -249,9 +330,15 @@ function FormulaPage() {
   }, [])
 
   // Handle step selection in visual mode
-  const handleStepSelect = useCallback((stepId: string | null) => {
-    setSelectedStepId(stepId)
-  }, [])
+  const handleStepSelect = useCallback(
+    (stepId: string | null) => {
+      setSelectedStepId(stepId)
+      if (stepId) {
+        announce('Step selected')
+      }
+    },
+    [announce]
+  )
 
   // Handle step field changes from the StepEditorPanel
   // NOTE: Editing only works for steps defined directly in the source TOML.
@@ -305,32 +392,91 @@ function FormulaPage() {
     })
   }, [])
 
-  const handleTomlChange = useCallback((content: string) => {
-    setTomlContent(content)
-    // Parse and validate on change
-    const result = parseAndValidateFormula(content)
-    if (!result.ok) {
-      setParseErrors(result.errors)
-    } else {
-      setParseErrors([])
-    }
-  }, [])
+  const handleTomlChange = useCallback(
+    (content: string) => {
+      setTomlContent(content)
+      // Announce unsaved changes on first divergence
+      if (content !== savedContent && !hasAnnouncedUnsavedRef.current) {
+        hasAnnouncedUnsavedRef.current = true
+        announce('Unsaved changes')
+      }
+      // Parse and validate on change
+      const result = parseAndValidateFormula(content)
+      if (!result.ok) {
+        setParseErrors(result.errors)
+      } else {
+        setParseErrors([])
+      }
+    },
+    [announce, savedContent]
+  )
 
   const handleCook = useCallback(() => {
     cook()
   }, [cook])
 
   const handleOpenSling = useCallback(() => {
-    resetSling()
-    setSlingDialogOpen(true)
-  }, [resetSling])
+    if (isDirty) {
+      setPendingAction('sling')
+    } else {
+      resetSling()
+      setSlingDialogOpen(true)
+    }
+  }, [isDirty, resetSling])
 
   const handleSlingClose = useCallback(() => {
     setSlingDialogOpen(false)
   }, [])
 
   const handleOpenPour = useCallback(() => {
-    setPourDialogOpen(true)
+    if (isDirty) {
+      setPendingAction('pour')
+    } else {
+      setPourDialogOpen(true)
+    }
+  }, [isDirty])
+
+  // Handle save and execute from unsaved changes modal
+  const handleSaveAndExecute = useCallback(async () => {
+    const action = pendingAction
+    setPendingAction(null)
+    if (!name || !tomlContent) return
+
+    try {
+      await save(name, tomlContent)
+      setSavedContent(tomlContent)
+      hasAnnouncedUnsavedRef.current = false
+      toast.success('Formula saved')
+      announce('Formula saved')
+
+      // Now proceed with the action
+      if (action === 'pour') {
+        setPourDialogOpen(true)
+      } else if (action === 'sling') {
+        resetSling()
+        setSlingDialogOpen(true)
+      }
+    } catch {
+      // Error toast is already shown by useSave hook
+    }
+  }, [pendingAction, name, tomlContent, save, announce, resetSling])
+
+  // Handle execute without saving from unsaved changes modal
+  const handleExecuteWithoutSaving = useCallback(() => {
+    const action = pendingAction
+    setPendingAction(null)
+
+    if (action === 'pour') {
+      setPourDialogOpen(true)
+    } else if (action === 'sling') {
+      resetSling()
+      setSlingDialogOpen(true)
+    }
+  }, [pendingAction, resetSling])
+
+  // Handle cancel from unsaved changes modal
+  const handleCancelExecute = useCallback(() => {
+    setPendingAction(null)
   }, [])
 
   const handleToggleAi = useCallback(() => {
@@ -369,9 +515,18 @@ function FormulaPage() {
     <div style={containerStyle}>
       {/* Header with title, view toggle, and action buttons */}
       <div style={headerStyle}>
-        <div style={titleStyle}>{name}.toml</div>
+        <div style={titleContainerStyle}>
+          <div style={titleStyle}>{name}.toml</div>
+          {isDirty && <span style={dirtyBadgeStyle}>Unsaved</span>}
+        </div>
         <div style={actionsStyle}>
-          <button type="button" onClick={handleCook} style={cookButtonStyle} disabled={isLoading}>
+          <button
+            type="button"
+            onClick={handleCook}
+            style={cookButtonStyle}
+            disabled={isLoading}
+            title="Preview cooked output (Cmd+Shift+C)"
+          >
             {isLoading ? 'Cooking...' : 'Cook Preview'}
           </button>
           {result?.steps && result.steps.length > 0 && (
@@ -406,6 +561,7 @@ function FormulaPage() {
               style={toggleButtonStyle(viewMode === 'text')}
               onClick={() => handleToggleMode('text')}
               aria-pressed={viewMode === 'text'}
+              title="Edit TOML source"
             >
               Text
             </button>
@@ -414,6 +570,7 @@ function FormulaPage() {
               style={toggleButtonStyle(viewMode === 'outline')}
               onClick={() => handleToggleMode('outline')}
               aria-pressed={viewMode === 'outline'}
+              title="Step list with inline editing"
             >
               Outline
             </button>
@@ -422,6 +579,7 @@ function FormulaPage() {
               style={toggleButtonStyle(viewMode === 'flow')}
               onClick={() => handleToggleMode('flow')}
               aria-pressed={viewMode === 'flow'}
+              title="Flow diagram view"
             >
               Flow
             </button>
@@ -430,6 +588,7 @@ function FormulaPage() {
               style={toggleButtonStyle(viewMode === 'visual')}
               onClick={() => handleToggleMode('visual')}
               aria-pressed={viewMode === 'visual'}
+              title="DAG visualization"
             >
               Visual
             </button>
@@ -454,8 +613,12 @@ function FormulaPage() {
             <TextEditor value={tomlContent} onChange={handleTomlChange} errors={parseErrors} />
           )}
 
-          {!isLoading && !contentLoading && !error && !contentError && viewMode === 'outline' && (
-            result ? (
+          {!isLoading &&
+            !contentLoading &&
+            !error &&
+            !contentError &&
+            viewMode === 'outline' &&
+            (result ? (
               <FormulaOutlineView
                 result={result}
                 varValues={varValues}
@@ -467,11 +630,14 @@ function FormulaPage() {
               />
             ) : (
               <div style={loadingStyle}>No formula data to display</div>
-            )
-          )}
+            ))}
 
-          {!isLoading && !contentLoading && !error && !contentError && viewMode === 'flow' && (
-            result ? (
+          {!isLoading &&
+            !contentLoading &&
+            !error &&
+            !contentError &&
+            viewMode === 'flow' &&
+            (result ? (
               <FormulaFlowView
                 result={result}
                 selectedStepId={selectedStepId}
@@ -479,8 +645,7 @@ function FormulaPage() {
               />
             ) : (
               <div style={loadingStyle}>No formula data to display</div>
-            )
-          )}
+            ))}
 
           {!isLoading && !contentLoading && !error && !contentError && viewMode === 'visual' && (
             <div style={visualContainerStyle}>
@@ -509,21 +674,23 @@ function FormulaPage() {
             />
           </div>
         )}
-        {!showSidePanel && !showAiPanel && viewMode === 'text' && result?.vars && Object.keys(result.vars).length > 0 && (
-          <div style={sidePanelStyle}>
-            <VarsPanel
-              vars={result.vars}
-              values={varValues}
-              onValueChange={handleVarChange}
-              unboundVars={result.unbound_vars}
-            />
-          </div>
-        )}
+        {!showSidePanel &&
+          !showAiPanel &&
+          viewMode === 'text' &&
+          result?.vars &&
+          Object.keys(result.vars).length > 0 && (
+            <div style={sidePanelStyle}>
+              <VarsPanel
+                vars={result.vars}
+                values={varValues}
+                onValueChange={handleVarChange}
+                unboundVars={result.unbound_vars}
+              />
+            </div>
+          )}
         {showAiPanel && (
           <div style={{ ...sidePanelStyle, width: '700px', minWidth: '600px' }}>
-            <OpenCodeTerminal
-              onClose={() => setShowAiPanel(false)}
-            />
+            <OpenCodeTerminal onClose={() => setShowAiPanel(false)} />
           </div>
         )}
       </div>
@@ -539,6 +706,19 @@ function FormulaPage() {
           {result?.vars && ` · ${Object.keys(result.vars).length} variables`}
         </span>
       </div>
+
+      {/* Unsaved changes modal for Pour/Sling */}
+      <UnsavedChangesModal
+        isOpen={pendingAction !== null}
+        onSave={handleSaveAndExecute}
+        onDiscard={handleExecuteWithoutSaving}
+        onCancel={handleCancelExecute}
+        title="Unsaved Changes"
+        message="You have unsaved changes. Do you want to save them before executing?"
+        saveLabel="Save and Execute"
+        discardLabel="Execute Without Saving"
+        cancelLabel="Cancel"
+      />
 
       <SlingDialog
         isOpen={slingDialogOpen}
