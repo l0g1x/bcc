@@ -11,6 +11,8 @@ export interface NeedsSelectorProps {
   availableIds: string[]
   /** Callback when selection changes */
   onChange: (ids: string[]) => void
+  /** Whether the selector is disabled */
+  disabled?: boolean
 }
 
 const containerStyle: CSSProperties = {
@@ -49,17 +51,18 @@ const emptyStyle: CSSProperties = {
 /**
  * Multi-select checkbox list for step dependencies.
  */
-export function NeedsSelector({ selectedIds, availableIds, onChange }: NeedsSelectorProps) {
+export function NeedsSelector({ selectedIds, availableIds, onChange, disabled = false }: NeedsSelectorProps) {
   const selectedSet = new Set(selectedIds)
 
   const handleToggle = useCallback(
     (id: string) => {
+      if (disabled) return
       const newSelected = selectedSet.has(id)
         ? selectedIds.filter((s) => s !== id)
         : [...selectedIds, id]
       onChange(newSelected)
     },
-    [selectedIds, selectedSet, onChange]
+    [selectedIds, selectedSet, onChange, disabled]
   )
 
   if (availableIds.length === 0) {
@@ -77,10 +80,11 @@ export function NeedsSelector({ selectedIds, availableIds, onChange }: NeedsSele
               id={`needs-${id}`}
               checked={isChecked}
               onChange={() => handleToggle(id)}
-              style={checkboxStyle}
+              style={{ ...checkboxStyle, ...(disabled ? { cursor: 'not-allowed', opacity: 0.5 } : {}) }}
+              disabled={disabled}
               aria-label={`Depends on ${id}`}
             />
-            <label htmlFor={`needs-${id}`} style={labelStyle}>
+            <label htmlFor={`needs-${id}`} style={{ ...labelStyle, ...(disabled ? { cursor: 'not-allowed', opacity: 0.5 } : {}) }}>
               {id}
             </label>
           </div>

@@ -3,9 +3,17 @@
  * Redesigned with more space and a Tiptap markdown editor for descriptions.
  */
 import type { ProtoBead } from '@beads-ide/shared'
-import { type CSSProperties, type ChangeEvent, useCallback, useState } from 'react'
+import { type CSSProperties, type ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { MarkdownEditor } from './markdown-editor'
 import { NeedsSelector } from './needs-selector'
+
+/** Validation errors for step fields */
+export interface StepValidationErrors {
+  title?: string
+  description?: string
+  priority?: string
+  needs?: string
+}
 
 export interface StepEditorPanelProps {
   /** The step being edited */
@@ -16,6 +24,10 @@ export interface StepEditorPanelProps {
   onFieldChange: (stepId: string, field: string, value: string | number | string[]) => void
   /** Callback when panel is closed */
   onClose: () => void
+  /** Whether the panel is in a loading state */
+  isLoading?: boolean
+  /** Validation errors to display for specific fields */
+  validationErrors?: StepValidationErrors
 }
 
 const panelStyle: CSSProperties = {
@@ -161,6 +173,38 @@ const descriptionSectionStyle: CSSProperties = {
   marginBottom: '20px',
 }
 
+const errorMessageStyle: CSSProperties = {
+  fontSize: '12px',
+  color: '#ef4444',
+  marginTop: '4px',
+}
+
+const inputErrorStyle: CSSProperties = {
+  borderColor: '#ef4444',
+}
+
+const loadingOverlayStyle: CSSProperties = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(15, 23, 42, 0.7)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  zIndex: 10,
+}
+
+const spinnerStyle: CSSProperties = {
+  width: '24px',
+  height: '24px',
+  border: '2px solid #334155',
+  borderTopColor: '#3b82f6',
+  borderRadius: '50%',
+  animation: 'spin 1s linear infinite',
+}
+
 /**
  * Panel for editing a step's fields (title, description, priority, dependencies).
  * Features a rich markdown editor for descriptions.
@@ -170,8 +214,25 @@ export function StepEditorPanel({
   availableStepIds,
   onFieldChange,
   onClose,
+  isLoading = false,
+  validationErrors = {},
 }: StepEditorPanelProps) {
   const [showDeps, setShowDeps] = useState(true)
+  const panelRef = useRef<HTMLDivElement>(null)
+
+  // Handle Escape key to close the panel
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape' && !isLoading) {
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [onClose, isLoading])
 
   const handleTitleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -227,7 +288,14 @@ export function StepEditorPanel({
     step.priority === 0 ? 'Highest' : step.priority <= 3 ? 'High' : step.priority <= 6 ? 'Medium' : 'Low'
 
   return (
-    <div style={panelStyle}>
+    <div ref={panelRef} style={{ ...panelStyle, position: 'relative' }}>
+      {/* Loading overlay */}
+      {isLoading && (
+        <div style={loadingOverlayStyle} role="status" aria-live="polite">
+          <div style={spinnerStyle} aria-label="Loading" />
+        </div>
+      )}
+
       {/* Header */}
       <div style={headerStyle}>
         <div style={headerTitleStyle}>
@@ -238,6 +306,7 @@ export function StepEditorPanel({
           type="button"
           style={closeButtonStyle}
           onClick={onClose}
+          disabled={isLoading}
           aria-label="Close step editor"
           title="Close (Esc)"
           onMouseEnter={(e) => {
@@ -261,15 +330,27 @@ export function StepEditorPanel({
             type="text"
             value={step.title}
             onChange={handleTitleChange}
-            style={inputStyle}
+            style={{ ...inputStyle, ...(validationErrors.title ? inputErrorStyle : {}) }}
             placeholder="Enter step title..."
+            disabled={isLoading}
+            aria-invalid={!!validationErrors.title}
+            aria-describedby={validationErrors.title ? 'step-editor-title-error' : undefined}
             onFocus={(e) => {
-              e.currentTarget.style.borderColor = '#3b82f6'
+              if (!validationErrors.title) {
+                e.currentTarget.style.borderColor = '#3b82f6'
+              }
             }}
             onBlur={(e) => {
-              e.currentTarget.style.borderColor = '#374151'
+              if (!validationErrors.title) {
+                e.currentTarget.style.borderColor = '#374151'
+              }
             }}
           />
+          {validationErrors.title && (
+            <div id="step-editor-title-error" style={errorMessageStyle} role="alert">
+              {validationErrors.title}
+            </div>
+          )}
         </div>
 
         {/* Priority */}
@@ -283,19 +364,25 @@ export function StepEditorPanel({
               max={10}
               value={step.priority}
               onChange={handlePriorityChange}
-              style={priorityInputStyle}
+              style={{ ...priorityInputStyle, ...(validationErrors.priority ? inputErrorStyle : {}) }}
+              disabled={isLoading}
+              aria-invalid={!!validationErrors.priority}
+              aria-describedby={validationErrors.priority ? 'step-editor-priority-error' : undefined}
             />
             <div style={priorityDotsStyle}>
               {[...Array(10)].map((_, i) => (
                 <div
                   key={i}
-                  style={priorityDotStyle(i < step.priority)}
-                  onClick={() => handlePriorityDotClick(i)}
+                  style={{
+                    ...priorityDotStyle(i < step.priority),
+                    ...(isLoading ? { cursor: 'not-allowed', opacity: 0.5 } : {}),
+                  }}
+                  onClick={() => !isLoading && handlePriorityDotClick(i)}
                   title={`Set priority to ${i + 1}`}
                   role="button"
-                  tabIndex={0}
+                  tabIndex={isLoading ? -1 : 0}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    if (!isLoading && (e.key === 'Enter' || e.key === ' ')) {
                       handlePriorityDotClick(i)
                     }
                   }}
@@ -304,6 +391,11 @@ export function StepEditorPanel({
             </div>
             <span style={priorityLabelStyle}>{priorityLabel}</span>
           </div>
+          {validationErrors.priority && (
+            <div id="step-editor-priority-error" style={errorMessageStyle} role="alert">
+              {validationErrors.priority}
+            </div>
+          )}
         </div>
 
         {/* Dependencies - Collapsible */}
@@ -313,6 +405,7 @@ export function StepEditorPanel({
               type="button"
               style={{ ...collapsibleLabelStyle, background: 'none', border: 'none', padding: 0 }}
               onClick={toggleDeps}
+              disabled={isLoading}
             >
               <span style={chevronStyle(showDeps)}>▶</span>
               <span>Dependencies</span>
@@ -337,7 +430,13 @@ export function StepEditorPanel({
               selectedIds={step.needs ?? []}
               availableIds={otherStepIds}
               onChange={handleNeedsChange}
+              disabled={isLoading}
             />
+          )}
+          {validationErrors.needs && (
+            <div style={errorMessageStyle} role="alert">
+              {validationErrors.needs}
+            </div>
           )}
         </div>
 
@@ -350,7 +449,13 @@ export function StepEditorPanel({
             placeholder="Describe what this step does..."
             minHeight="250px"
             aria-labelledby="step-editor-description-label"
+            readOnly={isLoading}
           />
+          {validationErrors.description && (
+            <div style={errorMessageStyle} role="alert">
+              {validationErrors.description}
+            </div>
+          )}
         </div>
       </div>
     </div>
