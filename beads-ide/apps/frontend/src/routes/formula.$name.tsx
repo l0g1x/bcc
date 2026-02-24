@@ -8,6 +8,7 @@ import type { PourResult, ProtoBead, SlingRequest } from '@beads-ide/shared'
  */
 import { createFileRoute } from '@tanstack/react-router'
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { toast } from 'sonner'
 import {
   FormulaFlowView,
   FormulaOutlineView,
@@ -20,7 +21,8 @@ import {
 } from '../components/formulas'
 import { OpenCodeTerminal } from '../components/opencode'
 import { useAnnounce } from '../contexts'
-import { useCook, useFormulaContent, useSling } from '../hooks'
+import { useCook, useFormulaContent, useSave, useSling } from '../hooks'
+import { useHotkey } from '../hooks/use-hotkeys'
 import {
   type FormulaParseError,
   extractStepIds,
@@ -250,6 +252,26 @@ function FormulaPage() {
 
   // Sling hook
   const { result: slingResult, isLoading: isSlinging, sling, reset: resetSling } = useSling()
+
+  // Save hook
+  const { save, isLoading: isSaving } = useSave()
+
+  // Handle save with Mod+S hotkey
+  const handleSave = useCallback(async () => {
+    if (!name || !tomlContent || isSaving) return
+    try {
+      await save(name, tomlContent)
+      setSavedContent(tomlContent)
+      hasAnnouncedUnsavedRef.current = false
+      toast.success('Formula saved')
+      announce('Formula saved')
+    } catch {
+      // Error toast is already shown by useSave hook
+    }
+  }, [name, tomlContent, isSaving, save, announce, setSavedContent])
+
+  // Mod+S to save (enable on form tags so it works in the text editor)
+  useHotkey('Mod+S', handleSave, { enableOnFormTags: true })
 
   const handleToggleMode = useCallback((mode: ViewMode) => {
     setViewMode(mode)
