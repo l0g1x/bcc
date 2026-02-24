@@ -1,10 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useEffect } from 'react'
 
 export const Route = createFileRoute('/')({
   component: LandingPage,
 })
 
 function LandingPage() {
+  useEffect(() => {
+    document.title = 'Beads IDE'
+  }, [])
+
   return (
     <div className="flex h-full items-center justify-center bg-zinc-950 text-zinc-100">
       <div className="text-center">
