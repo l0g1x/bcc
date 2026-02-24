@@ -77,7 +77,7 @@ The architecture respects the existing monorepo structure (`apps/backend`, `apps
 - **Files:**
   - Modify: `/packages/shared/src/ide-types.ts` — append 8 new type definitions (TreeNode, TreeResponse, TreeError, WorkspaceOpenRequest, WorkspaceOpenResponse, WorkspaceInitRequest, WorkspaceInitResponse, WorkspaceStateResponse, WorkspaceError)
   - Modify: `/packages/shared/src/index.ts` — add exports for new types
-- **Key details:** Use exact type definitions from spec section 5.5. Include all error codes. All types use `ok: true/false` envelope pattern matching existing `CookResult`, `SlingResult`.
+- **Key details:** Use exact type definitions from spec section 5.5. Include all error codes. All types use `ok: true/false` envelope pattern matching existing `CookResult`, `SlingResult`. Note: `GET /api/workspace` returns `WorkspaceError` with code `NO_ROOT` when no workspace root is configured (not a success response with null root).
 - **Acceptance criteria:**
   - [ ] `pnpm run typecheck --filter @beads-ide/shared` passes
   - [ ] All 8 type interfaces exported from `@beads-ide/shared`
@@ -103,8 +103,8 @@ The architecture respects the existing monorepo structure (`apps/backend`, `apps
 - **Files:**
   - Create: `/apps/backend/src/routes/workspace.ts`
 - **Key details:**
-  - `GET /api/workspace` — returns `WorkspaceStateResponse` with current root, formula count, search paths. Uses `getWorkspaceRoot()` and `getConfig()`.
-  - `POST /api/workspace/open` — validates path exists and is directory, calls `setWorkspaceRoot(path)`, returns `WorkspaceOpenResponse`. Error codes: NOT_FOUND, NOT_DIRECTORY, PERMISSION_DENIED.
+  - `GET /api/workspace` — returns `WorkspaceStateResponse` with current root, formula count, search paths. Uses `getWorkspaceRoot()` and `getConfig()`. When no workspace root is configured (first launch), returns `WorkspaceError` with code `NO_ROOT` instead of a success response.
+  - `POST /api/workspace/open` — validates path exists and is directory, auto-creates `.beads/` directory if missing (resolves Q4), calls `setWorkspaceRoot(path)`, returns `WorkspaceOpenResponse`. Error codes: NOT_FOUND, NOT_DIRECTORY, PERMISSION_DENIED.
   - `POST /api/workspace/init` — scaffolds `.beads/` + `formulas/` dirs, writes blank template file, then calls open logic. Error codes: ALREADY_INITIALIZED (if `.beads/` exists), WRITE_ERROR. Template content: `name = "new-formula"\nversion = 1\n\n[[steps]]\nid = "step-1"\ntitle = "First step"\ndescription = ""\n`
   - `GET /api/tree` — recursive async scan using `fs.promises.readdir({ withFileTypes: true })`. Prunes directories without `.formula.toml` descendants. Stops at 500 nodes (sets `truncated: true`). Sorts: directories before files, then alphabetically.
   - `GET /api/browse?path=<path>` — returns directory listing for the directory browser. Returns `{ entries: [{ name, type: "dir"|"file", path }] }`. Defaults to `os.homedir()` if no path. Validates path to prevent directory traversal.
@@ -142,6 +142,7 @@ The architecture respects the existing monorepo structure (`apps/backend`, `apps
 - **Acceptance criteria:**
   - [ ] `pnpm run test --filter @beads-ide/backend` passes
   - [ ] Tests cover: GET /api/workspace, POST /api/workspace/open (success + errors), POST /api/workspace/init (success + errors), GET /api/tree (empty, normal, truncated), GET /api/browse
+  - [ ] Backend performance test: `GET /api/tree` responds < 500ms for 200-file fixture (per spec section 5.1)
 - **Dependencies:** 1.3, 1.4
 
 #### Phase 1 Exit Criteria
@@ -714,7 +715,7 @@ The architecture respects the existing monorepo structure (`apps/backend`, `apps
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|-----------|--------|------------|
-| `FormulaDirtyProvider` not mounted | M | H | Phase 2 task 2.1 verifies and fixes if needed. Test immediately. |
+| `FormulaDirtyProvider` not mounted | L | H | Provider is already mounted in `main.tsx`. Phase 2 task 2.1 verifies this. |
 | Tree virtualization performance issues | L | M | `@tanstack/react-virtual` is well-tested. Use 100-formula fixture for performance regression test. |
 | Directory browser security (path traversal) | M | H | Backend validates paths with `path.resolve()` normalization. Consider allowlist of browsable roots (home directory, project roots). |
 | Backend workspace root lost on restart | H | L | Documented behavior: frontend re-syncs from localStorage on startup and re-opens the workspace. Acceptable for MVP. |
@@ -728,7 +729,7 @@ The architecture respects the existing monorepo structure (`apps/backend`, `apps
 | Spec Section | Plan Section | Phase |
 |-------------|-------------|-------|
 | 1. Overview | Overview | All phases |
-| 2. User Stories - US-1 (Open Folder) | 3.1, 3.2, 3.4 | Phase 3 |
+| 2. User Stories - US-1 (Open Folder) | 3.1, 3.2, 3.4, 6.1 | Phases 3, 6 |
 | 2. User Stories - US-2 (New Project) | 3.3 | Phase 3 |
 | 2. User Stories - US-3 (Browse and select) | 4.1, 4.2, 4.3, 4.4 | Phase 4 |
 | 2. User Stories - US-4 (Switch folders) | 5.3 | Phase 5 |
@@ -754,6 +755,7 @@ The architecture respects the existing monorepo structure (`apps/backend`, `apps
 | 5.5 Shared Types | 1.1 | Phase 1 |
 | Review Resolution: Folder Picker | 1.3 (GET /api/browse), 3.1 (DirectoryBrowser) | Phase 1, 3 |
 | Q63 Resolution: Folder-only mode | 4.5 | Phase 4 |
+| Additional Gap Fixes (browser title, treeExpanded, TreeErrorState, useFormulas refresh, async FS) | 5.5, 2.3, 4.1, 6.3, 1.3 | Phases 1, 2, 4, 5, 6 |
 
 ---
 
