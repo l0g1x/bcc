@@ -3,9 +3,10 @@ import type { FormulaListItem } from '@beads-ide/shared'
  * Formula tree component for the sidebar.
  * Displays formulas grouped by search path directory.
  */
-import { type CSSProperties, useMemo, useState } from 'react'
-import { useFormulaDirty } from '../../contexts'
+import { type CSSProperties, useCallback, useMemo, useState } from 'react'
+import { useFormulaDirty, useFormulaSave } from '../../contexts'
 import { useFormulas } from '../../hooks'
+import { UnsavedChangesModal } from '../ui/unsaved-changes-modal'
 
 // Styles
 const treeContainerStyle: CSSProperties = {
@@ -383,18 +384,83 @@ export interface FormulaTreeProps {
 
 export function FormulaTree({ selectedFormula = null, onSelectFormula }: FormulaTreeProps) {
   const { formulas, isLoading, error, searchPaths } = useFormulas()
-  const { isDirty } = useFormulaDirty()
+  const { isDirty, setDirty } = useFormulaDirty()
+  const { save, canSave } = useFormulaSave()
+
+  // Track pending navigation when dirty
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null)
+  const [showModal, setShowModal] = useState(false)
 
   const groups = useMemo(() => groupFormulas(formulas), [formulas])
 
-  const handleSelectFormula = (name: string) => {
-    if (onSelectFormula) {
-      onSelectFormula(name)
+  // Get current formula from URL
+  const getCurrentFormula = useCallback((): string | null => {
+    const path = window.location.pathname
+    const match = path.match(/^\/formula\/(.+)$/)
+    if (match) {
+      return decodeURIComponent(match[1])
     }
-    // Navigation to /formula/:name will be wired when router is fully integrated
-    // For now, update URL directly for deep linking
-    window.history.pushState({}, '', `/formula/${encodeURIComponent(name)}`)
-  }
+    return null
+  }, [])
+
+  // Perform the actual navigation
+  const navigateTo = useCallback(
+    (name: string) => {
+      if (onSelectFormula) {
+        onSelectFormula(name)
+      }
+      window.history.pushState({}, '', `/formula/${encodeURIComponent(name)}`)
+      // Dispatch popstate to notify TanStack Router of the change
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    },
+    [onSelectFormula]
+  )
+
+  const handleSelectFormula = useCallback(
+    (name: string) => {
+      const currentFormula = getCurrentFormula()
+
+      // If navigating to a different formula and current one is dirty, show modal
+      if (currentFormula && currentFormula !== name && isDirty(currentFormula)) {
+        setPendingNavigation(name)
+        setShowModal(true)
+        return
+      }
+
+      // Otherwise navigate directly
+      navigateTo(name)
+    },
+    [getCurrentFormula, isDirty, navigateTo]
+  )
+
+  // Modal handlers
+  const handleSave = useCallback(async () => {
+    if (canSave()) {
+      await save()
+    }
+    setShowModal(false)
+    if (pendingNavigation) {
+      navigateTo(pendingNavigation)
+      setPendingNavigation(null)
+    }
+  }, [canSave, save, pendingNavigation, navigateTo])
+
+  const handleDiscard = useCallback(() => {
+    const currentFormula = getCurrentFormula()
+    if (currentFormula) {
+      setDirty(currentFormula, false)
+    }
+    setShowModal(false)
+    if (pendingNavigation) {
+      navigateTo(pendingNavigation)
+      setPendingNavigation(null)
+    }
+  }, [getCurrentFormula, setDirty, pendingNavigation, navigateTo])
+
+  const handleCancel = useCallback(() => {
+    setShowModal(false)
+    setPendingNavigation(null)
+  }, [])
 
   if (isLoading) {
     return <LoadingSkeleton />
@@ -415,17 +481,26 @@ export function FormulaTree({ selectedFormula = null, onSelectFormula }: Formula
   }
 
   return (
-    // biome-ignore lint/a11y/useSemanticElements: landmark region container, section requires heading per WCAG
-    <div style={treeContainerStyle} role="region" aria-label="Formula files">
-      {groups.map((group) => (
-        <FormulaGroupSection
-          key={group.searchPath}
-          group={group}
-          selectedFormula={selectedFormula}
-          onSelectFormula={handleSelectFormula}
-          isFormulaDirty={isDirty}
-        />
-      ))}
-    </div>
+    <>
+      {/* biome-ignore lint/a11y/useSemanticElements: landmark region container, section requires heading per WCAG */}
+      <div style={treeContainerStyle} role="region" aria-label="Formula files">
+        {groups.map((group) => (
+          <FormulaGroupSection
+            key={group.searchPath}
+            group={group}
+            selectedFormula={selectedFormula}
+            onSelectFormula={handleSelectFormula}
+            isFormulaDirty={isDirty}
+          />
+        ))}
+      </div>
+
+      <UnsavedChangesModal
+        isOpen={showModal}
+        onSave={handleSave}
+        onDiscard={handleDiscard}
+        onCancel={handleCancel}
+      />
+    </>
   )
 }

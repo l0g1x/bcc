@@ -6,7 +6,7 @@ import { BeadDetail } from '../components/beads/bead-detail'
 import { AppShell, FormulaTree } from '../components/layout'
 import { CommandPalette, useDefaultActions } from '../components/layout/command-palette'
 import { GenericErrorPage, OfflineBanner } from '../components/ui'
-import { BeadSelectionProvider, useBeadSelection } from '../contexts'
+import { BeadSelectionProvider, FormulaSaveProvider, useBeadSelection } from '../contexts'
 import { useBead, useKeyboardTip } from '../hooks'
 
 type ViewMode = 'list' | 'wave' | 'graph'
@@ -183,7 +183,9 @@ function RootLayout() {
   return (
     <ErrorBoundary>
       <BeadSelectionProvider>
-        <RootLayoutInner />
+        <FormulaSaveProvider>
+          <RootLayoutInner />
+        </FormulaSaveProvider>
       </BeadSelectionProvider>
     </ErrorBoundary>
   )

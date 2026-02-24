@@ -21,7 +21,7 @@ import {
 } from '../components/formulas'
 import { UnsavedChangesModal } from '../components/ui/unsaved-changes-modal'
 import { OpenCodeTerminal } from '../components/opencode'
-import { useAnnounce, useFormulaDirty } from '../contexts'
+import { useAnnounce, useFormulaDirty, useFormulaSave } from '../contexts'
 import { useCook, useFormulaContent, useSave, useSling } from '../hooks'
 import { useHotkey } from '../hooks/use-hotkeys'
 import {
@@ -211,6 +211,7 @@ function FormulaPage() {
   const { name } = Route.useParams()
   const announce = useAnnounce()
   const { setDirty } = useFormulaDirty()
+  const { registerSaveHandler } = useFormulaSave()
   const [viewMode, setViewMode] = useState<ViewMode>('text')
   const [tomlContent, setTomlContent] = useState('')
   const [savedContent, setSavedContent] = useState('')
@@ -313,6 +314,12 @@ function FormulaPage() {
 
   // Mod+S to save (enable on form tags so it works in the text editor)
   useHotkey('Mod+S', handleSave, { enableOnFormTags: true })
+
+  // Register save handler with context so sidebar can trigger save
+  useEffect(() => {
+    registerSaveHandler(handleSave)
+    return () => registerSaveHandler(null)
+  }, [registerSaveHandler, handleSave])
 
   const handleToggleMode = useCallback((mode: ViewMode) => {
     setViewMode(mode)
