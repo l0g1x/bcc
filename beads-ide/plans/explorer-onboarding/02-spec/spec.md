@@ -725,3 +725,32 @@ The following items are explicitly not included in this feature:
 | 6 | Is `@tanstack/react-virtual` already in the dependency tree, or is it a new dependency to add? | Unresolved | Needs a check of `apps/frontend/package.json`. If not present, requires `pnpm add`. |
 | 7 | Should "Open Folder" in the command palette be shown only when no root is configured, or always? | Unresolved | Showing it always is simpler. Showing it conditionally requires the command palette to read `workspaceConfig`. Recommend always showing it; when a root is already set it acts as "Change Folder". |
 | 8 | What is the exact minimal TOML for the blank template? | Unresolved | Needs agreement with the formula schema. Candidate: `name = "new-formula"\nversion = 1\n\n[[steps]]\nid = "step-1"\ntitle = "First step"\ndescription = ""`. |
+
+---
+
+## Spec Review Clarifications
+
+*Added after completeness assessment*
+
+### Q63 Resolution: Search Path Visibility
+**Decision:** Folder-only. When a folder is opened via "Open Folder", the sidebar shows ONLY formulas from that folder. Gas Town and User formula sections are hidden entirely. This simplifies the UX and removes the confusing multi-source grouping for new users.
+
+**Implementation:** `WorkspaceTree` replaces `FormulaTree` entirely when a root is set. No coexistence.
+
+### Backend Restart Behavior
+**Decision:** Show welcome screen. If the backend restarts and loses the configured root, treat as a fresh start. The frontend should:
+1. Detect mismatch between localStorage root and backend state
+2. Clear localStorage `workspaceConfig`
+3. Show welcome screen for user to re-select folder
+
+### Additional Gap Fixes
+
+1. **Browser `<title>`:** Update to `[formula name] - Beads IDE` when editing, `Beads IDE` otherwise.
+
+2. **`treeExpanded` scoping:** Change to `Record<rootPath, Record<dirPath, boolean>>` to scope expand state per workspace root.
+
+3. **Error UI for tree:** Add `TreeErrorState` component showing error message + "Retry" button when `GET /api/tree` fails.
+
+4. **`useFormulas()` refresh:** Add `invalidateFormulas()` call after successful `POST /api/workspace/open` to force re-fetch.
+
+5. **Async FS calls:** Change `readdirSync`/`statSync` to async `fs.promises.readdir`/`fs.promises.stat` in tree scan.
