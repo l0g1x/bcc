@@ -85,4 +85,19 @@ export type {
   FormulaWriteResponse,
   FormulaCookRequest,
   FormulaSlingRequest,
+  // Workspace tree API types
+  TreeNode,
+  TreeResponse,
+  TreeError,
+  TreeResult,
+  // Workspace management API types
+  WorkspaceOpenRequest,
+  WorkspaceOpenResponse,
+  WorkspaceInitRequest,
+  WorkspaceInitResponse,
+  WorkspaceStateResponse,
+  WorkspaceError,
+  WorkspaceOpenResult,
+  WorkspaceInitResult,
+  WorkspaceStateResult,
 } from './ide-types.js'

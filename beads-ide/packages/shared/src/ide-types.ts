@@ -476,3 +476,133 @@ export interface FormulaSlingRequest {
   /** Variable substitutions */
   vars?: Record<string, string>
 }
+
+// ============================================================================
+// Workspace Tree API Types
+// ============================================================================
+
+/**
+ * A node in the workspace file tree.
+ * Represents either a directory or a formula file.
+ */
+export interface TreeNode {
+  /** Display name (basename) */
+  name: string
+  /** Full filesystem path */
+  path: string
+  /** Node type: directory or formula file */
+  type: 'directory' | 'formula'
+  /** For formula nodes: name without .formula.toml extension */
+  formulaName?: string
+  /** For directory nodes: child nodes */
+  children?: TreeNode[]
+}
+
+/**
+ * Successful response from GET /api/tree.
+ */
+export interface TreeResponse {
+  ok: true
+  /** Root path of the workspace */
+  root: string
+  /** Top-level children of the root */
+  nodes: TreeNode[]
+  /** Total number of nodes in the tree */
+  totalCount: number
+  /** True if the node limit was reached and results were truncated */
+  truncated: boolean
+}
+
+/**
+ * Error response from GET /api/tree.
+ */
+export interface TreeError {
+  ok: false
+  error: string
+  code: 'NO_ROOT' | 'NOT_FOUND' | 'READ_ERROR'
+}
+
+/** Union type for tree endpoint */
+export type TreeResult = TreeResponse | TreeError
+
+// ============================================================================
+// Workspace Management API Types
+// ============================================================================
+
+/**
+ * Request payload for POST /api/workspace/open.
+ */
+export interface WorkspaceOpenRequest {
+  /** Absolute path to the workspace directory */
+  path: string
+}
+
+/**
+ * Successful response from POST /api/workspace/open.
+ */
+export interface WorkspaceOpenResponse {
+  ok: true
+  /** The opened workspace root path */
+  root: string
+  /** Number of formula files discovered */
+  formulaCount: number
+}
+
+/**
+ * Request payload for POST /api/workspace/init.
+ */
+export interface WorkspaceInitRequest {
+  /** Absolute path to the new workspace directory */
+  path: string
+  /** Template to use for initial formula (defaults to 'blank') */
+  template?: 'blank'
+}
+
+/**
+ * Successful response from POST /api/workspace/init.
+ */
+export interface WorkspaceInitResponse {
+  ok: true
+  /** The initialized workspace root path */
+  root: string
+  /** List of created file/directory paths */
+  created: string[]
+}
+
+/**
+ * Response from GET /api/workspace showing current workspace state.
+ */
+export interface WorkspaceStateResponse {
+  ok: true
+  /** Current workspace root path */
+  root: string
+  /** Number of formula files in the workspace */
+  formulaCount: number
+  /** Active search paths for formulas */
+  searchPaths: string[]
+}
+
+/**
+ * Error response for workspace operations.
+ */
+export interface WorkspaceError {
+  ok: false
+  error: string
+  code:
+    | 'NOT_FOUND'
+    | 'NOT_DIRECTORY'
+    | 'PERMISSION_DENIED'
+    | 'ALREADY_INITIALIZED'
+    | 'WRITE_ERROR'
+    | 'NO_ROOT'
+    | 'READ_ERROR'
+}
+
+/** Union type for workspace open endpoint */
+export type WorkspaceOpenResult = WorkspaceOpenResponse | WorkspaceError
+
+/** Union type for workspace init endpoint */
+export type WorkspaceInitResult = WorkspaceInitResponse | WorkspaceError
+
+/** Union type for workspace state endpoint */
+export type WorkspaceStateResult = WorkspaceStateResponse | WorkspaceError
