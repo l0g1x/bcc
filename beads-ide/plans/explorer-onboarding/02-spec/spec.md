@@ -754,3 +754,31 @@ The following items are explicitly not included in this feature:
 4. **`useFormulas()` refresh:** Add `invalidateFormulas()` call after successful `POST /api/workspace/open` to force re-fetch.
 
 5. **Async FS calls:** Change `readdirSync`/`statSync` to async `fs.promises.readdir`/`fs.promises.stat` in tree scan.
+
+---
+
+## Review Resolution: Folder Picker
+
+### Issue
+The File System Access API (`showDirectoryPicker`) only returns a `FileSystemDirectoryHandle` with a basename, not a full filesystem path. The backend needs the full path.
+
+### Resolution
+**Backend directory browser.** Replace the browser native picker with a custom directory browser:
+
+1. **New endpoint:** `GET /api/browse?path=/home/user`
+   - Returns `{ entries: [{ name, type: "dir"|"file", path }] }`
+   - Defaults to user's home directory if no path provided
+
+2. **Frontend component:** `<DirectoryBrowser />`
+   - Modal with tree/list view of directories
+   - Breadcrumb navigation
+   - "Select This Folder" button
+
+3. **Remove:** File System Access API dependency
+   - Works in all browsers
+   - No permission prompts
+   - Full path available to backend
+
+### Security
+- Backend validates paths (no traversal outside allowed roots)
+- Consider allowlist of browsable root paths
