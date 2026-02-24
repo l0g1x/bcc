@@ -230,6 +230,11 @@ function FormulaPage() {
   // Compute isDirty from current content vs saved content
   const isDirty = tomlContent !== savedContent
 
+  // Set document title to formula name
+  useEffect(() => {
+    document.title = `${name} - Beads IDE`
+  }, [name])
+
   // Sync dirty state to context for sidebar indicator
   useEffect(() => {
     if (name) {
