@@ -7,6 +7,9 @@ import type { ProtoBead } from '@beads-ide/shared'
 import { type CSSProperties, type ChangeEvent, useCallback } from 'react'
 import { NeedsSelector } from './needs-selector'
 
+/** Priority levels 0-9 for visual dot indicators */
+const PRIORITY_LEVELS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] as const
+
 export interface StepItemProps {
   /** The step data */
   step: ProtoBead
@@ -342,8 +345,8 @@ export function StepItem({
                 onClick={(e) => e.stopPropagation()}
               />
               <div style={priorityDotsStyle}>
-                {[...Array(10)].map((_, i) => (
-                  <div key={i} style={priorityDotStyle(i < step.priority)} />
+                {PRIORITY_LEVELS.map((level) => (
+                  <div key={`priority-dot-${level}`} style={priorityDotStyle(level < step.priority)} />
                 ))}
               </div>
               <span style={{ fontSize: '11px', color: '#6b7280' }}>

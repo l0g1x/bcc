@@ -7,6 +7,9 @@ import { type CSSProperties, type ChangeEvent, useCallback, useEffect, useRef, u
 import { MarkdownEditor } from './markdown-editor'
 import { NeedsSelector } from './needs-selector'
 
+/** Priority levels 0-9 for visual dot indicators */
+const PRIORITY_LEVELS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] as const
+
 /** Validation errors for step fields */
 export interface StepValidationErrors {
   title?: string
@@ -370,20 +373,20 @@ export function StepEditorPanel({
               aria-describedby={validationErrors.priority ? 'step-editor-priority-error' : undefined}
             />
             <div style={priorityDotsStyle}>
-              {[...Array(10)].map((_, i) => (
+              {PRIORITY_LEVELS.map((level) => (
                 <div
-                  key={i}
+                  key={`priority-dot-${level}`}
                   style={{
-                    ...priorityDotStyle(i < step.priority),
+                    ...priorityDotStyle(level < step.priority),
                     ...(isLoading ? { cursor: 'not-allowed', opacity: 0.5 } : {}),
                   }}
-                  onClick={() => !isLoading && handlePriorityDotClick(i)}
-                  title={`Set priority to ${i + 1}`}
+                  onClick={() => !isLoading && handlePriorityDotClick(level)}
+                  title={`Set priority to ${level + 1}`}
                   role="button"
                   tabIndex={isLoading ? -1 : 0}
                   onKeyDown={(e) => {
                     if (!isLoading && (e.key === 'Enter' || e.key === ' ')) {
-                      handlePriorityDotClick(i)
+                      handlePriorityDotClick(level)
                     }
                   }}
                 />

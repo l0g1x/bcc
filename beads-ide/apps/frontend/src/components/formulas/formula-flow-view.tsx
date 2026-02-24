@@ -294,7 +294,7 @@ export function FormulaFlowView({
       </div>
 
       {waves.map((waveSteps, waveIndex) => (
-        <div key={waveIndex}>
+        <div key={`wave-${waveSteps.map(s => s.id).join('-')}`}>
           <div style={waveContainerStyle}>
             <div style={waveLabelStyle}>
               <span>Wave {waveIndex + 1}</span>
