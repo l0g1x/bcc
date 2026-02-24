@@ -120,19 +120,41 @@ export function loadConfig(cwd: string = process.cwd()): BeadsConfig {
 // Cached config instance
 let cachedConfig: BeadsConfig | null = null
 
+// Workspace root for hot-swapping active directory
+let workspaceRoot: string | null = null
+
 /**
  * Gets the configuration, loading it if not already cached.
+ * Uses the workspace root if set, otherwise uses current working directory.
  */
 export function getConfig(): BeadsConfig {
   if (!cachedConfig) {
-    cachedConfig = loadConfig()
+    cachedConfig = loadConfig(getWorkspaceRoot())
   }
   return cachedConfig
 }
 
 /**
  * Clears the cached configuration (useful for testing or when project changes).
+ * Note: Does NOT reset workspaceRoot - that's managed separately.
  */
 export function clearConfigCache(): void {
   cachedConfig = null
+}
+
+/**
+ * Gets the current workspace root directory.
+ * Returns the explicitly set workspace root, or process.cwd() if not set.
+ */
+export function getWorkspaceRoot(): string {
+  return workspaceRoot ?? process.cwd()
+}
+
+/**
+ * Sets the workspace root directory for hot-swapping the active root.
+ * Also clears the config cache so getConfig() will reload with the new root.
+ */
+export function setWorkspaceRoot(path: string): void {
+  workspaceRoot = path
+  clearConfigCache()
 }
