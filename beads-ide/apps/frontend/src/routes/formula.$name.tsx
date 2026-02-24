@@ -459,7 +459,13 @@ function FormulaPage() {
           {isDirty && <span style={dirtyBadgeStyle}>Unsaved</span>}
         </div>
         <div style={actionsStyle}>
-          <button type="button" onClick={handleCook} style={cookButtonStyle} disabled={isLoading}>
+          <button
+            type="button"
+            onClick={handleCook}
+            style={cookButtonStyle}
+            disabled={isLoading}
+            title="Preview cooked output (Cmd+Shift+C)"
+          >
             {isLoading ? 'Cooking...' : 'Cook Preview'}
           </button>
           {result?.steps && result.steps.length > 0 && (
@@ -494,6 +500,7 @@ function FormulaPage() {
               style={toggleButtonStyle(viewMode === 'text')}
               onClick={() => handleToggleMode('text')}
               aria-pressed={viewMode === 'text'}
+              title="Edit TOML source"
             >
               Text
             </button>
@@ -502,6 +509,7 @@ function FormulaPage() {
               style={toggleButtonStyle(viewMode === 'outline')}
               onClick={() => handleToggleMode('outline')}
               aria-pressed={viewMode === 'outline'}
+              title="Step list with inline editing"
             >
               Outline
             </button>
@@ -510,6 +518,7 @@ function FormulaPage() {
               style={toggleButtonStyle(viewMode === 'flow')}
               onClick={() => handleToggleMode('flow')}
               aria-pressed={viewMode === 'flow'}
+              title="Flow diagram view"
             >
               Flow
             </button>
@@ -518,6 +527,7 @@ function FormulaPage() {
               style={toggleButtonStyle(viewMode === 'visual')}
               onClick={() => handleToggleMode('visual')}
               aria-pressed={viewMode === 'visual'}
+              title="DAG visualization"
             >
               Visual
             </button>
