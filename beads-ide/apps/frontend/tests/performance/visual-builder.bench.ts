@@ -62,7 +62,7 @@ interface CookResult {
  * - ~20% are root steps (no dependencies)
  * - ~20% are gate steps (3+ dependencies)
  */
-export function generateSyntheticFormula(stepCount: number): CookResult {
+function generateSyntheticFormula(stepCount: number): CookResult {
   const steps: ProtoBead[] = []
 
   for (let i = 0; i < stepCount; i++) {

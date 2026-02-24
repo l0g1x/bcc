@@ -529,10 +529,10 @@ export function VisualBuilder({
       if (!prefix) continue
 
       const bounds = groupBounds.get(prefix) || {
-        minX: Infinity,
-        minY: Infinity,
-        maxX: -Infinity,
-        maxY: -Infinity,
+        minX: Number.POSITIVE_INFINITY,
+        minY: Number.POSITIVE_INFINITY,
+        maxX: Number.NEGATIVE_INFINITY,
+        maxY: Number.NEGATIVE_INFINITY,
         steps: 0,
       }
 
