@@ -4,6 +4,7 @@ import type { FormulaListItem } from '@beads-ide/shared'
  * Displays formulas grouped by search path directory.
  */
 import { type CSSProperties, useMemo, useState } from 'react'
+import { useFormulaDirty } from '../../contexts'
 import { useFormulas } from '../../hooks'
 
 // Styles
@@ -74,6 +75,15 @@ const iconStyle: CSSProperties = {
   width: '16px',
   height: '16px',
   flexShrink: 0,
+}
+
+const dirtyDotStyle: CSSProperties = {
+  width: '6px',
+  height: '6px',
+  borderRadius: '50%',
+  backgroundColor: '#fbbf24',
+  flexShrink: 0,
+  marginLeft: 'auto',
 }
 
 const skeletonStyle: CSSProperties = {
@@ -282,9 +292,15 @@ interface FormulaGroupProps {
   group: FormulaGroup
   selectedFormula: string | null
   onSelectFormula: (name: string) => void
+  isFormulaDirty: (name: string) => boolean
 }
 
-function FormulaGroupSection({ group, selectedFormula, onSelectFormula }: FormulaGroupProps) {
+function FormulaGroupSection({
+  group,
+  selectedFormula,
+  onSelectFormula,
+  isFormulaDirty,
+}: FormulaGroupProps) {
   const [expanded, setExpanded] = useState(true)
   const [headerHovered, setHeaderHovered] = useState(false)
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
@@ -341,10 +357,13 @@ function FormulaGroupSection({ group, selectedFormula, onSelectFormula }: Formul
                 onMouseEnter={() => setHoveredItem(formula.name)}
                 onMouseLeave={() => setHoveredItem(null)}
                 aria-pressed={isSelected}
-                aria-label={`Formula: ${formula.name}`}
+                aria-label={`Formula: ${formula.name}${isFormulaDirty(formula.name) ? ', unsaved changes' : ''}`}
               >
                 <FileCodeIcon />
                 <span>{formula.name}</span>
+                {isFormulaDirty(formula.name) && (
+                  <span style={dirtyDotStyle} aria-hidden="true" title="Unsaved changes" />
+                )}
               </button>
             )
           })}
@@ -364,6 +383,7 @@ export interface FormulaTreeProps {
 
 export function FormulaTree({ selectedFormula = null, onSelectFormula }: FormulaTreeProps) {
   const { formulas, isLoading, error, searchPaths } = useFormulas()
+  const { isDirty } = useFormulaDirty()
 
   const groups = useMemo(() => groupFormulas(formulas), [formulas])
 
@@ -403,6 +423,7 @@ export function FormulaTree({ selectedFormula = null, onSelectFormula }: Formula
           group={group}
           selectedFormula={selectedFormula}
           onSelectFormula={handleSelectFormula}
+          isFormulaDirty={isDirty}
         />
       ))}
     </div>

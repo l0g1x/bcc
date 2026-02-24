@@ -20,7 +20,7 @@ import {
   VisualBuilder,
 } from '../components/formulas'
 import { OpenCodeTerminal } from '../components/opencode'
-import { useAnnounce } from '../contexts'
+import { useAnnounce, useFormulaDirty } from '../contexts'
 import { useCook, useFormulaContent, useSave, useSling } from '../hooks'
 import { useHotkey } from '../hooks/use-hotkeys'
 import {
@@ -53,11 +53,26 @@ const headerStyle: CSSProperties = {
   backgroundColor: '#1e293b',
 }
 
+const titleContainerStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+}
+
 const titleStyle: CSSProperties = {
   fontSize: '16px',
   fontWeight: 600,
   color: '#e2e8f0',
   fontFamily: 'monospace',
+}
+
+const dirtyBadgeStyle: CSSProperties = {
+  fontSize: '11px',
+  fontWeight: 500,
+  color: '#fbbf24',
+  backgroundColor: 'rgba(251, 191, 36, 0.15)',
+  padding: '2px 6px',
+  borderRadius: '4px',
 }
 
 const actionsStyle: CSSProperties = {
@@ -194,6 +209,7 @@ export const Route = createFileRoute('/formula/$name')({
 function FormulaPage() {
   const { name } = Route.useParams()
   const announce = useAnnounce()
+  const { setDirty } = useFormulaDirty()
   const [viewMode, setViewMode] = useState<ViewMode>('text')
   const [tomlContent, setTomlContent] = useState('')
   const [savedContent, setSavedContent] = useState('')
@@ -209,6 +225,13 @@ function FormulaPage() {
 
   // Compute isDirty from current content vs saved content
   const isDirty = tomlContent !== savedContent
+
+  // Sync dirty state to context for sidebar indicator
+  useEffect(() => {
+    if (name) {
+      setDirty(name, isDirty)
+    }
+  }, [name, isDirty, setDirty])
 
   // Load formula content from disk
   const {
@@ -282,12 +305,15 @@ function FormulaPage() {
   }, [])
 
   // Handle step selection in visual mode
-  const handleStepSelect = useCallback((stepId: string | null) => {
-    setSelectedStepId(stepId)
-    if (stepId) {
-      announce('Step selected')
-    }
-  }, [announce])
+  const handleStepSelect = useCallback(
+    (stepId: string | null) => {
+      setSelectedStepId(stepId)
+      if (stepId) {
+        announce('Step selected')
+      }
+    },
+    [announce]
+  )
 
   // Handle step field changes from the StepEditorPanel
   // NOTE: Editing only works for steps defined directly in the source TOML.
@@ -341,21 +367,24 @@ function FormulaPage() {
     })
   }, [])
 
-  const handleTomlChange = useCallback((content: string) => {
-    setTomlContent(content)
-    // Announce unsaved changes on first divergence
-    if (content !== savedContent && !hasAnnouncedUnsavedRef.current) {
-      hasAnnouncedUnsavedRef.current = true
-      announce('Unsaved changes')
-    }
-    // Parse and validate on change
-    const result = parseAndValidateFormula(content)
-    if (!result.ok) {
-      setParseErrors(result.errors)
-    } else {
-      setParseErrors([])
-    }
-  }, [announce, savedContent])
+  const handleTomlChange = useCallback(
+    (content: string) => {
+      setTomlContent(content)
+      // Announce unsaved changes on first divergence
+      if (content !== savedContent && !hasAnnouncedUnsavedRef.current) {
+        hasAnnouncedUnsavedRef.current = true
+        announce('Unsaved changes')
+      }
+      // Parse and validate on change
+      const result = parseAndValidateFormula(content)
+      if (!result.ok) {
+        setParseErrors(result.errors)
+      } else {
+        setParseErrors([])
+      }
+    },
+    [announce, savedContent]
+  )
 
   const handleCook = useCallback(() => {
     cook()
@@ -410,7 +439,10 @@ function FormulaPage() {
     <div style={containerStyle}>
       {/* Header with title, view toggle, and action buttons */}
       <div style={headerStyle}>
-        <div style={titleStyle}>{name}.toml</div>
+        <div style={titleContainerStyle}>
+          <div style={titleStyle}>{name}.toml</div>
+          {isDirty && <span style={dirtyBadgeStyle}>Unsaved</span>}
+        </div>
         <div style={actionsStyle}>
           <button type="button" onClick={handleCook} style={cookButtonStyle} disabled={isLoading}>
             {isLoading ? 'Cooking...' : 'Cook Preview'}
@@ -495,8 +527,12 @@ function FormulaPage() {
             <TextEditor value={tomlContent} onChange={handleTomlChange} errors={parseErrors} />
           )}
 
-          {!isLoading && !contentLoading && !error && !contentError && viewMode === 'outline' && (
-            result ? (
+          {!isLoading &&
+            !contentLoading &&
+            !error &&
+            !contentError &&
+            viewMode === 'outline' &&
+            (result ? (
               <FormulaOutlineView
                 result={result}
                 varValues={varValues}
@@ -508,11 +544,14 @@ function FormulaPage() {
               />
             ) : (
               <div style={loadingStyle}>No formula data to display</div>
-            )
-          )}
+            ))}
 
-          {!isLoading && !contentLoading && !error && !contentError && viewMode === 'flow' && (
-            result ? (
+          {!isLoading &&
+            !contentLoading &&
+            !error &&
+            !contentError &&
+            viewMode === 'flow' &&
+            (result ? (
               <FormulaFlowView
                 result={result}
                 selectedStepId={selectedStepId}
@@ -520,8 +559,7 @@ function FormulaPage() {
               />
             ) : (
               <div style={loadingStyle}>No formula data to display</div>
-            )
-          )}
+            ))}
 
           {!isLoading && !contentLoading && !error && !contentError && viewMode === 'visual' && (
             <div style={visualContainerStyle}>
@@ -550,21 +588,23 @@ function FormulaPage() {
             />
           </div>
         )}
-        {!showSidePanel && !showAiPanel && viewMode === 'text' && result?.vars && Object.keys(result.vars).length > 0 && (
-          <div style={sidePanelStyle}>
-            <VarsPanel
-              vars={result.vars}
-              values={varValues}
-              onValueChange={handleVarChange}
-              unboundVars={result.unbound_vars}
-            />
-          </div>
-        )}
+        {!showSidePanel &&
+          !showAiPanel &&
+          viewMode === 'text' &&
+          result?.vars &&
+          Object.keys(result.vars).length > 0 && (
+            <div style={sidePanelStyle}>
+              <VarsPanel
+                vars={result.vars}
+                values={varValues}
+                onValueChange={handleVarChange}
+                unboundVars={result.unbound_vars}
+              />
+            </div>
+          )}
         {showAiPanel && (
           <div style={{ ...sidePanelStyle, width: '700px', minWidth: '600px' }}>
-            <OpenCodeTerminal
-              onClose={() => setShowAiPanel(false)}
-            />
+            <OpenCodeTerminal onClose={() => setShowAiPanel(false)} />
           </div>
         )}
       </div>
