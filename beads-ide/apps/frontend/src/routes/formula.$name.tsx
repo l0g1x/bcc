@@ -233,6 +233,21 @@ function FormulaPage() {
     }
   }, [name, isDirty, setDirty])
 
+  // Warn user before leaving page with unsaved changes
+  useEffect(() => {
+    if (!isDirty) return
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      // Modern browsers ignore custom messages but still show a confirmation dialog
+      e.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
+      return e.returnValue
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [isDirty])
+
   // Load formula content from disk
   const {
     content: loadedContent,
