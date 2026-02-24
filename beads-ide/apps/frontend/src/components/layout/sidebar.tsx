@@ -28,8 +28,10 @@ const toggleButtonStyle: CSSProperties = {
   border: 'none',
   color: '#cccccc',
   cursor: 'pointer',
-  padding: '4px 8px',
-  fontSize: '12px',
+  padding: '4px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   borderRadius: '3px',
 }
 
@@ -68,7 +70,15 @@ export function Sidebar({ children, collapsed = false, onToggleCollapse }: Sideb
           }}
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
-          {collapsed ? '>' : '<'}
+          {collapsed ? (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M6 3l5 5-5 5" stroke="#cccccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M10 3l-5 5 5 5" stroke="#cccccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          )}
         </button>
       </div>
       <div style={collapsed ? collapsedContentStyle : contentStyle}>{children}</div>
