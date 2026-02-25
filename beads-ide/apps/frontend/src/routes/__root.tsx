@@ -1,6 +1,6 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { Component, type ErrorInfo, type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { Component, type ErrorInfo, type ReactNode, useCallback, useEffect, useState } from 'react'
 import { Toaster } from 'sonner'
 import { BeadDetail } from '../components/beads/bead-detail'
 import { AppShell, FormulaTree } from '../components/layout'
@@ -70,46 +70,41 @@ function RootLayoutInner() {
   const { selectedBeadId, clearSelection } = useBeadSelection()
   const { bead, isLoading, error } = useBead(selectedBeadId)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
-  const { config, clearConfig } = useWorkspaceConfig()
+  const { config, setRootPath, clearConfig } = useWorkspaceConfig()
 
-  // Stable refs for workspace sync effect
-  const configRef = useRef(config)
-  const clearConfigRef = useRef(clearConfig)
-  configRef.current = config
-  clearConfigRef.current = clearConfig
+  // Show one-time keyboard shortcut tip
+  useKeyboardTip()
 
-  // Reconcile localStorage with backend workspace state on mount
+  // Reconcile localStorage workspace config with backend state on mount
   useEffect(() => {
     async function syncWorkspace() {
-      const { data, error: fetchError } = await apiFetch<{ ok: true; root: string }>('/api/workspace')
+      const { data, error: fetchError } = await apiFetch<{ ok: true; root: string }>(
+        '/api/workspace'
+      )
+      const localRoot = config.rootPath
 
       if (fetchError) {
-        // NO_ROOT: backend lost its workspace root, but localStorage may have it
-        if (fetchError.type === 'server' && fetchError.message === 'No workspace root configured') {
-          const localRoot = configRef.current.rootPath
-          if (localRoot) {
-            await apiPost('/api/workspace/open', { path: localRoot })
-          }
+        // Backend has no root (NO_ROOT) — try to restore from localStorage
+        if (fetchError.message === 'No workspace root configured' && localRoot) {
+          await apiPost('/api/workspace/open', { path: localRoot })
         }
         return
       }
 
-      // Backend has a workspace — verify it matches localStorage
       if (data) {
-        const localRoot = configRef.current.rootPath
-        if (data.root !== localRoot) {
-          clearConfigRef.current()
+        if (!localRoot) {
+          // localStorage empty — adopt backend root
+          setRootPath(data.root)
+        } else if (data.root !== localRoot) {
+          // Mismatch — clear localStorage and navigate to welcome screen
+          clearConfig()
           window.history.pushState(null, '', '/')
           window.dispatchEvent(new PopStateEvent('popstate'))
         }
       }
     }
-
     syncWorkspace()
-  }, [])
-
-  // Show one-time keyboard shortcut tip
-  useKeyboardTip()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleOpenFormula = useCallback(() => {
     // Navigate to first formula or show formula picker
