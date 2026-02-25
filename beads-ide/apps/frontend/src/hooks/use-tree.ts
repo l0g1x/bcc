@@ -1,5 +1,6 @@
 import type { TreeNode, TreeResponse } from '@beads-ide/shared'
 import { useCallback, useEffect, useState } from 'react'
+import { apiFetch } from '../lib/api'
 
 export interface UseTreeReturn {
   nodes: TreeNode[]
@@ -10,23 +11,6 @@ export interface UseTreeReturn {
   error: Error | null
   refresh: () => void
   lastUpdated: Date | null
-}
-
-async function fetchTree(): Promise<TreeResponse> {
-  const response = await fetch('/api/tree')
-
-  if (!response.ok) {
-    const text = await response.text()
-    throw new Error(`Failed to fetch tree: ${response.status} ${text}`)
-  }
-
-  const data = await response.json()
-
-  if (!data.ok) {
-    throw new Error(data.error || 'Failed to fetch tree')
-  }
-
-  return data as TreeResponse
 }
 
 export function useTree(): UseTreeReturn {
@@ -42,22 +26,23 @@ export function useTree(): UseTreeReturn {
     setIsLoading(true)
     setError(null)
 
-    try {
-      const result = await fetchTree()
-      setNodes(result.nodes)
-      setRoot(result.root)
-      setTotalCount(result.totalCount)
-      setTruncated(result.truncated)
-      setLastUpdated(new Date())
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error(String(err)))
+    const { data, error: apiError } = await apiFetch<TreeResponse>('/api/tree')
+
+    if (apiError) {
+      setError(new Error(apiError.details || apiError.message))
       setNodes([])
       setRoot(null)
       setTotalCount(0)
       setTruncated(false)
-    } finally {
-      setIsLoading(false)
+    } else if (data) {
+      setNodes(data.nodes)
+      setRoot(data.root)
+      setTotalCount(data.totalCount)
+      setTruncated(data.truncated)
+      setLastUpdated(new Date())
     }
+
+    setIsLoading(false)
   }, [])
 
   useEffect(() => {
