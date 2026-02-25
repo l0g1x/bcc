@@ -1181,6 +1181,68 @@ test.describe('Change Folder with Unsaved Changes Guard', () => {
 })
 
 // =====================================================================
+// Performance
+// =====================================================================
+
+test.describe('Tree Render Performance', () => {
+  test('should render 100-formula tree within 500ms', async ({ page, apiMock }) => {
+    // Generate 100 formula nodes across 10 directories
+    const nodes = Array.from({ length: 10 }, (_, dirIdx) => ({
+      name: `dir-${dirIdx}`,
+      path: `formulas/dir-${dirIdx}`,
+      type: 'directory' as const,
+      children: Array.from({ length: 10 }, (_, fIdx) => ({
+        name: `formula-${dirIdx}-${fIdx}.formula.toml`,
+        path: `formulas/dir-${dirIdx}/formula-${dirIdx}-${fIdx}.formula.toml`,
+        type: 'formula' as const,
+        formulaName: `formula-${dirIdx}-${fIdx}`,
+      })),
+    }))
+
+    const largeTreeResponse = {
+      ok: true,
+      root: '/home/user/projects/my-beads',
+      nodes,
+      totalCount: 100,
+      truncated: false,
+    }
+
+    // Set up workspace mocks with hasWorkspace but override tree
+    await setupWorkspaceMocks(page, { hasWorkspace: true })
+    await page.route(/\/api\/tree$/, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(largeTreeResponse),
+      })
+    })
+
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        'workspaceConfig',
+        JSON.stringify({
+          version: 1,
+          rootPath: '/home/user/projects/my-beads',
+          recentRoots: ['/home/user/projects/my-beads'],
+          treeExpanded: {},
+        })
+      )
+    })
+
+    // Measure time from navigation to tree visible
+    const startTime = Date.now()
+    await page.goto('/')
+    const tree = page.locator('nav[role="tree"]')
+    await expect(tree).toBeVisible()
+    // Verify at least one formula node rendered
+    await expect(tree.getByText('formula-0-0')).toBeVisible()
+    const elapsed = Date.now() - startTime
+
+    expect(elapsed).toBeLessThan(500)
+  })
+})
+
+// =====================================================================
 // Full Integration Flows
 // =====================================================================
 
