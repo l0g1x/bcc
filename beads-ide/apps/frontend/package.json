@@ -27,6 +27,7 @@
     "@dagrejs/dagre": "^2.0.4",
     "@opencode-ai/sdk": "^1.2.10",
     "@tanstack/react-router": "^1.95.1",
+    "@tanstack/react-virtual": "^3.13.19",
     "@tanstack/router-devtools": "^1.95.1",
     "@tanstack/router-plugin": "^1.95.1",
     "@tiptap/extension-placeholder": "^3.20.0",
