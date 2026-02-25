@@ -20,3 +20,8 @@ export {
   type OpenCodeSession,
 } from './use-opencode'
 export { useKeyboardTip } from './use-keyboard-tip'
+export {
+  useWorkspaceConfig,
+  type UseWorkspaceConfigReturn,
+  type WorkspaceConfig,
+} from './use-workspace-config'
