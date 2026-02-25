@@ -1,7 +1,8 @@
 import { type CSSProperties, useCallback, useEffect, useState } from 'react'
 import { useWorkspaceConfig } from '../../hooks'
-import { apiFetch, apiPost } from '../../lib'
+import { apiPost } from '../../lib'
 import { DirectoryBrowser } from './directory-browser'
+import { NewProjectModal } from './new-project-modal'
 
 export interface WelcomePanelProps {
   onWorkspaceOpened?: () => void
@@ -23,7 +24,7 @@ const innerStyle: CSSProperties = {
   padding: '24px',
 }
 
-const headingStyle: CSSProperties = {
+const titleStyle: CSSProperties = {
   fontSize: '24px',
   fontWeight: 700,
   color: '#38bdf8',
@@ -135,52 +136,6 @@ interface RecentItemData {
   valid: boolean
 }
 
-function RecentItem({
-  item,
-  onSelect,
-}: {
-  item: RecentItemData
-  onSelect: (path: string) => void
-}) {
-  if (!item.valid) {
-    return (
-      <div style={invalidItemStyle} title={`${item.path} (not found)`}>
-        <WarningIcon />
-        <span
-          style={{
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            textDecoration: 'line-through',
-          }}
-        >
-          {abbreviatePath(item.path)}
-        </span>
-      </div>
-    )
-  }
-
-  return (
-    <button
-      type="button"
-      style={recentItemStyle}
-      onClick={() => onSelect(item.path)}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = '#2a2d2e'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = 'transparent'
-      }}
-      title={item.path}
-    >
-      <FolderIcon />
-      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-        {abbreviatePath(item.path)}
-      </span>
-    </button>
-  )
-}
-
 function RecentList({
   recentRoots,
   onSelect,
@@ -196,10 +151,13 @@ function RecentList({
     async function validate() {
       const results = await Promise.all(
         recentRoots.map(async (path) => {
-          const { error } = await apiFetch<{ ok: true }>(
-            `/api/browse?path=${encodeURIComponent(path)}`
-          )
-          return { path, valid: !error }
+          try {
+            const res = await fetch(`/api/browse?path=${encodeURIComponent(path)}`)
+            const data = await res.json()
+            return { path, valid: data.ok === true }
+          } catch {
+            return { path, valid: false }
+          }
         })
       )
       setItems(results)
@@ -210,31 +168,74 @@ function RecentList({
   if (recentRoots.length === 0) return null
 
   return (
-    <section style={recentSectionStyle} aria-label="Recent workspaces">
+    <div style={recentSectionStyle}>
       <div style={recentTitleStyle}>Recent</div>
-      {items.map((item) => (
-        <RecentItem key={item.path} item={item} onSelect={onSelect} />
-      ))}
-    </section>
+      {items.map((item) =>
+        item.valid ? (
+          <button
+            key={item.path}
+            type="button"
+            style={recentItemStyle}
+            onClick={() => onSelect(item.path)}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#2a2d2e'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent'
+            }}
+            title={item.path}
+          >
+            <FolderIcon />
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {abbreviatePath(item.path)}
+            </span>
+          </button>
+        ) : (
+          <div key={item.path} style={invalidItemStyle} title={`${item.path} (not found)`}>
+            <WarningIcon />
+            <span
+              style={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                textDecoration: 'line-through',
+              }}
+            >
+              {abbreviatePath(item.path)}
+            </span>
+          </div>
+        )
+      )}
+    </div>
   )
 }
 
 export function WelcomePanel({ onWorkspaceOpened }: WelcomePanelProps) {
   const { config, setRootPath, addRecentRoot } = useWorkspaceConfig()
   const [showBrowser, setShowBrowser] = useState(false)
+  const [showNewProject, setShowNewProject] = useState(false)
+  const [newProjectPath, setNewProjectPath] = useState('')
+  const [browserMode, setBrowserMode] = useState<'open' | 'new'>('open')
 
   const handleOpenFolder = useCallback(() => {
+    setBrowserMode('open')
     setShowBrowser(true)
   }, [])
 
   const handleNewProject = useCallback(() => {
-    // New Project flow — modal handled by separate NewProjectModal component (bcc-8rlwh.3.3)
-    console.log('New Project triggered')
+    setBrowserMode('new')
+    setShowBrowser(true)
   }, [])
 
   const handleFolderSelected = useCallback(
     async (path: string) => {
       setShowBrowser(false)
+      if (browserMode === 'new') {
+        setNewProjectPath(path)
+        setShowNewProject(true)
+        return
+      }
+      // Open folder flow
       const { error } = await apiPost<
         { ok: true; root: string; formulaCount: number },
         { path: string }
@@ -245,8 +246,22 @@ export function WelcomePanel({ onWorkspaceOpened }: WelcomePanelProps) {
         onWorkspaceOpened?.()
       }
     },
-    [setRootPath, addRecentRoot, onWorkspaceOpened]
+    [browserMode, setRootPath, addRecentRoot, onWorkspaceOpened]
   )
+
+  const handleNewProjectComplete = useCallback(async () => {
+    setShowNewProject(false)
+    // After init, open the workspace
+    const { error } = await apiPost<
+      { ok: true; root: string; formulaCount: number },
+      { path: string }
+    >('/api/workspace/open', { path: newProjectPath })
+    if (!error) {
+      setRootPath(newProjectPath)
+      addRecentRoot(newProjectPath)
+      onWorkspaceOpened?.()
+    }
+  }, [newProjectPath, setRootPath, addRecentRoot, onWorkspaceOpened])
 
   const handleRecentSelect = useCallback(
     async (path: string) => {
@@ -266,7 +281,7 @@ export function WelcomePanel({ onWorkspaceOpened }: WelcomePanelProps) {
   return (
     <div style={containerStyle}>
       <div style={innerStyle}>
-        <h1 style={headingStyle}>Beads IDE</h1>
+        <h1 style={titleStyle}>Beads IDE</h1>
         <p style={subtitleStyle}>Open a folder to get started.</p>
 
         <div style={buttonRowStyle}>
@@ -285,6 +300,13 @@ export function WelcomePanel({ onWorkspaceOpened }: WelcomePanelProps) {
         isOpen={showBrowser}
         onSelect={handleFolderSelected}
         onCancel={() => setShowBrowser(false)}
+      />
+
+      <NewProjectModal
+        isOpen={showNewProject}
+        selectedPath={newProjectPath}
+        onComplete={handleNewProjectComplete}
+        onCancel={() => setShowNewProject(false)}
       />
     </div>
   )

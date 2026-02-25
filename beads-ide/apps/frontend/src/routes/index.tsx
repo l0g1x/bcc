@@ -1,14 +1,27 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
+import { WelcomePanel } from '../components/layout'
+import { useWorkspaceConfig } from '../hooks'
 
 export const Route = createFileRoute('/')({
   component: LandingPage,
 })
 
 function LandingPage() {
+  const { config } = useWorkspaceConfig()
+
   useEffect(() => {
     document.title = 'Beads IDE'
   }, [])
+
+  const handleWorkspaceOpened = useCallback(() => {
+    // Force re-render by dispatching popstate
+    window.dispatchEvent(new PopStateEvent('popstate'))
+  }, [])
+
+  if (!config.rootPath) {
+    return <WelcomePanel onWorkspaceOpened={handleWorkspaceOpened} />
+  }
 
   return (
     <div className="flex h-full items-center justify-center bg-zinc-950 text-zinc-100">

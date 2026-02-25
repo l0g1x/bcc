@@ -35,5 +35,17 @@
   },
   "files": {
     "ignore": ["node_modules", "dist", "coverage", "*.gen.ts"]
-  }
+  },
+  "overrides": [
+    {
+      "include": ["apps/frontend/src/components/layout/workspace-tree.tsx"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "noNoninteractiveTabindex": "off"
+          }
+        }
+      }
+    }
+  ]
 }

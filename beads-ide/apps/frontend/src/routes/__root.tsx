@@ -3,7 +3,14 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { Component, type ErrorInfo, type ReactNode, useCallback, useEffect, useState } from 'react'
 import { Toaster } from 'sonner'
 import { BeadDetail } from '../components/beads/bead-detail'
-import { AppShell, FormulaTree } from '../components/layout'
+import {
+  AppShell,
+  DirectoryBrowser,
+  FormulaTree,
+  NewProjectModal,
+  WorkspaceHeader,
+  WorkspaceTree,
+} from '../components/layout'
 import { CommandPalette, useDefaultActions } from '../components/layout/command-palette'
 import { GenericErrorPage, OfflineBanner } from '../components/ui'
 import { BeadSelectionProvider, FormulaSaveProvider, useBeadSelection } from '../contexts'
@@ -70,12 +77,18 @@ function RootLayoutInner() {
   const { selectedBeadId, clearSelection } = useBeadSelection()
   const { bead, isLoading, error } = useBead(selectedBeadId)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
-  const { config, setRootPath, clearConfig } = useWorkspaceConfig()
+  const { config, setRootPath, addRecentRoot, clearConfig } = useWorkspaceConfig()
+  const [treeFilter, setTreeFilter] = useState('')
+  const [showCmdBrowser, setShowCmdBrowser] = useState(false)
+  const [showCmdNewProject, setShowCmdNewProject] = useState(false)
+  const [cmdBrowserMode, setCmdBrowserMode] = useState<'open' | 'new' | 'change'>('open')
+  const [cmdNewProjectPath, setCmdNewProjectPath] = useState('')
 
   // Show one-time keyboard shortcut tip
   useKeyboardTip()
 
   // Reconcile localStorage workspace config with backend state on mount
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally run once on mount
   useEffect(() => {
     async function syncWorkspace() {
       const { data, error: fetchError } = await apiFetch<{ ok: true; root: string }>(
@@ -119,6 +132,51 @@ function RootLayoutInner() {
     console.log('Sling triggered')
   }, [])
 
+  const handleOpenFolder = useCallback(() => {
+    setCmdBrowserMode('open')
+    setShowCmdBrowser(true)
+  }, [])
+
+  const handleNewProject = useCallback(() => {
+    setCmdBrowserMode('new')
+    setShowCmdBrowser(true)
+  }, [])
+
+  const handleChangeFolder = useCallback(() => {
+    setCmdBrowserMode('change')
+    setShowCmdBrowser(true)
+  }, [])
+
+  const handleCmdFolderSelected = useCallback(
+    async (path: string) => {
+      setShowCmdBrowser(false)
+      if (cmdBrowserMode === 'new') {
+        setCmdNewProjectPath(path)
+        setShowCmdNewProject(true)
+        return
+      }
+      const { error: openError } = await apiPost('/api/workspace/open', { path })
+      if (!openError) {
+        setRootPath(path)
+        addRecentRoot(path)
+        window.history.pushState({}, '', '/')
+        window.dispatchEvent(new PopStateEvent('popstate'))
+      }
+    },
+    [cmdBrowserMode, setRootPath, addRecentRoot]
+  )
+
+  const handleCmdNewProjectComplete = useCallback(async () => {
+    setShowCmdNewProject(false)
+    const { error: openError } = await apiPost('/api/workspace/open', { path: cmdNewProjectPath })
+    if (!openError) {
+      setRootPath(cmdNewProjectPath)
+      addRecentRoot(cmdNewProjectPath)
+      window.history.pushState({}, '', '/')
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    }
+  }, [cmdNewProjectPath, setRootPath, addRecentRoot])
+
   const actions = useDefaultActions({
     onOpenFormula: handleOpenFormula,
     onCookPreview: handleCookPreview,
@@ -126,6 +184,9 @@ function RootLayoutInner() {
     onSwitchToGraph: () => setViewMode('graph'),
     onSwitchToList: () => setViewMode('list'),
     onSwitchToWave: () => setViewMode('wave'),
+    onOpenFolder: handleOpenFolder,
+    onNewProject: handleNewProject,
+    onChangeFolder: handleChangeFolder,
   })
 
   return (
@@ -167,10 +228,26 @@ function RootLayoutInner() {
       </a>
       <OfflineBanner />
       <AppShell
-        sidebarContent={<FormulaTree />}
+        sidebarContent={
+          config.rootPath ? (
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+              <WorkspaceHeader onFilterChange={setTreeFilter} />
+              <WorkspaceTree filter={treeFilter} />
+            </div>
+          ) : (
+            <FormulaTree />
+          )
+        }
         mainContent={
           <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ padding: '8px 16px', borderBottom: '1px solid #333', fontSize: '12px', color: '#888' }}>
+            <div
+              style={{
+                padding: '8px 16px',
+                borderBottom: '1px solid #333',
+                fontSize: '12px',
+                color: '#888',
+              }}
+            >
               Current view: {viewMode}
             </div>
             <div style={{ flex: 1, overflow: 'auto' }}>
@@ -208,6 +285,19 @@ function RootLayoutInner() {
         }}
       />
       {import.meta.env.DEV && <TanStackRouterDevtools position="bottom-right" />}
+      {/* Command palette triggered directory browser */}
+      <DirectoryBrowser
+        isOpen={showCmdBrowser}
+        onSelect={handleCmdFolderSelected}
+        onCancel={() => setShowCmdBrowser(false)}
+        initialPath={config.rootPath || undefined}
+      />
+      <NewProjectModal
+        isOpen={showCmdNewProject}
+        selectedPath={cmdNewProjectPath}
+        onComplete={handleCmdNewProjectComplete}
+        onCancel={() => setShowCmdNewProject(false)}
+      />
     </>
   )
 }

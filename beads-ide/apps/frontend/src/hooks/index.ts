@@ -25,3 +25,4 @@ export {
   type UseWorkspaceConfigReturn,
   type WorkspaceConfig,
 } from './use-workspace-config'
+export { useTree, type UseTreeReturn } from './use-tree'
