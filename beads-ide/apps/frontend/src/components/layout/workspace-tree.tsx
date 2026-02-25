@@ -508,6 +508,7 @@ export function WorkspaceTree({ filter }: WorkspaceTreeProps) {
         style={scrollContainerStyle}
         role="tree"
         aria-label="File explorer"
+        aria-activedescendant={focusedIndex >= 0 ? `tree-item-${focusedIndex}` : undefined}
         tabIndex={0}
         onKeyDown={handleKeyDown}
         onFocus={() => {
