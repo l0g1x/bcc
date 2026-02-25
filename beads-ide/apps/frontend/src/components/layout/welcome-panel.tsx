@@ -259,7 +259,6 @@ export function WelcomePanel({ onWorkspaceOpened }: WelcomePanelProps) {
     }
   }, [newProjectPath, setRootPath, addRecentRoot, onWorkspaceOpened])
 
-
   const handleRecentSelect = useCallback(
     async (path: string) => {
       const { error } = await apiPost<
