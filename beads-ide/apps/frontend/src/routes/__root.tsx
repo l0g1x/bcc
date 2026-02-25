@@ -234,9 +234,7 @@ function RootLayoutInner() {
               <WorkspaceHeader onFilterChange={setTreeFilter} />
               <WorkspaceTree filter={treeFilter} />
             </div>
-          ) : (
-            <FormulaTree />
-          )
+          ) : null
         }
         mainContent={
           <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
