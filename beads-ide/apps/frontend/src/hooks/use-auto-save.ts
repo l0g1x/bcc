@@ -1,3 +1,4 @@
+import { saveFormula } from '@/lib/api'
 /**
  * Debounced auto-save hook for formula editor.
  *
@@ -5,32 +6,31 @@
  * Provides save state indicator and error handling via Sonner toasts.
  * Announces "Formula saved" to screen readers on successful save.
  */
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner';
-import { saveFormula } from '@/lib/api';
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 
-export type SaveState = 'idle' | 'saving' | 'saved' | 'error';
+export type SaveState = 'idle' | 'saving' | 'saved' | 'error'
 
-const DEBOUNCE_MS = 500;
+const DEBOUNCE_MS = 500
 
 export interface UseAutoSaveOptions {
   /** Formula name (filename without extension) */
-  name: string;
+  name: string
   /** Current content to save */
-  content: string;
+  content: string
   /** Whether auto-save is enabled (default: true) */
-  enabled?: boolean;
+  enabled?: boolean
   /** Callback to announce messages for screen readers */
-  onAnnounce?: (message: string) => void;
+  onAnnounce?: (message: string) => void
 }
 
 export interface UseAutoSaveReturn {
   /** Current save state */
-  saveState: SaveState;
+  saveState: SaveState
   /** Whether content has unsaved changes */
-  hasUnsavedChanges: boolean;
+  hasUnsavedChanges: boolean
   /** Manually trigger a save (bypasses debounce) */
-  saveNow: () => Promise<void>;
+  saveNow: () => Promise<void>
 }
 
 /**
@@ -57,105 +57,104 @@ export function useAutoSave({
   enabled = true,
   onAnnounce,
 }: UseAutoSaveOptions): UseAutoSaveReturn {
-  const [saveState, setSaveState] = useState<SaveState>('idle');
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastSavedContentRef = useRef<string>(content);
-  const isMountedRef = useRef(true);
+  const [saveState, setSaveState] = useState<SaveState>('idle')
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const lastSavedContentRef = useRef<string>(content)
+  const isMountedRef = useRef(true)
 
   // Track unsaved changes
-  const hasUnsavedChanges = content !== lastSavedContentRef.current;
+  const hasUnsavedChanges = content !== lastSavedContentRef.current
 
   // Track mounted state for cleanup
   useEffect(() => {
-    isMountedRef.current = true;
+    isMountedRef.current = true
     return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
+      isMountedRef.current = false
+    }
+  }, [])
 
   // Save function
   const performSave = useCallback(
     async (contentToSave: string) => {
-      if (!isMountedRef.current) return;
+      if (!isMountedRef.current) return
 
-      setSaveState('saving');
+      setSaveState('saving')
 
       try {
-        await saveFormula(name, contentToSave);
+        await saveFormula(name, contentToSave)
 
-        if (!isMountedRef.current) return;
+        if (!isMountedRef.current) return
 
-        lastSavedContentRef.current = contentToSave;
-        setSaveState('saved');
+        lastSavedContentRef.current = contentToSave
+        setSaveState('saved')
 
         // Announce for screen readers
-        onAnnounce?.('Formula saved');
+        onAnnounce?.('Formula saved')
 
         // Reset to idle after showing "Saved" briefly
         setTimeout(() => {
           if (isMountedRef.current) {
-            setSaveState('idle');
+            setSaveState('idle')
           }
-        }, 2000);
+        }, 2000)
       } catch (error) {
-        if (!isMountedRef.current) return;
+        if (!isMountedRef.current) return
 
-        setSaveState('error');
-        const message =
-          error instanceof Error ? error.message : 'Failed to save formula';
-        toast.error(message);
+        setSaveState('error')
+        const message = error instanceof Error ? error.message : 'Failed to save formula'
+        toast.error(message)
 
         // Reset to idle after error
         setTimeout(() => {
           if (isMountedRef.current) {
-            setSaveState('idle');
+            setSaveState('idle')
           }
-        }, 3000);
+        }, 3000)
       }
     },
     [name, onAnnounce]
-  );
+  )
 
   // Manual save function (bypasses debounce)
   const saveNow = useCallback(async () => {
     // Clear any pending debounced save
     if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
     }
 
-    await performSave(content);
-  }, [content, performSave]);
+    await performSave(content)
+  }, [content, performSave])
 
   // Debounced auto-save effect
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) return
 
     // Skip if content hasn't changed from last saved version
-    if (content === lastSavedContentRef.current) return;
+    if (content === lastSavedContentRef.current) return
 
     // Clear existing timeout (debounce reset on new keystroke)
     if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+      clearTimeout(timeoutRef.current)
     }
 
     // Set new timeout
     timeoutRef.current = setTimeout(() => {
-      performSave(content);
-    }, DEBOUNCE_MS);
+      performSave(content)
+    }, DEBOUNCE_MS)
 
     // Cleanup on unmount or dependency change
     return () => {
       if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
       }
-    };
-  }, [content, enabled, performSave]);
+    }
+  }, [content, enabled, performSave])
 
   return {
     saveState,
     hasUnsavedChanges,
     saveNow,
-  };
+  }
 }

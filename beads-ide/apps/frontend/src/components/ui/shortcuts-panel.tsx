@@ -20,10 +20,7 @@ interface ShortcutsPanelProps {
  * Non-modal overlay panel for viewing keyboard shortcuts.
  * Features: searchable, pinnable (stays open when pinned).
  */
-export function ShortcutsPanel({
-  shortcuts,
-  toggleHotkey = 'Mod+/',
-}: ShortcutsPanelProps) {
+export function ShortcutsPanel({ shortcuts, toggleHotkey = 'Mod+/' }: ShortcutsPanelProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isPinned, setIsPinned] = useState(false)
   const [query, setQuery] = useState('')

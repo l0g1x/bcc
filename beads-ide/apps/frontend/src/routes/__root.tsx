@@ -13,7 +13,14 @@ import {
 } from '../components/layout'
 import { CommandPalette, useDefaultActions } from '../components/layout/command-palette'
 import { GenericErrorPage, OfflineBanner } from '../components/ui'
-import { BeadSelectionProvider, FormulaSaveProvider, useBeadSelection } from '../contexts'
+import { UnsavedChangesModal } from '../components/ui/unsaved-changes-modal'
+import {
+  BeadSelectionProvider,
+  FormulaSaveProvider,
+  useBeadSelection,
+  useFormulaDirty,
+  useFormulaSave,
+} from '../contexts'
 import { useBead, useKeyboardTip, useWorkspaceConfig } from '../hooks'
 import { apiFetch, apiPost } from '../lib'
 
@@ -83,6 +90,9 @@ function RootLayoutInner() {
   const [showCmdNewProject, setShowCmdNewProject] = useState(false)
   const [cmdBrowserMode, setCmdBrowserMode] = useState<'open' | 'new' | 'change'>('open')
   const [cmdNewProjectPath, setCmdNewProjectPath] = useState('')
+  const [showUnsavedModal, setShowUnsavedModal] = useState(false)
+  const { hasAnyDirty } = useFormulaDirty()
+  const { save: saveFormula } = useFormulaSave()
 
   // Show one-time keyboard shortcut tip
   useKeyboardTip()
@@ -143,8 +153,29 @@ function RootLayoutInner() {
   }, [])
 
   const handleChangeFolder = useCallback(() => {
+    if (hasAnyDirty) {
+      setShowUnsavedModal(true)
+      return
+    }
     setCmdBrowserMode('change')
     setShowCmdBrowser(true)
+  }, [hasAnyDirty])
+
+  const handleUnsavedSave = useCallback(async () => {
+    await saveFormula()
+    setShowUnsavedModal(false)
+    setCmdBrowserMode('change')
+    setShowCmdBrowser(true)
+  }, [saveFormula])
+
+  const handleUnsavedDiscard = useCallback(() => {
+    setShowUnsavedModal(false)
+    setCmdBrowserMode('change')
+    setShowCmdBrowser(true)
+  }, [])
+
+  const handleUnsavedCancel = useCallback(() => {
+    setShowUnsavedModal(false)
   }, [])
 
   const handleCmdFolderSelected = useCallback(
@@ -297,6 +328,13 @@ function RootLayoutInner() {
         selectedPath={cmdNewProjectPath}
         onComplete={handleCmdNewProjectComplete}
         onCancel={() => setShowCmdNewProject(false)}
+      />
+      <UnsavedChangesModal
+        isOpen={showUnsavedModal}
+        onSave={handleUnsavedSave}
+        onDiscard={handleUnsavedDiscard}
+        onCancel={handleUnsavedCancel}
+        message="You have unsaved changes. Do you want to save them before changing folder?"
       />
     </>
   )

@@ -59,10 +59,7 @@ const GROUP_HEADER_HEIGHT = 36
 /**
  * Compute hierarchical layout using dagre.
  */
-function layoutNodes(
-  nodes: Node<StepNodeData>[],
-  edges: Edge[]
-): Node<StepNodeData>[] {
+function layoutNodes(nodes: Node<StepNodeData>[], edges: Edge[]): Node<StepNodeData>[] {
   const g = new dagre.graphlib.Graph()
   g.setDefaultEdgeLabel(() => ({}))
   g.setGraph({ rankdir: 'TB', nodesep: 60, ranksep: 80 })
@@ -296,16 +293,8 @@ function StepNode({ data }: NodeProps<Node<StepNodeData>>) {
 
       {/* Badges showing input/output relationships */}
       <div style={badgeRowStyle}>
-        {data.isGate && (
-          <span style={badgeStyle('gate')}>
-            {data.needsCount} inputs
-          </span>
-        )}
-        {data.isBottleneck && (
-          <span style={badgeStyle('blocks')}>
-            blocks {data.blocksCount}
-          </span>
-        )}
+        {data.isGate && <span style={badgeStyle('gate')}>{data.needsCount} inputs</span>}
+        {data.isBottleneck && <span style={badgeStyle('blocks')}>blocks {data.blocksCount}</span>}
         {!data.isGate && !data.isBottleneck && data.needsCount > 0 && (
           <span style={badgeStyle('needs')}>1 input</span>
         )}
@@ -327,7 +316,8 @@ function StepNode({ data }: NodeProps<Node<StepNodeData>>) {
 function GroupNode({ data }: NodeProps<Node<GroupNodeData & { colorIndex: number }>>) {
   const color = GROUP_COLORS[data.colorIndex % GROUP_COLORS.length]
   // Vary border width for additional distinction (double style needs 3px minimum)
-  const borderWidth = color.borderStyle === 'double' ? '3px' : color.borderStyle === 'dotted' ? '2px' : '1px'
+  const borderWidth =
+    color.borderStyle === 'double' ? '3px' : color.borderStyle === 'dotted' ? '2px' : '1px'
 
   return (
     <div
@@ -490,8 +480,7 @@ export function VisualBuilder({
           const isCrossGroup = sourceGroup !== targetGroup
 
           // Hide cross-group edges by default, reveal when selected step is involved
-          const isSelectedInvolved =
-            selectedStepId === needId || selectedStepId === step.id
+          const isSelectedInvolved = selectedStepId === needId || selectedStepId === step.id
           const hideCrossGroup = isCrossGroup && !isSelectedInvolved
 
           edges.push({

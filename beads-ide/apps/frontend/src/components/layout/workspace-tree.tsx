@@ -217,7 +217,6 @@ function flattenTree(
         // When filtering, only show dirs that have matching formula descendants
         const filteredChildren = flattenTree(children, expandedState, dirtySet, depth + 1, filter)
         if (filteredChildren.length > 0) {
-          const hasDirtyChild = filteredChildren.some((c) => c.isDirty || c.type === 'directory')
           const dirIsDirty = hasDirtyDescendant(node, dirtySet)
           items.push({
             id: node.path,
@@ -509,6 +508,7 @@ export function WorkspaceTree({ filter }: WorkspaceTreeProps) {
         style={scrollContainerStyle}
         role="tree"
         aria-label="File explorer"
+        aria-activedescendant={focusedIndex >= 0 ? `tree-item-${focusedIndex}` : undefined}
         tabIndex={0}
         onKeyDown={handleKeyDown}
         onFocus={() => {

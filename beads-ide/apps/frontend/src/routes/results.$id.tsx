@@ -1,9 +1,9 @@
+import type { GraphEdge, GraphNode } from '@beads-ide/shared'
 /**
  * Results route for viewing bead collections with switchable views.
  * Supports three view modes: list, wave, and graph.
  */
 import { createFileRoute } from '@tanstack/react-router'
-import type { GraphEdge, GraphNode } from '@beads-ide/shared'
 import { type CSSProperties, useCallback, useMemo, useState } from 'react'
 import { GraphView, WaveView } from '../components/results'
 
@@ -245,8 +245,20 @@ function ResultsPage() {
         type: 'task',
         priority: 1,
       },
-      { id: `${id}-3`, title: 'Implement API layer', status: 'in_progress', type: 'task', priority: 1 },
-      { id: `${id}-4`, title: 'Build frontend components', status: 'open', type: 'task', priority: 2 },
+      {
+        id: `${id}-3`,
+        title: 'Implement API layer',
+        status: 'in_progress',
+        type: 'task',
+        priority: 1,
+      },
+      {
+        id: `${id}-4`,
+        title: 'Build frontend components',
+        status: 'open',
+        type: 'task',
+        priority: 2,
+      },
       { id: `${id}-5`, title: 'Write tests', status: 'open', type: 'task', priority: 2 },
       { id: `${id}-6`, title: 'Deploy to staging', status: 'blocked', type: 'task', priority: 3 },
     ]

@@ -12,7 +12,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { useOpenCode, type OpenCodeMessage } from '../../hooks/use-opencode'
+import { type OpenCodeMessage, useOpenCode } from '../../hooks/use-opencode'
 
 // --- Styles ---
 
@@ -169,7 +169,6 @@ const emptyStateStyle: CSSProperties = {
   textAlign: 'center',
 }
 
-
 // --- Props ---
 
 export interface OpenCodePanelProps {
@@ -188,25 +187,18 @@ export function OpenCodePanel({
   context,
   onClose,
 }: OpenCodePanelProps) {
-  const {
-    isConnected,
-    isLoading,
-    session,
-    messages,
-    error,
-    connect,
-    sendMessage,
-    createSession,
-  } = useOpenCode({ serverUrl })
+  const { isConnected, isLoading, session, messages, error, connect, sendMessage, createSession } =
+    useOpenCode({ serverUrl })
 
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
   // Scroll to bottom on new messages
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally trigger scroll when message count changes
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+  }, [messages.length])
 
   // Focus input on session create
   useEffect(() => {
@@ -349,8 +341,7 @@ export function OpenCodePanel({
           </button>
         </div>
       )}
-
-      </div>
+    </div>
   )
 }
 

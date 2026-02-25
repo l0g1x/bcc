@@ -135,12 +135,21 @@ export function ExpansionGroup({
       {/* Group Header */}
       <button
         type="button"
-        style={{ ...headerStyle(color, isExpanded), border: 'none', width: '100%', textAlign: 'left' }}
+        style={{
+          ...headerStyle(color, isExpanded),
+          border: 'none',
+          width: '100%',
+          textAlign: 'left',
+        }}
         onClick={toggleExpanded}
       >
-        <span style={chevronStyle(isExpanded)} aria-hidden="true">▶</span>
+        <span style={chevronStyle(isExpanded)} aria-hidden="true">
+          ▶
+        </span>
         <span style={labelStyle}>{label}</span>
-        <span style={countBadgeStyle} aria-hidden="true">{steps.length}</span>
+        <span style={countBadgeStyle} aria-hidden="true">
+          {steps.length}
+        </span>
         {dependsOnGroup && (
           <span style={crossGroupDepStyle} aria-hidden="true">
             ⟵ {dependsOnGroup}
@@ -149,8 +158,22 @@ export function ExpansionGroup({
       </button>
 
       {/* Steps */}
-      <fieldset style={{ ...stepsContainerStyle(isExpanded), margin: 0, padding: 0, border: 'none' }}>
-        <legend style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0 }}>
+      <fieldset
+        style={{ ...stepsContainerStyle(isExpanded), margin: 0, padding: 0, border: 'none' }}
+      >
+        <legend
+          style={{
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            padding: 0,
+            margin: '-1px',
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            border: 0,
+          }}
+        >
           {label} steps
         </legend>
         {/* Source expansion info */}

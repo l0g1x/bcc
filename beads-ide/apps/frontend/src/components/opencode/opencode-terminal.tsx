@@ -1,11 +1,11 @@
+import { FitAddon } from '@xterm/addon-fit'
+import { WebLinksAddon } from '@xterm/addon-web-links'
+import { Terminal } from '@xterm/xterm'
 /**
  * OpenCode terminal emulator component.
  * Embeds xterm.js and connects to OpenCode via PTY/WebSocket.
  */
 import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react'
-import { Terminal } from '@xterm/xterm'
-import { FitAddon } from '@xterm/addon-fit'
-import { WebLinksAddon } from '@xterm/addon-web-links'
 import '@xterm/xterm/css/xterm.css'
 import './opencode-terminal.css'
 
@@ -212,7 +212,7 @@ export function OpenCodeTerminal({
     resizeObserver.observe(terminalRef.current)
 
     // Initial fit - wait for layout with multiple attempts
-    const fitTimeouts = [0, 50, 100, 200, 500, 1000].map(delay =>
+    const fitTimeouts = [0, 50, 100, 200, 500, 1000].map((delay) =>
       setTimeout(() => fitAddon.fit(), delay)
     )
 
@@ -231,7 +231,7 @@ export function OpenCodeTerminal({
   useEffect(() => {
     if (fitAddonRef.current && isConnected) {
       // Fit multiple times as layout settles
-      const timeouts = [0, 50, 150, 300, 500, 1000].map(delay =>
+      const timeouts = [0, 50, 150, 300, 500, 1000].map((delay) =>
         setTimeout(() => {
           fitAddonRef.current?.fit()
           // Also notify PTY of the new size
@@ -259,7 +259,6 @@ export function OpenCodeTerminal({
     const term = xtermRef.current
 
     try {
-      
       // Create PTY session - use login shell to run opencode attach
       const createResponse = await fetch(`${serverUrl}/pty`, {
         method: 'POST',
@@ -284,13 +283,12 @@ export function OpenCodeTerminal({
       const ptyId = ptyData.id
 
       if (!ptyId) {
-        throw new Error('No PTY ID returned: ' + JSON.stringify(ptyData))
+        throw new Error(`No PTY ID returned: ${JSON.stringify(ptyData)}`)
       }
 
-      
       // Connect via WebSocket
-      const wsUrl = serverUrl.replace(/^http/, 'ws') + `/pty/${ptyId}/connect`
-      
+      const wsUrl = `${serverUrl.replace(/^http/, 'ws')}/pty/${ptyId}/connect`
+
       const ws = new WebSocket(wsUrl)
 
       ws.onopen = () => {
@@ -379,7 +377,6 @@ export function OpenCodeTerminal({
           }).catch(console.error)
         }
       })
-
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err)
       setError(errMsg)
@@ -462,10 +459,7 @@ export function OpenCodeTerminal({
 
       {/* Terminal */}
       <div style={terminalContainerStyle}>
-        <div
-          className="opencode-terminal-container"
-          ref={terminalRef}
-        />
+        <div className="opencode-terminal-container" ref={terminalRef} />
       </div>
     </div>
   )

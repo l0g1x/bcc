@@ -3,7 +3,14 @@
  * Redesigned with more space and a Tiptap markdown editor for descriptions.
  */
 import type { ProtoBead } from '@beads-ide/shared'
-import { type CSSProperties, type ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
+import {
+  type CSSProperties,
+  type ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { MarkdownEditor } from './markdown-editor'
 import { NeedsSelector } from './needs-selector'
 
@@ -288,7 +295,13 @@ export function StepEditorPanel({
 
   // Priority label
   const priorityLabel =
-    step.priority === 0 ? 'Highest' : step.priority <= 3 ? 'High' : step.priority <= 6 ? 'Medium' : 'Low'
+    step.priority === 0
+      ? 'Highest'
+      : step.priority <= 3
+        ? 'High'
+        : step.priority <= 6
+          ? 'Medium'
+          : 'Low'
 
   return (
     <div ref={panelRef} style={{ ...panelStyle, position: 'relative' }}>
@@ -327,7 +340,9 @@ export function StepEditorPanel({
       <div style={contentStyle}>
         {/* Title */}
         <div style={sectionStyle}>
-          <label htmlFor="step-editor-title" style={labelStyle}>Title</label>
+          <label htmlFor="step-editor-title" style={labelStyle}>
+            Title
+          </label>
           <input
             id="step-editor-title"
             type="text"
@@ -358,7 +373,9 @@ export function StepEditorPanel({
 
         {/* Priority */}
         <div style={sectionStyle}>
-          <label htmlFor="step-editor-priority" style={labelStyle}>Priority</label>
+          <label htmlFor="step-editor-priority" style={labelStyle}>
+            Priority
+          </label>
           <div style={priorityContainerStyle}>
             <input
               id="step-editor-priority"
@@ -367,10 +384,15 @@ export function StepEditorPanel({
               max={10}
               value={step.priority}
               onChange={handlePriorityChange}
-              style={{ ...priorityInputStyle, ...(validationErrors.priority ? inputErrorStyle : {}) }}
+              style={{
+                ...priorityInputStyle,
+                ...(validationErrors.priority ? inputErrorStyle : {}),
+              }}
               disabled={isLoading}
               aria-invalid={!!validationErrors.priority}
-              aria-describedby={validationErrors.priority ? 'step-editor-priority-error' : undefined}
+              aria-describedby={
+                validationErrors.priority ? 'step-editor-priority-error' : undefined
+              }
             />
             <div style={priorityDotsStyle}>
               {PRIORITY_LEVELS.map((level) => (
@@ -445,7 +467,9 @@ export function StepEditorPanel({
 
         {/* Description - Takes remaining space */}
         <div style={descriptionSectionStyle}>
-          <span id="step-editor-description-label" style={labelStyle}>Description</span>
+          <span id="step-editor-description-label" style={labelStyle}>
+            Description
+          </span>
           <MarkdownEditor
             value={step.description}
             onChange={handleDescriptionChange}

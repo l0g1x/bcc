@@ -216,16 +216,16 @@ export function FormulaOutlineView({
         {/* Ungrouped Steps */}
         {ungrouped.length > 0 && (
           <>
-            <div style={ungroupedHeaderStyle} role="presentation">Other Steps</div>
+            <div style={ungroupedHeaderStyle} role="presentation">
+              Other Steps
+            </div>
             {ungrouped.map((step, index) => (
               <StepItem
                 key={step.id}
                 step={step}
                 number={String(groups.length + index + 1)}
                 isSelected={selectedStepId === step.id}
-                onClick={() =>
-                  onStepSelect(selectedStepId === step.id ? null : step.id)
-                }
+                onClick={() => onStepSelect(selectedStepId === step.id ? null : step.id)}
                 availableStepIds={availableStepIds}
                 onFieldChange={onStepFieldChange}
                 treeLevel={1}

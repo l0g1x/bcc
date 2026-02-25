@@ -1,9 +1,9 @@
+import { type OpencodeClient, createOpencodeClient } from '@opencode-ai/sdk/client'
 /**
  * Hook for connecting to an OpenCode server and managing sessions.
  * Provides real-time streaming of AI responses via SSE.
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { createOpencodeClient, type OpencodeClient } from '@opencode-ai/sdk/client'
 
 // --- Types ---
 
@@ -90,7 +90,7 @@ export function useOpenCode(options: UseOpenCodeOptions = {}): UseOpenCodeReturn
       // Test connection with a simple fetch first
       const testResponse = await fetch(`${serverUrl}/session`, {
         method: 'GET',
-        headers: { 'Accept': 'application/json' },
+        headers: { Accept: 'application/json' },
       })
 
       if (!testResponse.ok) {
@@ -125,7 +125,7 @@ export function useOpenCode(options: UseOpenCodeOptions = {}): UseOpenCodeReturn
     } finally {
       setIsLoading(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverUrl])
 
   // Handle server-sent events
@@ -138,10 +138,7 @@ export function useOpenCode(options: UseOpenCodeOptions = {}): UseOpenCodeReturn
       setMessages((prev) => {
         const last = prev[prev.length - 1]
         if (last && last.role === 'assistant' && last.status === 'streaming') {
-          return [
-            ...prev.slice(0, -1),
-            { ...last, content: last.content + content },
-          ]
+          return [...prev.slice(0, -1), { ...last, content: last.content + content }]
         }
         return prev
       })

@@ -9,6 +9,8 @@ interface FormulaDirtyContextValue {
   isDirty: (name: string) => boolean
   /** Mark a formula as dirty or clean */
   setDirty: (name: string, dirty: boolean) => void
+  /** Whether any formula has unsaved changes */
+  hasAnyDirty: boolean
 }
 
 const FormulaDirtyContext = createContext<FormulaDirtyContextValue | null>(null)
@@ -37,8 +39,10 @@ export function FormulaDirtyProvider({ children }: FormulaDirtyProviderProps) {
     })
   }, [])
 
+  const hasAnyDirty = dirtyFormulas.size > 0
+
   return (
-    <FormulaDirtyContext.Provider value={{ isDirty, setDirty }}>
+    <FormulaDirtyContext.Provider value={{ isDirty, setDirty, hasAnyDirty }}>
       {children}
     </FormulaDirtyContext.Provider>
   )

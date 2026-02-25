@@ -77,7 +77,7 @@ export function updateVarDefault(toml: string, varName: string, value: string): 
   // If we didn't find the section at all, add it
   if (!insertedDefault && value !== '') {
     // Check if there's a [vars] section
-    const varsSection = lines.findIndex(l => /^\s*\[vars\]/.test(l))
+    const varsSection = lines.findIndex((l) => /^\s*\[vars\]/.test(l))
     if (varsSection !== -1) {
       // Find the end of the vars section (next top-level section)
       let insertPos = result.length
@@ -91,7 +91,7 @@ export function updateVarDefault(toml: string, varName: string, value: string): 
       result.splice(insertPos, 0, '', `[vars.${varName}]`, formatDefaultLine(value))
     } else {
       // No [vars] section - add one
-      const stepsIndex = result.findIndex(l => /^\s*\[\[steps\]\]/.test(l))
+      const stepsIndex = result.findIndex((l) => /^\s*\[\[steps\]\]/.test(l))
       if (stepsIndex !== -1) {
         // Insert before [[steps]]
         result.splice(stepsIndex, 0, '', `[vars.${varName}]`, formatDefaultLine(value), '')

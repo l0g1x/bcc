@@ -56,10 +56,7 @@ function countFormulas(searchPaths: string[]): number {
  * Recursively scan a directory into a tree structure.
  * Prunes empty directories and respects node limit.
  */
-async function scanTree(
-  dirPath: string,
-  counter: { count: number }
-): Promise<TreeNode[]> {
+async function scanTree(dirPath: string, counter: { count: number }): Promise<TreeNode[]> {
   if (counter.count >= NODE_LIMIT) return []
 
   let entries: string[]
@@ -96,10 +93,7 @@ async function scanTree(
           children,
         })
       }
-    } else if (
-      entry.endsWith('.formula.toml') ||
-      entry.endsWith('.formula.json')
-    ) {
+    } else if (entry.endsWith('.formula.toml') || entry.endsWith('.formula.json')) {
       counter.count++
       nodes.push({
         name: entry,
@@ -392,10 +386,7 @@ workspace.get('/browse', (c) => {
   const browsePath = queryPath ? resolve(queryPath) : getWorkspaceRoot()
 
   if (!existsSync(browsePath)) {
-    return c.json(
-      { ok: false, error: `Path not found: ${browsePath}`, code: 'NOT_FOUND' },
-      404
-    )
+    return c.json({ ok: false, error: `Path not found: ${browsePath}`, code: 'NOT_FOUND' }, 404)
   }
 
   try {

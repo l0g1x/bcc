@@ -261,11 +261,7 @@ function formatStepId(stepId: string): string {
   return stepId
 }
 
-export function FormulaFlowView({
-  result,
-  selectedStepId,
-  onStepSelect,
-}: FormulaFlowViewProps) {
+export function FormulaFlowView({ result, selectedStepId, onStepSelect }: FormulaFlowViewProps) {
   const { waves } = useMemo(() => {
     return computeFlowData(result.steps ?? [])
   }, [result.steps])
@@ -294,7 +290,7 @@ export function FormulaFlowView({
       </div>
 
       {waves.map((waveSteps, waveIndex) => (
-        <div key={`wave-${waveSteps.map(s => s.id).join('-')}`}>
+        <div key={`wave-${waveSteps.map((s) => s.id).join('-')}`}>
           <div style={waveContainerStyle}>
             <div style={waveLabelStyle}>
               <span>Wave {waveIndex + 1}</span>
@@ -309,14 +305,11 @@ export function FormulaFlowView({
                 <button
                   type="button"
                   key={step.id}
-                  style={{ ...stepCardStyle(
-                    selectedStepId === step.id,
-                    step.isBottleneck,
-                    step.isGate
-                  ), textAlign: 'left' }}
-                  onClick={() =>
-                    onStepSelect(selectedStepId === step.id ? null : step.id)
-                  }
+                  style={{
+                    ...stepCardStyle(selectedStepId === step.id, step.isBottleneck, step.isGate),
+                    textAlign: 'left',
+                  }}
+                  onClick={() => onStepSelect(selectedStepId === step.id ? null : step.id)}
                 >
                   <div style={stepTitleStyle} title={step.title}>
                     {step.title}
@@ -324,14 +317,10 @@ export function FormulaFlowView({
                   <div style={stepIdStyle}>{formatStepId(step.id)}</div>
                   <div style={badgeRowStyle}>
                     {step.isGate && (
-                      <span style={badgeStyle('gate')}>
-                        ← {step.needs?.length} inputs
-                      </span>
+                      <span style={badgeStyle('gate')}>← {step.needs?.length} inputs</span>
                     )}
                     {step.isBottleneck && (
-                      <span style={badgeStyle('blocks')}>
-                        → blocks {step.blocks.length}
-                      </span>
+                      <span style={badgeStyle('blocks')}>→ blocks {step.blocks.length}</span>
                     )}
                     {!step.isGate && !step.isBottleneck && step.needs && step.needs.length > 0 && (
                       <span style={badgeStyle('needs')}>← 1 input</span>
@@ -351,9 +340,7 @@ export function FormulaFlowView({
       ))}
 
       {waves.length === 0 && (
-        <div style={{ color: '#6b7280', fontStyle: 'italic' }}>
-          No steps to display
-        </div>
+        <div style={{ color: '#6b7280', fontStyle: 'italic' }}>No steps to display</div>
       )}
     </div>
   )

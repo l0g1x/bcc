@@ -1,6 +1,6 @@
 import { type CSSProperties, useCallback, useEffect, useState } from 'react'
 import { useWorkspaceConfig } from '../../hooks'
-import { apiPost } from '../../lib'
+import { apiFetch, apiPost } from '../../lib'
 import { DirectoryBrowser } from './directory-browser'
 import { NewProjectModal } from './new-project-modal'
 
@@ -151,13 +151,10 @@ function RecentList({
     async function validate() {
       const results = await Promise.all(
         recentRoots.map(async (path) => {
-          try {
-            const res = await fetch(`/api/browse?path=${encodeURIComponent(path)}`)
-            const data = await res.json()
-            return { path, valid: data.ok === true }
-          } catch {
-            return { path, valid: false }
-          }
+          const { error } = await apiFetch<{ ok: true }>(
+            `/api/browse?path=${encodeURIComponent(path)}`
+          )
+          return { path, valid: !error }
         })
       )
       setItems(results)
@@ -235,7 +232,6 @@ export function WelcomePanel({ onWorkspaceOpened }: WelcomePanelProps) {
         setShowNewProject(true)
         return
       }
-      // Open folder flow
       const { error } = await apiPost<
         { ok: true; root: string; formulaCount: number },
         { path: string }

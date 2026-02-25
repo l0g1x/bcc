@@ -301,10 +301,9 @@ export interface FormulaSaveResponse {
  * @throws Error if save fails
  */
 export async function saveFormula(name: string, content: string): Promise<void> {
-  const { error } = await apiPut<FormulaSaveResponse>(
-    `/api/formulas/${encodeURIComponent(name)}`,
-    { content }
-  )
+  const { error } = await apiPut<FormulaSaveResponse>(`/api/formulas/${encodeURIComponent(name)}`, {
+    content,
+  })
 
   if (error) {
     throw new Error(error.details || error.message)

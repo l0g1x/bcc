@@ -141,14 +141,32 @@ export function VariablesSection({
         style={{ ...headerStyle(isExpanded), border: 'none', width: '100%', textAlign: 'left' }}
         onClick={toggleExpanded}
       >
-        <span style={chevronStyle(isExpanded)} aria-hidden="true">▶</span>
+        <span style={chevronStyle(isExpanded)} aria-hidden="true">
+          ▶
+        </span>
         <span style={labelStyle}>Variables</span>
-        <span style={countBadgeStyle} aria-hidden="true">{entries.length}</span>
+        <span style={countBadgeStyle} aria-hidden="true">
+          {entries.length}
+        </span>
       </button>
 
       {/* Variables */}
-      <fieldset style={{ ...varsContainerStyle(isExpanded), margin: 0, padding: '8px 0', border: 'none' }}>
-        <legend style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0 }}>
+      <fieldset
+        style={{ ...varsContainerStyle(isExpanded), margin: 0, padding: '8px 0', border: 'none' }}
+      >
+        <legend
+          style={{
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            padding: 0,
+            margin: '-1px',
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            border: 0,
+          }}
+        >
           Variables
         </legend>
         {entries.map(([key, def]) => (
@@ -165,9 +183,7 @@ export function VariablesSection({
               />
               {def.required && <span style={requiredStyle}>required</span>}
             </div>
-            {def.description && (
-              <div style={descriptionStyle}>{def.description}</div>
-            )}
+            {def.description && <div style={descriptionStyle}>{def.description}</div>}
           </div>
         ))}
       </fieldset>
