@@ -19,8 +19,8 @@ import {
   VarsPanel,
   VisualBuilder,
 } from '../components/formulas'
-import { UnsavedChangesModal } from '../components/ui/unsaved-changes-modal'
 import { OpenCodeTerminal } from '../components/opencode'
+import { UnsavedChangesModal } from '../components/ui/unsaved-changes-modal'
 import { useAnnounce, useFormulaDirty, useFormulaSave } from '../contexts'
 import { useCook, useFormulaContent, useSave, useSling } from '../hooks'
 import { useHotkey } from '../hooks/use-hotkeys'

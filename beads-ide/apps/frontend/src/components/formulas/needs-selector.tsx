@@ -51,7 +51,12 @@ const emptyStyle: CSSProperties = {
 /**
  * Multi-select checkbox list for step dependencies.
  */
-export function NeedsSelector({ selectedIds, availableIds, onChange, disabled = false }: NeedsSelectorProps) {
+export function NeedsSelector({
+  selectedIds,
+  availableIds,
+  onChange,
+  disabled = false,
+}: NeedsSelectorProps) {
   const selectedSet = new Set(selectedIds)
 
   const handleToggle = useCallback(
@@ -80,11 +85,20 @@ export function NeedsSelector({ selectedIds, availableIds, onChange, disabled = 
               id={`needs-${id}`}
               checked={isChecked}
               onChange={() => handleToggle(id)}
-              style={{ ...checkboxStyle, ...(disabled ? { cursor: 'not-allowed', opacity: 0.5 } : {}) }}
+              style={{
+                ...checkboxStyle,
+                ...(disabled ? { cursor: 'not-allowed', opacity: 0.5 } : {}),
+              }}
               disabled={disabled}
               aria-label={`Depends on ${id}`}
             />
-            <label htmlFor={`needs-${id}`} style={{ ...labelStyle, ...(disabled ? { cursor: 'not-allowed', opacity: 0.5 } : {}) }}>
+            <label
+              htmlFor={`needs-${id}`}
+              style={{
+                ...labelStyle,
+                ...(disabled ? { cursor: 'not-allowed', opacity: 0.5 } : {}),
+              }}
+            >
               {id}
             </label>
           </div>

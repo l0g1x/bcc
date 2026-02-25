@@ -37,7 +37,11 @@ const MOCK_BROWSE_PROJECTS = {
   parent: '/home/user',
   entries: [
     { name: 'my-beads', path: '/home/user/projects/my-beads', type: 'directory' as const },
-    { name: 'other-project', path: '/home/user/projects/other-project', type: 'directory' as const },
+    {
+      name: 'other-project',
+      path: '/home/user/projects/other-project',
+      type: 'directory' as const,
+    },
   ],
 }
 
@@ -241,7 +245,10 @@ async function setupWorkspaceMocks(
 // =====================================================================
 
 test.describe('Welcome Screen', () => {
-  test('should display welcome panel when no workspace is configured', async ({ page, apiMock }) => {
+  test('should display welcome panel when no workspace is configured', async ({
+    page,
+    apiMock,
+  }) => {
     await setupWorkspaceMocks(page, { hasWorkspace: false })
 
     // Clear localStorage to ensure no rootPath
@@ -1137,10 +1144,7 @@ test.describe('Change Folder with Unsaved Changes Guard', () => {
     }
   })
 
-  test('should proceed to directory browser when Discard is clicked', async ({
-    page,
-    apiMock,
-  }) => {
+  test('should proceed to directory browser when Discard is clicked', async ({ page, apiMock }) => {
     await setupWorkspaceMocks(page, { hasWorkspace: true })
 
     await page.addInitScript(() => {
@@ -1247,10 +1251,7 @@ test.describe('Tree Render Performance', () => {
 // =====================================================================
 
 test.describe('Full Onboarding Integration', () => {
-  test('full flow: welcome -> open folder -> workspace tree visible', async ({
-    page,
-    apiMock,
-  }) => {
+  test('full flow: welcome -> open folder -> workspace tree visible', async ({ page, apiMock }) => {
     // Start with no workspace, switch to having one after open
     await page.route(/\/api\/workspace$/, async (route) => {
       if (route.request().method() === 'GET') {

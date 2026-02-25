@@ -188,9 +188,7 @@ const needsLabelStyle: CSSProperties = {
  * Formats a step ID for display (shortens if it has a group prefix).
  */
 function formatDepId(depId: string, currentStepId: string): string {
-  const currentPrefix = currentStepId.includes('.')
-    ? currentStepId.split('.')[0]
-    : null
+  const currentPrefix = currentStepId.includes('.') ? currentStepId.split('.')[0] : null
 
   if (currentPrefix && depId.startsWith(`${currentPrefix}.`)) {
     return depId.split('.').slice(1).join('.')
@@ -220,9 +218,7 @@ export function StepItem({
   const isGate = step.needs && step.needs.length > 1
 
   // Truncate description for preview
-  const descPreview = step.description
-    ? step.description.split('\n')[0].slice(0, 80)
-    : ''
+  const descPreview = step.description ? step.description.split('\n')[0].slice(0, 80) : ''
 
   // Filter out current step from available dependencies
   const otherStepIds = availableStepIds.filter((id) => id !== step.id)
@@ -274,7 +270,13 @@ export function StepItem({
       {/* Header row - always visible */}
       <button
         type="button"
-        style={{ ...headerStyle(isSelected), border: 'none', width: '100%', textAlign: 'left', background: 'transparent' }}
+        style={{
+          ...headerStyle(isSelected),
+          border: 'none',
+          width: '100%',
+          textAlign: 'left',
+          background: 'transparent',
+        }}
         onClick={onClick}
       >
         <span style={numberStyle}>
@@ -340,7 +342,10 @@ export function StepItem({
               />
               <div style={priorityDotsStyle}>
                 {PRIORITY_LEVELS.map((level) => (
-                  <div key={`priority-dot-${level}`} style={priorityDotStyle(level < step.priority)} />
+                  <div
+                    key={`priority-dot-${level}`}
+                    style={priorityDotStyle(level < step.priority)}
+                  />
                 ))}
               </div>
               <span style={{ fontSize: '11px', color: '#6b7280' }}>

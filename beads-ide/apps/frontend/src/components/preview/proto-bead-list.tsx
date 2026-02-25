@@ -70,8 +70,7 @@ function ProtoBeadCard({ bead }: ProtoBeadCardProps) {
           }}
           aria-label={`Priority ${bead.priority}: ${priority.label}`}
         >
-          <span aria-hidden="true">{priority.icon}</span>
-          P{bead.priority}
+          <span aria-hidden="true">{priority.icon}</span>P{bead.priority}
         </span>
       </div>
 

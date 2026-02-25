@@ -2,6 +2,9 @@ import type { FormulaListItem } from '@beads-ide/shared'
 /**
  * Formula tree component for the sidebar.
  * Displays formulas grouped by search path directory.
+ *
+ * TODO: Remove FormulaTree after WorkspaceTree is validated as its replacement.
+ * WorkspaceTree provides the same functionality with proper workspace-aware navigation.
  */
 import { type CSSProperties, useCallback, useMemo, useState } from 'react'
 import { useFormulaDirty, useFormulaSave } from '../../contexts'

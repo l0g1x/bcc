@@ -1,3 +1,5 @@
+import { type Wave, type Bead as WaveBead, type WaveResult, computeWaves } from '@beads-ide/shared'
+import type { GraphNode } from '@beads-ide/shared'
 /**
  * Wave view component for visualizing beads grouped by dependency frontiers.
  * Uses computeWaves() to group beads into waves that can execute in parallel.
@@ -5,13 +7,6 @@
  */
 import type { CSSProperties, KeyboardEvent } from 'react'
 import { useCallback, useMemo, useState } from 'react'
-import {
-  type Bead as WaveBead,
-  type Wave,
-  type WaveResult,
-  computeWaves,
-} from '@beads-ide/shared'
-import type { GraphNode } from '@beads-ide/shared'
 
 // --- Types ---
 

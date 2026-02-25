@@ -2,14 +2,7 @@
  * Context for managing ARIA live region announcements.
  * Provides accessible screen reader announcements for key actions.
  */
-import {
-  type ReactNode,
-  createContext,
-  useCallback,
-  useContext,
-  useRef,
-  useState,
-} from 'react'
+import { type ReactNode, createContext, useCallback, useContext, useRef, useState } from 'react'
 
 interface AnnouncementContextValue {
   /** Announce a message to screen readers (polite priority) */
@@ -65,11 +58,7 @@ export function AnnouncementProvider({ children }: AnnouncementProviderProps) {
   return (
     <AnnouncementContext.Provider value={{ announce }}>
       {children}
-      <output
-        aria-live="polite"
-        aria-atomic="true"
-        style={liveRegionStyle}
-      >
+      <output aria-live="polite" aria-atomic="true" style={liveRegionStyle}>
         {message}
       </output>
     </AnnouncementContext.Provider>

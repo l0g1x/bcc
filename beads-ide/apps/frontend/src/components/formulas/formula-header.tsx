@@ -79,9 +79,7 @@ export function FormulaHeader({
       <div style={titleRowStyle}>
         <div style={iconStyle}>◆</div>
         <span style={titleStyle}>{name}</span>
-        {version !== undefined && (
-          <span style={versionBadgeStyle}>v{version}</span>
-        )}
+        {version !== undefined && <span style={versionBadgeStyle}>v{version}</span>}
       </div>
       <div style={metaStyle}>
         {type && <span>{type}</span>}

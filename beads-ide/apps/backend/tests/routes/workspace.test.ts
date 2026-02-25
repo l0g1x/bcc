@@ -234,7 +234,9 @@ describe('POST /api/workspace/init', () => {
     expect(existsSync(join(resolve(tempDir), '.beads'))).toBe(true)
     expect(existsSync(join(resolve(tempDir), '.beads', 'formulas'))).toBe(true)
     expect(existsSync(join(resolve(tempDir), 'formulas'))).toBe(true)
-    expect(existsSync(join(resolve(tempDir), '.beads', 'formulas', 'blank.formula.toml'))).toBe(true)
+    expect(existsSync(join(resolve(tempDir), '.beads', 'formulas', 'blank.formula.toml'))).toBe(
+      true
+    )
 
     expect(config.setWorkspaceRoot).toHaveBeenCalledWith(resolve(tempDir))
   })
@@ -502,7 +504,12 @@ describe('GET /api/browse', () => {
     const res = await app.request('/api/browse')
     expect(res.status).toBe(200)
 
-    const body = await res.json()
+    const body = (await res.json()) as {
+      ok: boolean
+      path: string
+      parent: string
+      entries: { name: string; type: string }[]
+    }
     expect(body.ok).toBe(true)
     expect(body.path).toBe(tempDir)
     expect(body.parent).toBeTruthy()
@@ -522,7 +529,11 @@ describe('GET /api/browse', () => {
     const res = await app.request(`/api/browse?path=${encodeURIComponent(subDir)}`)
     expect(res.status).toBe(200)
 
-    const body = await res.json()
+    const body = (await res.json()) as {
+      ok: boolean
+      path: string
+      entries: { name: string; type: string }[]
+    }
     expect(body.ok).toBe(true)
     expect(body.path).toBe(subDir)
     expect(body.entries).toHaveLength(1)
@@ -539,7 +550,7 @@ describe('GET /api/browse', () => {
     vi.spyOn(config, 'getWorkspaceRoot').mockReturnValue(tempDir)
 
     const res = await app.request('/api/browse')
-    const body = await res.json()
+    const body = (await res.json()) as { ok: boolean; entries: { type: string }[] }
     expect(body.ok).toBe(true)
 
     const types = body.entries.map((e: { type: string }) => e.type)
@@ -559,7 +570,7 @@ describe('GET /api/browse', () => {
     vi.spyOn(config, 'getWorkspaceRoot').mockReturnValue(tempDir)
 
     const res = await app.request('/api/browse')
-    const body = await res.json()
+    const body = (await res.json()) as { entries: { name: string }[] }
     const names = body.entries.map((e: { name: string }) => e.name)
     expect(names).not.toContain('.git')
     expect(names).not.toContain('.hidden')
@@ -572,7 +583,7 @@ describe('GET /api/browse', () => {
     mkdirSync(subDir)
 
     const res = await app.request(`/api/browse?path=${encodeURIComponent(subDir)}`)
-    const body = await res.json()
+    const body = (await res.json()) as { ok: boolean; parent: string }
     expect(body.ok).toBe(true)
     expect(body.parent).toBe(resolve(subDir, '..'))
   })
@@ -581,7 +592,7 @@ describe('GET /api/browse', () => {
     const res = await app.request('/api/browse?path=/tmp/nonexistent-browse-999')
     expect(res.status).toBe(404)
 
-    const body = await res.json()
+    const body = (await res.json()) as { ok: boolean; code: string }
     expect(body.ok).toBe(false)
     expect(body.code).toBe('NOT_FOUND')
   })
@@ -593,7 +604,7 @@ describe('GET /api/browse', () => {
     const res = await app.request(`/api/browse?path=${encodeURIComponent(filePath)}`)
     expect(res.status).toBe(400)
 
-    const body = await res.json()
+    const body = (await res.json()) as { ok: boolean; code: string }
     expect(body.ok).toBe(false)
     expect(body.code).toBe('NOT_DIRECTORY')
   })

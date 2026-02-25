@@ -144,7 +144,10 @@ export function AppShell({ sidebarContent, mainContent, detailContent }: AppShel
 
         <PanelResizer orientation="horizontal" />
 
-        <Panel defaultSize={showDetailPanel ? sizes.main : sizes.main + sizes.detail} minSize={MIN_MAIN_SIZE}>
+        <Panel
+          defaultSize={showDetailPanel ? sizes.main : sizes.main + sizes.detail}
+          minSize={MIN_MAIN_SIZE}
+        >
           <main id="main-content" style={mainPanelStyle} aria-label="Main content">
             {mainContent}
           </main>
