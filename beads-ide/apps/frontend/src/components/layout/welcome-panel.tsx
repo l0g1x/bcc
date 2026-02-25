@@ -235,7 +235,6 @@ export function WelcomePanel({ onWorkspaceOpened }: WelcomePanelProps) {
         setShowNewProject(true)
         return
       }
-      // Open folder flow
       const { error } = await apiPost<
         { ok: true; root: string; formulaCount: number },
         { path: string }
@@ -262,6 +261,7 @@ export function WelcomePanel({ onWorkspaceOpened }: WelcomePanelProps) {
       onWorkspaceOpened?.()
     }
   }, [newProjectPath, setRootPath, addRecentRoot, onWorkspaceOpened])
+
 
   const handleRecentSelect = useCallback(
     async (path: string) => {
