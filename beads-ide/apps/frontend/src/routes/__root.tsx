@@ -1,13 +1,14 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { Component, type ErrorInfo, type ReactNode, useCallback, useState } from 'react'
+import { Component, type ErrorInfo, type ReactNode, useCallback, useEffect, useState } from 'react'
 import { Toaster } from 'sonner'
 import { BeadDetail } from '../components/beads/bead-detail'
 import { AppShell, FormulaTree } from '../components/layout'
 import { CommandPalette, useDefaultActions } from '../components/layout/command-palette'
 import { GenericErrorPage, OfflineBanner } from '../components/ui'
 import { BeadSelectionProvider, FormulaSaveProvider, useBeadSelection } from '../contexts'
-import { useBead, useKeyboardTip } from '../hooks'
+import { useBead, useKeyboardTip, useWorkspaceConfig } from '../hooks'
+import { apiFetch, apiPost } from '../lib'
 
 type ViewMode = 'list' | 'wave' | 'graph'
 
@@ -69,9 +70,41 @@ function RootLayoutInner() {
   const { selectedBeadId, clearSelection } = useBeadSelection()
   const { bead, isLoading, error } = useBead(selectedBeadId)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
+  const { config, setRootPath, clearConfig } = useWorkspaceConfig()
 
   // Show one-time keyboard shortcut tip
   useKeyboardTip()
+
+  // Reconcile localStorage workspace config with backend state on mount
+  useEffect(() => {
+    async function syncWorkspace() {
+      const { data, error: fetchError } = await apiFetch<{ ok: true; root: string }>(
+        '/api/workspace'
+      )
+      const localRoot = config.rootPath
+
+      if (fetchError) {
+        // Backend has no root (NO_ROOT) — try to restore from localStorage
+        if (fetchError.message === 'No workspace root configured' && localRoot) {
+          await apiPost('/api/workspace/open', { path: localRoot })
+        }
+        return
+      }
+
+      if (data) {
+        if (!localRoot) {
+          // localStorage empty — adopt backend root
+          setRootPath(data.root)
+        } else if (data.root !== localRoot) {
+          // Mismatch — clear localStorage and navigate to welcome screen
+          clearConfig()
+          window.history.pushState(null, '', '/')
+          window.dispatchEvent(new PopStateEvent('popstate'))
+        }
+      }
+    }
+    syncWorkspace()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleOpenFormula = useCallback(() => {
     // Navigate to first formula or show formula picker
