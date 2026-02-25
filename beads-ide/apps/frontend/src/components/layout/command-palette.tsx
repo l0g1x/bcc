@@ -432,9 +432,36 @@ export function useDefaultActions(handlers: {
   onSwitchToGraph?: () => void
   onSwitchToList?: () => void
   onSwitchToWave?: () => void
+  onOpenFolder?: () => void
+  onNewProject?: () => void
+  onChangeFolder?: () => void
 }): CommandAction[] {
   return useMemo(
     () => [
+      {
+        id: 'open-folder',
+        label: 'Open Folder...',
+        description: 'Open a project folder',
+        icon: '📁',
+        category: 'Workspace',
+        onSelect: handlers.onOpenFolder || (() => {}),
+      },
+      {
+        id: 'new-project',
+        label: 'New Project...',
+        description: 'Create a new Beads project',
+        icon: '✨',
+        category: 'Workspace',
+        onSelect: handlers.onNewProject || (() => {}),
+      },
+      {
+        id: 'change-folder',
+        label: 'Change Folder...',
+        description: 'Switch to a different project folder',
+        icon: '🔄',
+        category: 'Workspace',
+        onSelect: handlers.onChangeFolder || (() => {}),
+      },
       {
         id: 'open-formula',
         label: 'Open Formula',
