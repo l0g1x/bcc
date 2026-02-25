@@ -8,6 +8,7 @@ import { graph } from './routes/graph.js'
 import { health } from './routes/health.js'
 import { pour } from './routes/pour.js'
 import { sling } from './routes/sling.js'
+import { workspace } from './routes/workspace.js'
 
 const app = new Hono()
 
@@ -25,6 +26,7 @@ app.route('/api', cook)
 app.route('/api', formulas)
 app.route('/api', sling)
 app.route('/api', pour)
+app.route('/api', workspace)
 
 // Start server bound to localhost only (security requirement)
 serve({
