@@ -504,17 +504,12 @@ describe('GET /api/browse', () => {
     const res = await app.request('/api/browse')
     expect(res.status).toBe(200)
 
-    const body = (await res.json()) as {
-      ok: boolean
-      path: string
-      parent: string
-      entries: { name: string; type: string }[]
-    }
+    const body = (await res.json()) as Record<string, unknown>
     expect(body.ok).toBe(true)
     expect(body.path).toBe(tempDir)
     expect(body.parent).toBeTruthy()
 
-    const names = body.entries.map((e: { name: string }) => e.name)
+    const names = (body.entries as Array<{ name: string }>).map((e) => e.name)
     expect(names).toContain('src')
     expect(names).toContain('package.json')
     // .beads is the only dotfile that should be shown
@@ -529,16 +524,13 @@ describe('GET /api/browse', () => {
     const res = await app.request(`/api/browse?path=${encodeURIComponent(subDir)}`)
     expect(res.status).toBe(200)
 
-    const body = (await res.json()) as {
-      ok: boolean
-      path: string
-      entries: { name: string; type: string }[]
-    }
+    const body = (await res.json()) as Record<string, unknown>
     expect(body.ok).toBe(true)
     expect(body.path).toBe(subDir)
-    expect(body.entries).toHaveLength(1)
-    expect(body.entries[0].name).toBe('file.txt')
-    expect(body.entries[0].type).toBe('file')
+    const entries = body.entries as Array<{ name: string; type: string }>
+    expect(entries).toHaveLength(1)
+    expect(entries[0].name).toBe('file.txt')
+    expect(entries[0].type).toBe('file')
   })
 
   it('sorts directories before files', async () => {
@@ -550,10 +542,10 @@ describe('GET /api/browse', () => {
     vi.spyOn(config, 'getWorkspaceRoot').mockReturnValue(tempDir)
 
     const res = await app.request('/api/browse')
-    const body = (await res.json()) as { ok: boolean; entries: { type: string }[] }
+    const body = (await res.json()) as Record<string, unknown>
     expect(body.ok).toBe(true)
 
-    const types = body.entries.map((e: { type: string }) => e.type)
+    const types = (body.entries as Array<{ type: string }>).map((e) => e.type)
     const firstFileIndex = types.indexOf('file')
     const lastDirIndex = types.lastIndexOf('directory')
     if (firstFileIndex !== -1 && lastDirIndex !== -1) {
@@ -570,8 +562,8 @@ describe('GET /api/browse', () => {
     vi.spyOn(config, 'getWorkspaceRoot').mockReturnValue(tempDir)
 
     const res = await app.request('/api/browse')
-    const body = (await res.json()) as { entries: { name: string }[] }
-    const names = body.entries.map((e: { name: string }) => e.name)
+    const body = (await res.json()) as Record<string, unknown>
+    const names = (body.entries as Array<{ name: string }>).map((e) => e.name)
     expect(names).not.toContain('.git')
     expect(names).not.toContain('.hidden')
     expect(names).toContain('.beads')
@@ -583,7 +575,7 @@ describe('GET /api/browse', () => {
     mkdirSync(subDir)
 
     const res = await app.request(`/api/browse?path=${encodeURIComponent(subDir)}`)
-    const body = (await res.json()) as { ok: boolean; parent: string }
+    const body = (await res.json()) as Record<string, unknown>
     expect(body.ok).toBe(true)
     expect(body.parent).toBe(resolve(subDir, '..'))
   })
@@ -592,7 +584,7 @@ describe('GET /api/browse', () => {
     const res = await app.request('/api/browse?path=/tmp/nonexistent-browse-999')
     expect(res.status).toBe(404)
 
-    const body = (await res.json()) as { ok: boolean; code: string }
+    const body = (await res.json()) as Record<string, unknown>
     expect(body.ok).toBe(false)
     expect(body.code).toBe('NOT_FOUND')
   })
@@ -604,7 +596,7 @@ describe('GET /api/browse', () => {
     const res = await app.request(`/api/browse?path=${encodeURIComponent(filePath)}`)
     expect(res.status).toBe(400)
 
-    const body = (await res.json()) as { ok: boolean; code: string }
+    const body = (await res.json()) as Record<string, unknown>
     expect(body.ok).toBe(false)
     expect(body.code).toBe('NOT_DIRECTORY')
   })
