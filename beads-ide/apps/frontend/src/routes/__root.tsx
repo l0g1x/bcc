@@ -1,13 +1,14 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { Component, type ErrorInfo, type ReactNode, useCallback, useState } from 'react'
+import { Component, type ErrorInfo, type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Toaster } from 'sonner'
 import { BeadDetail } from '../components/beads/bead-detail'
 import { AppShell, FormulaTree } from '../components/layout'
 import { CommandPalette, useDefaultActions } from '../components/layout/command-palette'
 import { GenericErrorPage, OfflineBanner } from '../components/ui'
 import { BeadSelectionProvider, FormulaSaveProvider, useBeadSelection } from '../contexts'
-import { useBead, useKeyboardTip } from '../hooks'
+import { useBead, useKeyboardTip, useWorkspaceConfig } from '../hooks'
+import { apiFetch, apiPost } from '../lib'
 
 type ViewMode = 'list' | 'wave' | 'graph'
 
@@ -69,6 +70,43 @@ function RootLayoutInner() {
   const { selectedBeadId, clearSelection } = useBeadSelection()
   const { bead, isLoading, error } = useBead(selectedBeadId)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
+  const { config, clearConfig } = useWorkspaceConfig()
+
+  // Stable refs for workspace sync effect
+  const configRef = useRef(config)
+  const clearConfigRef = useRef(clearConfig)
+  configRef.current = config
+  clearConfigRef.current = clearConfig
+
+  // Reconcile localStorage with backend workspace state on mount
+  useEffect(() => {
+    async function syncWorkspace() {
+      const { data, error: fetchError } = await apiFetch<{ ok: true; root: string }>('/api/workspace')
+
+      if (fetchError) {
+        // NO_ROOT: backend lost its workspace root, but localStorage may have it
+        if (fetchError.type === 'server' && fetchError.message === 'No workspace root configured') {
+          const localRoot = configRef.current.rootPath
+          if (localRoot) {
+            await apiPost('/api/workspace/open', { path: localRoot })
+          }
+        }
+        return
+      }
+
+      // Backend has a workspace — verify it matches localStorage
+      if (data) {
+        const localRoot = configRef.current.rootPath
+        if (data.root !== localRoot) {
+          clearConfigRef.current()
+          window.history.pushState(null, '', '/')
+          window.dispatchEvent(new PopStateEvent('popstate'))
+        }
+      }
+    }
+
+    syncWorkspace()
+  }, [])
 
   // Show one-time keyboard shortcut tip
   useKeyboardTip()
