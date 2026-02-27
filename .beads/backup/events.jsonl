@@ -16019,3 +16019,4 @@
 {"actor":"bcc/witness","comment":"","created_at":"2026-02-27T22:50:46Z","event_type":"closed","id":35479,"issue_id":"bcc-wisp-wwrh3e","new_value":"WITNESS_PING sent to hq-deacon. Rig idle.","old_value":""}
 {"actor":"bcc/witness","comment":"","created_at":"2026-02-27T22:50:49Z","event_type":"closed","id":35480,"issue_id":"bcc-wisp-jfnkfw","new_value":"Inbox has only HANDOFF history (no actionable messages). No cleanup wisps accumulating.","old_value":""}
 {"actor":"bcc/witness","comment":"","created_at":"2026-02-27T22:50:53Z","event_type":"closed","id":35481,"issue_id":"bcc-wisp-z88l40","new_value":"Context usage: moderate. Can continue patrolling.","old_value":""}
+{"actor":"bcc/refinery","comment":"","created_at":"2026-02-27T23:12:42Z","event_type":"closed","id":35482,"issue_id":"bcc-wisp-hp1ji9","new_value":"patrol cycle complete: Merge queue empty. No branches to process. Inbox clean.","old_value":""}
