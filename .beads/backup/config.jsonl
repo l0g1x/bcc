@@ -9,6 +9,6 @@
 {"key":"compact_tier2_dep_levels","value":"5"}
 {"key":"compaction_enabled","value":"false"}
 {"key":"issue_prefix","value":"bcc"}
-{"key":"schema_version","value":"5"}
+{"key":"schema_version","value":"6"}
 {"key":"status.custom","value":"staged,staged_warnings"}
 {"key":"types.custom","value":"agent,role,rig,convoy,slot,queue,event,message,molecule,gate,merge-request"}
