@@ -6,8 +6,8 @@ import type { FormulaListItem } from '@beads-ide/shared'
  * TODO: Remove FormulaTree after WorkspaceTree is validated as its replacement.
  * WorkspaceTree provides the same functionality with proper workspace-aware navigation.
  */
-import { type CSSProperties, useCallback, useMemo, useState } from 'react'
-import { useFormulaDirty, useFormulaSave } from '../../contexts'
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useAnnounce, useFormulaDirty, useFormulaSave } from '../../contexts'
 import { useFormulas } from '../../hooks'
 import { UnsavedChangesModal } from '../ui/unsaved-changes-modal'
 
@@ -389,6 +389,18 @@ export function FormulaTree({ selectedFormula = null, onSelectFormula }: Formula
   const { formulas, isLoading, error, searchPaths } = useFormulas()
   const { isDirty, setDirty } = useFormulaDirty()
   const { save, canSave } = useFormulaSave()
+  const announce = useAnnounce()
+  const wasLoading = useRef(false)
+
+  // Announce when loading completes so screen readers know content is ready
+  useEffect(() => {
+    if (isLoading) {
+      wasLoading.current = true
+    } else if (wasLoading.current) {
+      wasLoading.current = false
+      announce('Formulas loaded')
+    }
+  }, [isLoading, announce])
 
   // Track pending navigation when dirty
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null)
