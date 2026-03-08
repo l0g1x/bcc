@@ -228,6 +228,7 @@ export function StepEditorPanel({
   validationErrors = {},
 }: StepEditorPanelProps) {
   const [showDeps, setShowDeps] = useState(true)
+  const [priorityError, setPriorityError] = useState<string | null>(null)
   const panelRef = useRef<HTMLDivElement>(null)
 
   // Handle Escape key to close the panel
@@ -260,8 +261,16 @@ export function StepEditorPanel({
 
   const handlePriorityChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const value = Number.parseInt(e.target.value, 10)
-      if (!Number.isNaN(value) && value >= 0 && value <= 10) {
+      const raw = e.target.value
+      if (raw === '') {
+        setPriorityError(null)
+        return
+      }
+      const value = Number.parseInt(raw, 10)
+      if (Number.isNaN(value) || value < 0 || value > 10) {
+        setPriorityError('Priority must be 0–10')
+      } else {
+        setPriorityError(null)
         onFieldChange(step.id, 'priority', value)
       }
     },
@@ -386,12 +395,14 @@ export function StepEditorPanel({
               onChange={handlePriorityChange}
               style={{
                 ...priorityInputStyle,
-                ...(validationErrors.priority ? inputErrorStyle : {}),
+                ...(priorityError || validationErrors.priority ? inputErrorStyle : {}),
               }}
               disabled={isLoading}
-              aria-invalid={!!validationErrors.priority}
+              aria-invalid={!!(priorityError || validationErrors.priority)}
               aria-describedby={
-                validationErrors.priority ? 'step-editor-priority-error' : undefined
+                priorityError || validationErrors.priority
+                  ? 'step-editor-priority-error'
+                  : undefined
               }
             />
             <div style={priorityDotsStyle}>
@@ -416,9 +427,9 @@ export function StepEditorPanel({
             </div>
             <span style={priorityLabelStyle}>{priorityLabel}</span>
           </div>
-          {validationErrors.priority && (
+          {(priorityError || validationErrors.priority) && (
             <div id="step-editor-priority-error" style={errorMessageStyle} role="alert" aria-live="assertive">
-              {validationErrors.priority}
+              {priorityError || validationErrors.priority}
             </div>
           )}
         </div>
