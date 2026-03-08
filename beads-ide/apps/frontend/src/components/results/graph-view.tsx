@@ -44,6 +44,31 @@ import {
   getDensityHealth,
 } from './graph-controls'
 
+const SIMPLIFICATION_STORAGE_KEY = 'beads-ide:graph-simplification'
+
+function loadSimplificationState(): GraphSimplificationState {
+  try {
+    const saved = localStorage.getItem(SIMPLIFICATION_STORAGE_KEY)
+    if (saved) {
+      const parsed = JSON.parse(saved) as Partial<GraphSimplificationState>
+      return { ...DEFAULT_SIMPLIFICATION_STATE, ...parsed, selectedNodeId: null }
+    }
+  } catch {
+    // Ignore localStorage errors
+  }
+  return DEFAULT_SIMPLIFICATION_STATE
+}
+
+function saveSimplificationState(state: GraphSimplificationState): void {
+  try {
+    // Don't persist transient selectedNodeId
+    const { selectedNodeId: _, ...persistable } = state
+    localStorage.setItem(SIMPLIFICATION_STORAGE_KEY, JSON.stringify(persistable))
+  } catch {
+    // Ignore localStorage errors
+  }
+}
+
 /** Cluster node representing a collapsed epic */
 interface ClusterData extends Record<string, unknown> {
   id: string
@@ -690,8 +715,18 @@ export function GraphView({
   onBeadClick,
   onBeadDoubleClick,
 }: GraphViewProps) {
-  const [simplificationState, setSimplificationState] = useState<GraphSimplificationState>(
-    DEFAULT_SIMPLIFICATION_STATE
+  const [simplificationState, setSimplificationStateRaw] = useState<GraphSimplificationState>(
+    loadSimplificationState
+  )
+  const setSimplificationState = useCallback(
+    (update: GraphSimplificationState | ((prev: GraphSimplificationState) => GraphSimplificationState)) => {
+      setSimplificationStateRaw((prev) => {
+        const next = typeof update === 'function' ? update(prev) : update
+        saveSimplificationState(next)
+        return next
+      })
+    },
+    []
   )
   const [zoom, setZoom] = useState(1)
   const [viewMode, setViewMode] = useState<'graph' | 'list'>('graph')
