@@ -218,7 +218,7 @@ function BeadPreviewList({ beads }: BeadPreviewListProps) {
   return (
     <ul style={beadListStyle}>
       {beads.map((bead, index) => (
-        <li key={bead.id || index} style={beadItemStyle}>
+        <li key={bead.id || `bead-${bead.title}-${index}`} style={beadItemStyle}>
           <span style={beadTitleStyle}>{bead.title}</span>
           {bead.type && <span style={beadTypeStyle}>{bead.type}</span>}
         </li>
