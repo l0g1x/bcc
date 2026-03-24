@@ -108,6 +108,27 @@ const controlsPanelStyle: CSSProperties = {
   maxWidth: '280px',
 }
 
+const emptyStateStyle: CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  height: '100%',
+  color: '#888',
+  gap: '12px',
+}
+
+const emptyStateIconStyle: CSSProperties = {
+  fontSize: '48px',
+  opacity: 0.5,
+}
+
+const emptyStateTextStyle: CSSProperties = {
+  fontSize: '14px',
+  textAlign: 'center',
+  lineHeight: '1.5',
+}
+
 // Zoom thresholds for semantic zoom
 const ZOOM_THRESHOLD_LABELS = 0.5 // Hide labels below this zoom
 const ZOOM_THRESHOLD_DETAILS = 0.3 // Simplify further below this zoom
@@ -1290,81 +1311,94 @@ export function GraphView({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      {/* View mode toggle for accessibility */}
-      <div
-        style={{ ...viewToggleStyle, position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}
-      >
-        <button
-          type="button"
-          onClick={() => setViewMode('graph')}
-          style={viewMode === 'graph' ? toggleButtonActiveStyle : toggleButtonInactiveStyle}
-          aria-pressed={viewMode === 'graph'}
-          aria-label="Graph view"
-        >
-          <span aria-hidden="true">{'\u25C7'}</span> Graph
-        </button>
-        <button
-          type="button"
-          onClick={() => setViewMode('list')}
-          style={viewMode === 'list' ? toggleButtonActiveStyle : toggleButtonInactiveStyle}
-          aria-pressed={viewMode === 'list'}
-          aria-label="List view (accessible alternative)"
-        >
-          <span aria-hidden="true">{'\u2261'}</span> List
-        </button>
-      </div>
-
-      {viewMode === 'list' ? (
-        <GraphListView
-          nodes={rawNodes}
-          edges={rawEdges}
-          onBeadClick={onBeadClick}
-          onBeadDoubleClick={onBeadDoubleClick}
-        />
+      {rawNodes.length === 0 ? (
+        <div style={emptyStateStyle} role="status">
+          <span style={emptyStateIconStyle} aria-hidden="true">
+            ◇
+          </span>
+          <p style={emptyStateTextStyle}>
+            No beads to display. Pour a formula to create beads.
+          </p>
+        </div>
       ) : (
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={handleNodesChange}
-          onEdgesChange={onEdgesChange}
-          onNodeClick={handleNodeClick}
-          onNodeDoubleClick={handleNodeDoubleClick}
-          onMove={handleMove}
-          nodeTypes={effectiveNodeTypes}
-          nodesDraggable={simplificationState.layout === 'manual'}
-          fitView
-          fitViewOptions={{ padding: 0.2 }}
-          minZoom={0.1}
-          maxZoom={2}
-          defaultEdgeOptions={{
-            type: 'default',
-            style: { stroke: '#555' },
-          }}
-          aria-label="Bead dependency graph. For an accessible alternative, switch to List view."
-        >
-          <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#333" />
-          <Controls showZoom showFitView showInteractive={false} />
-          <MiniMap
-            nodeColor={(node) => {
-              const data = node.data as NodeData
-              if (data.isCluster) return '#007acc'
-              const beadData = data as BeadData
-              if (beadData.hasMetric && beadData.metricValue !== undefined) {
-                return metricColor(beadData.metricValue)
-              }
-              return getStatusColor(beadData.status)
-            }}
-            maskColor="rgba(30, 30, 30, 0.8)"
-            style={{ backgroundColor: '#252526' }}
-          />
-          <Panel position="top-right" style={controlsPanelStyle}>
-            <GraphControls
-              state={simplificationState}
-              onStateChange={setSimplificationState}
-              density={densityHealth}
+        <>
+          {/* View mode toggle for accessibility */}
+          <div
+            style={{ ...viewToggleStyle, position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}
+          >
+            <button
+              type="button"
+              onClick={() => setViewMode('graph')}
+              style={viewMode === 'graph' ? toggleButtonActiveStyle : toggleButtonInactiveStyle}
+              aria-pressed={viewMode === 'graph'}
+              aria-label="Graph view"
+            >
+              <span aria-hidden="true">{'\u25C7'}</span> Graph
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('list')}
+              style={viewMode === 'list' ? toggleButtonActiveStyle : toggleButtonInactiveStyle}
+              aria-pressed={viewMode === 'list'}
+              aria-label="List view (accessible alternative)"
+            >
+              <span aria-hidden="true">{'\u2261'}</span> List
+            </button>
+          </div>
+
+          {viewMode === 'list' ? (
+            <GraphListView
+              nodes={rawNodes}
+              edges={rawEdges}
+              onBeadClick={onBeadClick}
+              onBeadDoubleClick={onBeadDoubleClick}
             />
-          </Panel>
-        </ReactFlow>
+          ) : (
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={handleNodesChange}
+              onEdgesChange={onEdgesChange}
+              onNodeClick={handleNodeClick}
+              onNodeDoubleClick={handleNodeDoubleClick}
+              onMove={handleMove}
+              nodeTypes={effectiveNodeTypes}
+              nodesDraggable={simplificationState.layout === 'manual'}
+              fitView
+              fitViewOptions={{ padding: 0.2 }}
+              minZoom={0.1}
+              maxZoom={2}
+              defaultEdgeOptions={{
+                type: 'default',
+                style: { stroke: '#555' },
+              }}
+              aria-label="Bead dependency graph. For an accessible alternative, switch to List view."
+            >
+              <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#333" />
+              <Controls showZoom showFitView showInteractive={false} />
+              <MiniMap
+                nodeColor={(node) => {
+                  const data = node.data as NodeData
+                  if (data.isCluster) return '#007acc'
+                  const beadData = data as BeadData
+                  if (beadData.hasMetric && beadData.metricValue !== undefined) {
+                    return metricColor(beadData.metricValue)
+                  }
+                  return getStatusColor(beadData.status)
+                }}
+                maskColor="rgba(30, 30, 30, 0.8)"
+                style={{ backgroundColor: '#252526' }}
+              />
+              <Panel position="top-right" style={controlsPanelStyle}>
+                <GraphControls
+                  state={simplificationState}
+                  onStateChange={setSimplificationState}
+                  density={densityHealth}
+                />
+              </Panel>
+            </ReactFlow>
+          )}
+        </>
       )}
     </div>
   )
